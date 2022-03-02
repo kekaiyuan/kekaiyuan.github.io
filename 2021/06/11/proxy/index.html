@@ -1,0 +1,208 @@
+<!DOCTYPE html><html lang="zh-cmn-Hans" prefix="og: http://ogp.me/ns#" class="han-init"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /><title>设计模式之——代理 Proxy &mdash; 菜鸟日记</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/primer-css/css/primer.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/collection.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/repo-card.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/sections/repo-list.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/boxed-group.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/globals/common.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/globals/responsive.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/posts/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/octicons/octicons/octicons.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mzlogin/rouge-themes@master/dist/github.css"><link rel="canonical" href="https://kekaiyuan.github.io//2021/06/11/proxy/"><link rel="alternate" type="application/atom+xml" title="菜鸟日记" href="https://kekaiyuan.github.io//feed.xml"><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/favicon.ico"><meta property="og:title" content="设计模式之——代理 Proxy"><meta name="keywords" content="Java，设计模式"><meta name="og:keywords" content="Java，设计模式"><meta name="description" content="设计模式之——代理 Proxy"><meta name="og:description" content="设计模式之——代理 Proxy"><meta property="og:url" content="https://kekaiyuan.github.io//2021/06/11/proxy/"><meta property="og:site_name" content="菜鸟日记"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN" /><meta property="article:published_time" content="2021-06-11"> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/jquery/dist/jquery.min.js"></script> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/jquery-ui.js"></script> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/main.js"></script></head><body class="" data-mz=""><header class="site-header"><div class="container"><h1><a href="https://kekaiyuan.github.io//" title="菜鸟日记"><span class="octicon octicon-mark-github"></span> 菜鸟日记</a></h1><button class="collapsed mobile-visible" type="button" onclick="toggleMenu();"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button><nav class="site-header-nav" role="navigation"> <a href="https://kekaiyuan.github.io//" class=" site-header-nav-item" target="" title="首页">首页</a> <a href="https://kekaiyuan.github.io//categories/" class=" site-header-nav-item" target="" title="分类">分类</a> <a href="https://kekaiyuan.github.io//archives/" class=" site-header-nav-item" target="" title="归档">归档</a> <a href="https://kekaiyuan.github.io//wiki/" class=" site-header-nav-item" target="" title="维基">维基</a> <a href="https://kekaiyuan.github.io//links/" class=" site-header-nav-item" target="" title="链接">链接</a> <a href="https://kekaiyuan.github.io//about/" class=" site-header-nav-item" target="" title="关于">关于</a></nav></div></header><section class="collection-head small geopattern" data-pattern-id="设计模式之——代理 Proxy"><div class="container"><div class="columns"><div class="column three-fourths"><div class="collection-title"><h1 class="collection-header">设计模式之——代理 Proxy</h1><div class="collection-info"> <span class="meta-info"> <span class="octicon octicon-calendar"></span> 2021/06/11 </span> <span class="meta-info"> <span class="octicon octicon-file-directory"></span> <a href="https://kekaiyuan.github.io//categories/#DesignPatterns" title="DesignPatterns">DesignPatterns</a> </span> <span class="meta-info"> <span class="octicon octicon-clock"></span> 共 6391 字，约 19 分钟 </span></div></div></div><div class="column one-fourth mobile-hidden"><div class="collection-title"> <img style="height:72px;width:72px" src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/images/qrcode.jpg" alt="闷骚的程序员" /></div></div></div></div></section><section class="container content"><div class="columns"><div class="column three-fourths" ><article class="article-content markdown-body"><p>设计模式之——代理 Proxy</p><h2 id="代理模式">代理模式</h2><p>考虑这样一件事。</p><p>现在有一个写好的类，其中有各种各样的方法和属性。</p><p>有一天，我想给这个类添加权限控制，有权限的才能调用这个类。</p><p>于是我去改改改……</p><p>又有一天，我想给这个类添加日志控制，打印各种信息。</p><p>于是我又去改改改……</p><p>又又有一天，我觉得这两个控制都很麻烦，我不想要了！</p><p>于是我又又去改改改……</p><p>突然，有个智者告诉我，为什么不找个<strong>代理</strong>替我做这些事呢？</p><p>就像明星和经纪人。</p><p>明星不知道哪些厂商值得合作，哪些不值得。<br /> 但是他可以找个懂这个的经纪人帮他做。</p><p>明星不知道时下什么东西最流行，经纪人会帮他收集。</p><p>……</p><p>明星有很多事情不会，但是他不需要去学，去<strong>改变自己</strong>。<br /> 他只需要找到合适的经纪人作为他的<strong>代理</strong>就好了。</p><p><strong>在编程中，代理模式就是在不改变类的前提下，添加一些功能。</strong></p><h2 id="概念">概念</h2><blockquote><p>以下内容引用自 <a href="https://www.runoob.com/design-pattern/proxy-pattern.html">菜鸟教程</a></p><h3 id="代理模式-1">代理模式</h3><p>在代理模式（Proxy Pattern）中，一个类代表另一个类的功能。这种类型的设计模式属于结构型模式。</p><p>在代理模式中，我们创建具有现有对象的对象，以便向外界提供功能接口。</p><h3 id="介绍">介绍</h3><p>意图</p><ul><li>为其他对象提供一种代理以控制对这个对象的访问。</li></ul><p>主要解决</p><ul><li>在直接访问对象时带来的问题，比如说：要访问的对象在远程的机器上。在面向对象系统中，有些对象由于某些原因（比如对象创建开销很大，或者某些操作需要安全控制，或者需要进程外的访问），直接访问会给使用者或者系统结构带来很多麻烦，我们可以在访问此对象时加上一个对此对象的访问层。</li></ul><p>何时使用</p><ul><li>想在访问一个类时做一些控制。</li></ul><p>如何解决</p><ul><li>增加中间层。</li></ul><p>关键代码</p><ul><li>实现与被代理类组合。</li></ul><p>应用实例</p><ul><li>Windows 里面的快捷方式。</li><li>猪八戒去找高翠兰结果是孙悟空变的，可以这样理解：把高翠兰的外貌抽象出来，高翠兰本人和孙悟空都实现了这个接口，猪八戒访问高翠兰的时候看不出来这个是孙悟空，所以说孙悟空是高翠兰代理类。</li><li>买火车票不一定在火车站买，也可以去代售点。</li><li>一张支票或银行存单是账户中资金的代理。支票在市场交易中用来代替现金，并提供对签发人账号上资金的控制。</li><li>spring aop。</li></ul><p>优点</p><ul><li>职责清晰。</li><li>高扩展性。</li><li>智能化。</li></ul><p>缺点</p><ul><li>由于在客户端和真实主题之间增加了代理对象，因此有些类型的代理模式可能会造成请求的处理速度变慢。</li><li>实现代理模式需要额外的工作，有些代理模式的实现非常复杂。</li></ul><p>使用场景</p><ul><li>按职责来划分，通常有以下使用场景</li><li>远程代理。</li><li>虚拟代理。</li><li>Copy-on-Write 代理。</li><li>保护（Protect or Access）代理。</li><li>Cache代理。</li><li>防火墙（Firewall）代理。</li><li>同步化（Synchronization）代理。</li><li>智能引用（Smart Reference）代理。</li></ul><p>注意事项</p><ul><li>和适配器模式的区别：适配器模式主要改变所考虑对象的接口，而代理模式不能改变所代理类的接口。</li><li>和装饰器模式的区别：装饰器模式为了增强功能，而代理模式是为了加以控制。</li></ul></blockquote><h2 id="代理类型">代理类型</h2><h3 id="静态代理">静态代理</h3><h4 id="代码示例">代码示例</h4><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+
+        <span class="k">new</span> <span class="nf">TankTimeProxy</span><span class="o">(</span><span class="k">new</span> <span class="nc">Tank</span><span class="o">()).</span><span class="na">move</span><span class="o">();</span>
+
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"------"</span><span class="o">);</span>
+        
+        <span class="k">new</span> <span class="nf">TankLogProxy</span><span class="o">(</span>
+                <span class="k">new</span> <span class="nf">TankTimeProxy</span><span class="o">(</span>
+                        <span class="k">new</span> <span class="nf">Tank</span><span class="o">()</span>
+                <span class="o">)</span>
+        <span class="o">).</span><span class="na">move</span><span class="o">();</span>
+
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"------"</span><span class="o">);</span>
+
+        <span class="k">new</span> <span class="nf">TankTimeProxy</span><span class="o">(</span>
+                <span class="k">new</span> <span class="nf">TankLogProxy</span><span class="o">(</span>
+                        <span class="k">new</span> <span class="nf">Tank</span><span class="o">()</span>
+                <span class="o">)</span>
+        <span class="o">).</span><span class="na">move</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">//时间代理，计算程序运行的时间</span>
+<span class="kd">class</span> <span class="nc">TankTimeProxy</span> <span class="kd">implements</span> <span class="nc">Movable</span> <span class="o">{</span>
+    <span class="nc">Movable</span> <span class="n">movable</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">TankTimeProxy</span><span class="o">(</span><span class="nc">Movable</span> <span class="n">movable</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">movable</span> <span class="o">=</span> <span class="n">movable</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">move</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kt">long</span> <span class="n">start</span> <span class="o">=</span> <span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+        <span class="n">movable</span><span class="o">.</span><span class="na">move</span><span class="o">();</span>
+        <span class="kt">long</span> <span class="n">end</span> <span class="o">=</span> <span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="c1">//日志代理，输出日志</span>
+<span class="kd">class</span> <span class="nc">TankLogProxy</span> <span class="kd">implements</span> <span class="nc">Movable</span> <span class="o">{</span>
+    <span class="nc">Movable</span> <span class="n">movable</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">TankLogProxy</span><span class="o">(</span><span class="nc">Movable</span> <span class="n">movable</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">movable</span> <span class="o">=</span> <span class="n">movable</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">move</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"start moving..."</span><span class="o">);</span>
+        <span class="n">movable</span><span class="o">.</span><span class="na">move</span><span class="o">();</span>
+        <span class="kt">long</span> <span class="n">end</span> <span class="o">=</span> <span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"stopped!"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Tank</span> <span class="kd">implements</span> <span class="nc">Movable</span> <span class="o">{</span>
+    <span class="cm">/**
+     * 模拟坦克移动了一段儿时间
+     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">move</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Tank moving claclacla..."</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="k">new</span> <span class="nc">Random</span><span class="o">().</span><span class="na">nextInt</span><span class="o">(</span><span class="mi">1000</span><span class="o">));</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">interface</span> <span class="nc">Movable</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">move</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div><p><strong>结果</strong></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Tank</span> <span class="n">moving</span> <span class="n">claclacla</span><span class="o">...</span>
+<span class="mi">322</span>
+<span class="o">------</span>
+<span class="n">start</span> <span class="n">moving</span><span class="o">...</span>
+<span class="nc">Tank</span> <span class="n">moving</span> <span class="n">claclacla</span><span class="o">...</span>
+<span class="mi">598</span>
+<span class="n">stopped</span><span class="o">!</span>
+<span class="o">------</span>
+<span class="n">start</span> <span class="n">moving</span><span class="o">...</span>
+<span class="nc">Tank</span> <span class="n">moving</span> <span class="n">claclacla</span><span class="o">...</span>
+<span class="n">stopped</span><span class="o">!</span>
+<span class="mi">465</span>
+</code></pre></div></div><p>静态代理的关键时代理类和被代理类实现同一个接口。<br /> 然后代理类在方法中可以调用被代理类的方法，并且加入一些操作。<br /> 比如该案例就是输出程序运行时间的<strong>时间代理</strong>和打印日志的<strong>日志代理</strong>。<br /></p><p>由于静态代理实现了接口，所以静态代理可以嵌套。<br /> 越外层的代理越晚实现，类似于<strong>递归</strong>。</p><h3 id="动态代理">动态代理</h3><p>在静态代理中，代理类只能代理实现了 Movable 接口的类，也就是只能代理<strong>单一接口</strong>。<br /> 但是在动态代理中，代理类可以代理<strong>所有接口</strong>。<br /></p><p>Java中所谓的动态，指的是在执行的时候改变类的属性和方法。<br /></p><h4 id="jdk自带的动态代理">JDK自带的动态代理</h4><p>JDK 自带的动态代理是通过 <code class="language-plaintext highlighter-rouge">Proxy</code> 类实现的。<br /> 动态生成 $Proxy0.class 文件，将代理类和被代理类关联到一起。<br /> 然后通过反射调用 .class 文件的内容。<br /> 被代理类需要实现接口<br /></p><h5 id="代码示例-1">代码示例</h5><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Tank</span> <span class="kd">implements</span> <span class="nc">Movable</span> <span class="o">{</span>
+
+    <span class="cm">/**
+     * 模拟坦克移动了一段时间
+     */</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">move</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Tank moving claclacla..."</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="k">new</span> <span class="nc">Random</span><span class="o">().</span><span class="na">nextInt</span><span class="o">(</span><span class="mi">10000</span><span class="o">));</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        
+        <span class="nc">System</span><span class="o">.</span><span class="na">getProperties</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">"jdk.proxy.ProxyGenerator.saveGeneratedFiles"</span><span class="o">,</span><span class="s">"true"</span><span class="o">);</span>
+        <span class="nc">Tank</span> <span class="n">tank</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Tank</span><span class="o">();</span>
+
+        <span class="nc">Movable</span> <span class="n">movable</span> <span class="o">=</span> <span class="o">(</span><span class="nc">Movable</span><span class="o">)</span><span class="nc">Proxy</span><span class="o">.</span><span class="na">newProxyInstance</span><span class="o">(</span><span class="nc">Tank</span><span class="o">.</span><span class="na">class</span><span class="o">.</span><span class="na">getClassLoader</span><span class="o">(),</span>
+                <span class="k">new</span> <span class="nc">Class</span><span class="o">[]{</span><span class="nc">Movable</span><span class="o">.</span><span class="na">class</span><span class="o">},</span> 
+                <span class="k">new</span> <span class="nf">TimeProxy</span><span class="o">(</span><span class="n">tank</span><span class="o">)</span>
+        <span class="o">);</span>
+
+        <span class="n">movable</span><span class="o">.</span><span class="na">move</span><span class="o">();</span>
+
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">TimeProxy</span> <span class="kd">implements</span> <span class="nc">InvocationHandler</span> <span class="o">{</span>
+    <span class="nc">Object</span> <span class="n">object</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">TimeProxy</span><span class="o">(</span><span class="nc">Object</span> <span class="n">object</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">object</span> <span class="o">=</span> <span class="n">object</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">before</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"method start.."</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">after</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"method stop.."</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">invoke</span><span class="o">(</span><span class="nc">Object</span> <span class="n">proxy</span><span class="o">,</span> <span class="nc">Method</span> <span class="n">method</span><span class="o">,</span> <span class="nc">Object</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Throwable</span> <span class="o">{</span>
+
+        <span class="n">before</span><span class="o">();</span>
+        <span class="nc">Object</span> <span class="n">o</span> <span class="o">=</span> <span class="n">method</span><span class="o">.</span><span class="na">invoke</span><span class="o">(</span><span class="n">object</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+        <span class="n">after</span><span class="o">();</span>
+        <span class="k">return</span> <span class="n">o</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="kd">interface</span> <span class="nc">Movable</span> <span class="o">{</span>
+    <span class="kt">void</span> <span class="nf">move</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div><p><br /> 结果 <br /></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">method</span> <span class="n">start</span><span class="o">..</span>
+<span class="nc">Tank</span> <span class="n">moving</span> <span class="n">claclacla</span><span class="o">...</span>
+<span class="n">method</span> <span class="n">stop</span><span class="o">..</span>
+</code></pre></div></div><p>仔细阅读源码会发现，明明没有调用 <code class="language-plaintext highlighter-rouge">TimeProxy </code>类，但是 <code class="language-plaintext highlighter-rouge">TimeProxy </code>类的 <code class="language-plaintext highlighter-rouge">invoke </code>方法却被调用了<br /> 这就是动态代理。<br /> 通过正确地使用Java自带的Proxy类，JVM会自动地帮我们把被代理类和代理类关联起来。<br /></p><h5 id="原理">原理</h5><ul><li>Proxy.newProxyInstance<br /><blockquote><p>以下内容引用自JDK1.8 API<br /> public static Object newProxyInstance(ClassLoader loader,<br />                                                               类&lt;?&gt;[] interfaces,<br />                                                               InvocationHandler h)<br /> 参数 <br /> loader - 类加载器来定义代理类 <br /> interfaces - 代理类实现的接口列表 <br /> h - 调度方法调用的调用处理函数<br /> <br /> <code class="language-plaintext highlighter-rouge">loader </code>是类加载器，一般设置为被代理类的类加载器。<br /> <code class="language-plaintext highlighter-rouge">interfaces </code>是接口列表，这就要求必须为被代理类实现一个接口，就像 <code class="language-plaintext highlighter-rouge">Tank</code> 的接口是 <code class="language-plaintext highlighter-rouge">Movable</code>。<br /> <code class="language-plaintext highlighter-rouge">h</code> 是处理函数，这个才是我们真正需要编写的东西。<br /></p></blockquote></li><li><p>代理类<br /> 只需要照模板编写即可，<code class="language-plaintext highlighter-rouge">Object o = method.invoke(object, args);</code>为调用被代理类的方法。<br /> 所以在 <code class="language-plaintext highlighter-rouge">before()</code> 和 <code class="language-plaintext highlighter-rouge">after()</code> 里编写在被代理类执行前后需要代理类处理的东西。<br /> 可以看到，代理类中使用的是 <code class="language-plaintext highlighter-rouge">Object </code>类，这是 Java 中所有类的父类。<br /> 因此我们使用这个类代理所有的类。<br /></p></li><li>生成动态代理文件<br /><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">System</span><span class="o">.</span><span class="na">getProperties</span><span class="o">().</span><span class="na">put</span><span class="o">(</span><span class="s">"sun.misc.ProxyGenerator.saveGeneratedFiles"</span><span class="o">,</span><span class="s">"true"</span><span class="o">);</span>
+</code></pre></div></div><p>该行代码很容易理解，英译汉就能够明白。<br /> 系统.获得配置文件.设置(“sun.misc.代理生成类.存储生成文件”,”true”);<br /> 像这种见名知意的代码都没有必要点进去看，这是让系统把我们代理中产生的文件保存下来。<br /> <br /> 加入该行代码后，系统会生成一个 com 目录，目录下有一个 <code class="language-plaintext highlighter-rouge">$Proxy0.class</code> 文件，这个就是我们动态代理的动态二字含义。<br /> 动态代理指的是，程序运行后会动态地生成一个 .class 文件，然后通过反射完成代理功能。<br /> <br /> <img src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/images/posts/designpatterns/proxy/proxyfile.png" alt="image" /> <br /> 如果没有生成该目录，可能是路径名的原因。<br /> 老版本用的是<code class="language-plaintext highlighter-rouge">System.getProperties().put("sun.misc.ProxyGenerator.saveGeneratedFiles","true");</code>比如 Jdk 1.8<br /> 新版本用的是<code class="language-plaintext highlighter-rouge">System.getProperties().put("jdk.proxy.ProxyGenerator.saveGeneratedFiles","true");</code>比如 Jdk 12<br /> <br /> 如果不清楚，可以查找 <code class="language-plaintext highlighter-rouge">ProxyGenerator</code> 这个类，找到 <code class="language-plaintext highlighter-rouge">saveGeneratedFiles</code> 这个属性，看看他取的是哪个系统属性。<br /></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="kt">boolean</span> <span class="n">saveGeneratedFiles</span> <span class="o">=</span> <span class="o">(</span><span class="nc">Boolean</span><span class="o">)</span><span class="nc">AccessController</span><span class="o">.</span><span class="na">doPrivileged</span><span class="o">(</span><span class="k">new</span> <span class="nc">GetBooleanAction</span><span class="o">(</span><span class="s">"sun.misc.ProxyGenerator.saveGeneratedFiles"</span><span class="o">));</span>
+</code></pre></div></div><p><br /> <img src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/images/posts/designpatterns/proxy/proxycode.png" alt="image" /> 而在阅读 <code class="language-plaintext highlighter-rouge">$Proxy0.class</code> 文件后会发现，在 <code class="language-plaintext highlighter-rouge">move()</code> 方法中会加入 <code class="language-plaintext highlighter-rouge">invoke()</code> 方法。<br /> 这也就是为什么明明源码中没有调用代理类，却成功调用代理类的原因。<br /> <br /></p></li><li>JDK动态代理执行过程<br /> <img src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/images/posts/designpatterns/proxy/process.png" alt="image" /> 其中 <code class="language-plaintext highlighter-rouge">Proxy</code> 类生成 <code class="language-plaintext highlighter-rouge">$Proxy0.class</code> 文件的源码非常长，就不在本文中讲述了</li></ul><h4 id="通过-cglib-实现动态代理">通过 Cglib 实现动态代理</h4><p>通过 cglib 实现动态代理，不仅不需要实现接口，而且实现更加简单。</p><p>只是需要额外的导包，可采用 Maven 的方式。</p><p>如何使用 IDEA 和 Maven 导入 Jar 包？<a href="https://kekaiyuan.github.io//wiki/intellij-idea/#%E9%80%9A%E8%BF%87maven%E5%AF%BC%E5%85%A5jar%E5%8C%85">通过 Maven 导入 Jar 包</a></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">net.sf.cglib.proxy.Enhancer</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sf.cglib.proxy.MethodInterceptor</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">net.sf.cglib.proxy.MethodProxy</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">java.lang.reflect.Method</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">java.util.Random</span><span class="o">;</span>
+
+<span class="cm">/**
+ * CGLIB实现动态代理不需要接口
+ */</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">Enhancer</span> <span class="n">enhancer</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Enhancer</span><span class="o">();</span>
+        <span class="n">enhancer</span><span class="o">.</span><span class="na">setSuperclass</span><span class="o">(</span><span class="nc">Tank</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+        <span class="n">enhancer</span><span class="o">.</span><span class="na">setCallback</span><span class="o">(</span><span class="k">new</span> <span class="nc">TimeMethodInterceptor</span><span class="o">());</span>
+        <span class="nc">Tank</span> <span class="n">tank</span> <span class="o">=</span> <span class="o">(</span><span class="nc">Tank</span><span class="o">)</span><span class="n">enhancer</span><span class="o">.</span><span class="na">create</span><span class="o">();</span>
+        <span class="n">tank</span><span class="o">.</span><span class="na">move</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">TimeMethodInterceptor</span> <span class="kd">implements</span> <span class="nc">MethodInterceptor</span> <span class="o">{</span>
+
+    <span class="kt">void</span> <span class="nf">before</span><span class="o">(){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"before"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kt">void</span> <span class="nf">after</span><span class="o">(){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"after"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">intercept</span><span class="o">(</span><span class="nc">Object</span> <span class="n">o</span><span class="o">,</span> <span class="nc">Method</span> <span class="n">method</span><span class="o">,</span> <span class="nc">Object</span><span class="o">[]</span> <span class="n">objects</span><span class="o">,</span> <span class="nc">MethodProxy</span> <span class="n">methodProxy</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Throwable</span> <span class="o">{</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">o</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getSuperclass</span><span class="o">().</span><span class="na">getName</span><span class="o">());</span>
+        <span class="n">before</span><span class="o">();</span>
+        <span class="nc">Object</span> <span class="n">result</span> <span class="o">=</span> <span class="n">methodProxy</span><span class="o">.</span><span class="na">invokeSuper</span><span class="o">(</span><span class="n">o</span><span class="o">,</span> <span class="n">objects</span><span class="o">);</span>
+        <span class="n">after</span><span class="o">();</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Tank</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">move</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"Tank moving claclacla..."</span><span class="o">);</span>
+        <span class="k">try</span> <span class="o">{</span>
+            <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="k">new</span> <span class="nc">Random</span><span class="o">().</span><span class="na">nextInt</span><span class="o">(</span><span class="mi">10000</span><span class="o">));</span>
+        <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>结果</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">com</span><span class="o">.</span><span class="na">kky</span><span class="o">.</span><span class="na">dp</span><span class="o">.</span><span class="na">proxy</span><span class="o">.</span><span class="na">dynamic</span><span class="o">.</span><span class="na">cglib</span><span class="o">.</span><span class="na">Tank</span>
+<span class="n">before</span>
+<span class="nc">Tank</span> <span class="n">moving</span> <span class="n">claclacla</span><span class="o">...</span>
+<span class="n">after</span>
+</code></pre></div></div><p>可以看到， cglib 创建了被代理类的子类，所有当被代理类是 Final 类时，无法使用 cglib 进行动态代理，但是 Jdk 方式可以代理 Final 类，因为它是使用了被代理类的接口。</p><h4 id="区别">区别</h4><ul><li>Jdk 方式<ul><li>需要实现接口</li><li>操作繁琐</li><li>可以代理 Final 类</li></ul></li><li>Cglib 方式<ul><li>不需要实现接口</li><li>需要额外导包</li><li>操作简单</li><li>不可以代理 Final 类</li></ul></li></ul><h2 id="源码链接">源码链接</h2><p>该文章源码链接 <a href="https://github.com/kekaiyuan/designpatterns/tree/main/src/main/java/com/kky/dp/proxy">Github</a></p><div style="margin-top:2em;padding:0 1.5em;border:1px solid #d3d3d3;background-color:#deebf7"><h3>文档信息</h3><ul><li>本文作者：<a href="https://kekaiyuan.github.io/" target="_blank">Kaiyuan Ke</a></li><li>本文链接：<a href="https://kekaiyuan.github.io//2021/06/11/proxy/" target="_blank">https://kekaiyuan.github.io//2021/06/11/proxy/</a></li><li>版权声明：自由转载-非商用-非衍生-保持署名（<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank">创意共享3.0许可证</a>）</li></ul></div></article><div class="share"></div><div class="comment"><div id="gitalk-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/gitalk/gitalk.css"> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <script> var gitalk = new Gitalk({ id: '/2021/06/11/proxy/', clientID: '', clientSecret: '', repo: '', owner: '', admin: [''], labels: ['gitment'], perPage: 50, }); gitalk.render('gitalk-container'); </script></div></div><div class="column one-fourth"><h3>Search</h3><div id="site_search"> <input style="width:350px" type="text" id="search_box" placeholder="Search"></div><ul id="search_results" style="font-size:16px;list-style-type:none;padding-top:10px;padding-left:10px;"></ul><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/simple-jekyll-search.min.js"></script> <script type="text/javascript"> SimpleJekyllSearch({ searchInput: document.getElementById('search_box'), resultsContainer: document.getElementById('search_results'), json: 'https://kekaiyuan.github.io//assets/search_data.json?v=1646200238', searchResultTemplate: '<li><a href="{url}" title="{title}">{title}</a></li>', noResultsText: 'No results found', limit: 10, fuzzy: false, exclude: ['Welcome'] }) </script><h3 class="post-directory-title mobile-hidden">Table of Contents</h3><div id="post-directory-module" class="mobile-hidden"><section class="post-directory"><dl></dl></section></div><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/jquery.toc.js"></script></div></div></section><footer class="container"><div class="site-footer" role="contentinfo"><div class="copyright left mobile-block"> © 2015 <span title="Kaiyuan Ke">Kaiyuan Ke</span> <a href="javascript:window.scrollTo(0,0)" class="right mobile-visible">TOP</a></div><ul class="site-footer-links right mobile-hidden"><li> <a href="javascript:window.scrollTo(0,0)" >TOP</a></li></ul><a href="https://github.com/kekaiyuan/kekaiyuan.github.io" target="_blank" aria-label="view source code"> <span class="mega-octicon octicon-mark-github" title="GitHub"></span> </a><ul class="site-footer-links mobile-hidden"><li> <a href="https://kekaiyuan.github.io//" title="首页" target="">首页</a></li><li> <a href="https://kekaiyuan.github.io//categories/" title="分类" target="">分类</a></li><li> <a href="https://kekaiyuan.github.io//archives/" title="归档" target="">归档</a></li><li> <a href="https://kekaiyuan.github.io//wiki/" title="维基" target="">维基</a></li><li> <a href="https://kekaiyuan.github.io//links/" title="链接" target="">链接</a></li><li> <a href="https://kekaiyuan.github.io//about/" title="关于" target="">关于</a></li><li><a href="https://kekaiyuan.github.io//feed.xml"><span class="octicon octicon-rss" style="color:orange;"></span></a></li></ul></div></footer><div class="tools-wrapper"> <a class="gotop" href="#" title="回到顶部"><span class="octicon octicon-arrow-up"></span></a></div><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/geopattern.js"></script> <script> jQuery(document).ready(function($) { $('.geopattern').each(function(){ $(this).geopattern($(this).data('pattern-id')); }); /* hljs.initHighlightingOnLoad(); */ }); </script><div style="display:none"> <script> (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); ga('create', 'UA-80669434-1', 'auto'); ga('send', 'pageview'); </script></div></body></html>

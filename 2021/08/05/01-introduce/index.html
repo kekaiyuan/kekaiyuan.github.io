@@ -1,0 +1,356 @@
+<!DOCTYPE html><html lang="zh-cmn-Hans" prefix="og: http://ogp.me/ns#" class="han-init"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /><title>Java Spring MVC 01——简单介绍及使用方法（一） &mdash; 菜鸟日记</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/primer-css/css/primer.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/collection.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/repo-card.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/sections/repo-list.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/boxed-group.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/globals/common.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/globals/responsive.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/posts/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/octicons/octicons/octicons.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mzlogin/rouge-themes@master/dist/github.css"><link rel="canonical" href="https://kekaiyuan.github.io//2021/08/05/01-introduce/"><link rel="alternate" type="application/atom+xml" title="菜鸟日记" href="https://kekaiyuan.github.io//feed.xml"><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/favicon.ico"><meta property="og:title" content="Java Spring MVC 01——简单介绍及使用方法（一）"><meta name="keywords" content="Spring MVC, Java"><meta name="og:keywords" content="Spring MVC, Java"><meta name="description" content="Java Spring MVC 01——简单介绍及使用方法（一）"><meta name="og:description" content="Java Spring MVC 01——简单介绍及使用方法（一）"><meta property="og:url" content="https://kekaiyuan.github.io//2021/08/05/01-introduce/"><meta property="og:site_name" content="菜鸟日记"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN" /><meta property="article:published_time" content="2021-08-05"> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/jquery/dist/jquery.min.js"></script> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/jquery-ui.js"></script> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/main.js"></script></head><body class="" data-mz=""><header class="site-header"><div class="container"><h1><a href="https://kekaiyuan.github.io//" title="菜鸟日记"><span class="octicon octicon-mark-github"></span> 菜鸟日记</a></h1><button class="collapsed mobile-visible" type="button" onclick="toggleMenu();"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button><nav class="site-header-nav" role="navigation"> <a href="https://kekaiyuan.github.io//" class=" site-header-nav-item" target="" title="首页">首页</a> <a href="https://kekaiyuan.github.io//categories/" class=" site-header-nav-item" target="" title="分类">分类</a> <a href="https://kekaiyuan.github.io//archives/" class=" site-header-nav-item" target="" title="归档">归档</a> <a href="https://kekaiyuan.github.io//wiki/" class=" site-header-nav-item" target="" title="维基">维基</a> <a href="https://kekaiyuan.github.io//links/" class=" site-header-nav-item" target="" title="链接">链接</a> <a href="https://kekaiyuan.github.io//about/" class=" site-header-nav-item" target="" title="关于">关于</a></nav></div></header><section class="collection-head small geopattern" data-pattern-id="Java Spring MVC"><div class="container"><div class="columns"><div class="column three-fourths"><div class="collection-title"><h1 class="collection-header">Java Spring MVC 01——简单介绍及使用方法（一）</h1><div class="collection-info"> <span class="meta-info"> <span class="octicon octicon-calendar"></span> 2021/08/05 </span> <span class="meta-info"> <span class="octicon octicon-file-directory"></span> <a href="https://kekaiyuan.github.io//categories/#SpringMVC" title="SpringMVC">SpringMVC</a> </span> <span class="meta-info"> <span class="octicon octicon-clock"></span> 共 18661 字，约 54 分钟 </span></div></div></div><div class="column one-fourth mobile-hidden"><div class="collection-title"> <img style="height:72px;width:72px" src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/images/qrcode.jpg" alt="闷骚的程序员" /></div></div></div></div></section><section class="container content"><div class="columns"><div class="column three-fourths" ><article class="article-content markdown-body"><p>Java Spring MVC 01——简单介绍及使用方法（一）</p><h1 id="什么是-mvc">什么是 MVC？</h1><p>MVC 是一种软件设计规范，是当今通用的一种设计思想。</p><p>MVC 将项目分为三个层次：</p><ul><li><strong>M</strong>odel（模型）<br /> 读写数据库并对数据进行一系列处理，一般分为三层：<ul><li>entity 实体层<br /> 与数据库对应的类</li><li>dao 层<br /> 进行增删改查</li><li>service 层<br /> Model 层的编程重点，在使用 dao 层读写数据库的基础上，添加一系列逻辑处理。</li></ul></li><li><strong>V</strong>iew（视图）<br /> 负责展示模型数据，即用户所看到的用户界面。</li><li><strong>C</strong>ontroller（控制器）<br /> Model 和 View 之间的<strong>中间人</strong>。<ul><li>接受用户请求，并传入 Model 层<strong>处理</strong>。</li><li>接受 Model 层处理好的模型数据，并传回 View 层<strong>展示</strong>。</li></ul></li></ul><p>MVC 主要作用是<strong>降低了视图与业务逻辑间的双向耦合</strong>。<br /> 如果没有 <strong>Controller</strong>，View 和 Model 之间会相互调用，程序会显得十分臃肿，并且不利于维护和拓展。</p><p>MVC 不是一种设计模式，而是一种架构模式，不同的 MVC 存在差异。</p><p>最典型的 MVC 就是 JSP + servlet + javabean 的模式</p><p><img src="\images\posts\java\framework\spring-mvc\01-introduce\mvc.png" alt="mvc" /></p><h1 id="spring-mvc-的介绍">Spring MVC 的介绍</h1><blockquote><p>以下内容引用自 <a href="https://docs.spring.io/spring-framework/docs/current/reference/html/web.html">官网</a></p><p>Spring Web MVC is the original web framework built on the Servlet API and has been included in the Spring Framework from the very beginning. The formal name, “Spring Web MVC,” comes from the name of its source module (spring-webmvc), but it is more commonly known as “Spring MVC”.</p><p>Spring Web MVC 是构建在 Servlet API 上的原始 Web 框架，从一开始就包含在 Spring Framework 中。 正式名称 “Spring Web MVC” 来自其源模块(spring-webmvc)的名称，但它通常被称为 “Spring MVC”。</p></blockquote><p>简而言之，SpringMVC 是 Spring 框架的一部分，是基于 Java 实现的一个轻量级 web 框架。</p><p>SpringMVC 框架的核心关键是 <strong>DispatcherServlet</strong>。</p><h1 id="spring-mvc-的优点">Spring MVC 的优点</h1><ol><li><p>清晰的角色划分</p><p>控制器(controller)、验证器(validator)、命令对象(command obect)、表单对象(form object)、模型对象(model object)、Servlet分发器(DispatcherServlet)、处理器映射(handler mapping)、试图解析器(view resoler)等等。<br /> 每一个角色都可以由一个专门的对象来实现。</p></li><li><p>强大而直接的配置方式</p><p>将框架类和应用程序类都能作为JavaBean配置，支持跨多个context的引用。<br /> 例如，在web控制器中对业务对象和验证器validator的引用。</p></li><li><p>可适配、非侵入</p><p>可以根据不同的应用场景，选择何事的控制器子类(simple型、command型、from型、wizard型、multi-action型或者自定义)，而不是一个单一控制器(比如Action/ActionForm)继承。</p></li><li><p>可重用的业务代码</p><p>可以使用现有的业务对象作为命令或表单对象，而不需要去扩展某个特定框架的基类。</p></li><li><p>可定制的绑定(binding)和验证(validation</p><p>比如将类型不匹配作为应用级的验证错误，这可以保证错误的值。再比如本地化的日期和数字绑定等等。在其他某些框架中，你只能使用字符串表单对象，需要手动解析它并转换到业务对象。</p></li><li><p>可定制的handler mapping和view resolution</p><p>Spring提供从最简单的URL映射，到复杂的、专用的定制策略。与某些web MVC框架强制开发人员使用单一特定技术相比，Spring显得更加灵活。</p></li><li><p>灵活的model转换</p><p>在Springweb框架中，使用基于Map的键/值对来达到轻易的与各种视图技术集成。</p></li><li><p>可定制的本地化和主题(theme)解析</p><p>支持在JSP中可选择地使用Spring标签库、支持JSTL、支持Velocity(不需要额外的中间层)等等。</p></li><li><p>简单而强大的JSP标签库(Spring Tag Library)</p><p>支持包括诸如数据绑定和主题(theme)之类的许多功能。他提供在标记方面的最大灵活性。</p></li><li><p>JSP表单标签库</p><p>在Spring2.0中引入的表单标签库，使用在JSP编写表单更加容易。</p></li><li><p>Spring Bean的生命周期</p><p>可以被限制在当前的HTTp Request或者HTTp Session。准确的说，这并非Spring MVC框架本身特性，而应归属于Spring MVC使用的WebApplicationContext容器。</p></li></ol><h1 id="spring-mvc-的实现原理">Spring MVC 的实现原理</h1><p>SpringMVC 的 MVC 模式：</p><p><img src="\images\posts\java\framework\spring-mvc\01-introduce\springmvc.png" alt="" /></p><p>SpringMVC的具体执行流程：</p><p>当发起请求时被前置的控制器拦截到请求，根据请求参数生成代理请求，找到请求对应的实际控制器，控制器处理请求，创建数据模型，访问数据库，将模型响应给中心控制器，控制器使用模型与视图渲染视图结果，将结果返回给中心控制器，再将结果返回给请求者。</p><p><img src="\images\posts\java\framework\spring-mvc\01-introduce\springmvc运行流程.jpg" alt="" /></p><ol><li>DispatcherServlet表示前置控制器，是整个SpringMVC的控制中心。用户发出请求，DispatcherServlet接收请求并拦截请求。</li><li>HandlerMapping为处理器映射。DispatcherServlet调用HandlerMapping,HandlerMapping根据请求url查找Handler。</li><li>返回处理器执行链，根据url查找控制器，并且将解析后的信息传递给DispatcherServlet</li><li>HandlerAdapter表示处理器适配器，其按照特定的规则去执行Handler。</li><li>执行handler找到具体的处理器</li><li>Controller将具体的执行信息返回给HandlerAdapter,如ModelAndView。</li><li>HandlerAdapter将视图逻辑名或模型传递给DispatcherServlet。</li><li>DispatcherServlet调用视图解析器(ViewResolver)来解析HandlerAdapter传递的逻辑视图名。</li><li>视图解析器将解析的逻辑视图名传给DispatcherServlet。</li><li>DispatcherServlet根据视图解析器解析的视图结果，调用具体的视图，进行试图渲染</li><li>将响应数据返回给客户端</li></ol><h1 id="spring-mvc-的简单实现">Spring MVC 的简单实现</h1><h2 id="基于-xml-的实现">基于 XML 的实现</h2><p>先看以下项目结构（开发环境为 IDEA）<br /> <img src="\images\posts\java\framework\spring-mvc\01-introduce\project.png" alt="" /><br /> 其中标红的地方为我们需要配置的，一共五处。</p><h3 id="1-添加-pom-依赖">1. 添加 pom 依赖</h3><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependencies&gt;</span>
+	<span class="c">&lt;!-- https://mvnrepository.com/artifact/org.springframework/spring-context --&gt;</span>
+	<span class="nt">&lt;dependency&gt;</span>
+		<span class="nt">&lt;groupId&gt;</span>org.springframework<span class="nt">&lt;/groupId&gt;</span>
+		<span class="nt">&lt;artifactId&gt;</span>spring-context<span class="nt">&lt;/artifactId&gt;</span>
+		<span class="nt">&lt;version&gt;</span>5.2.3.RELEASE<span class="nt">&lt;/version&gt;</span>
+	<span class="nt">&lt;/dependency&gt;</span>
+	<span class="c">&lt;!-- https://mvnrepository.com/artifact/org.springframework/spring-web --&gt;</span>
+	<span class="nt">&lt;dependency&gt;</span>
+		<span class="nt">&lt;groupId&gt;</span>org.springframework<span class="nt">&lt;/groupId&gt;</span>
+		<span class="nt">&lt;artifactId&gt;</span>spring-web<span class="nt">&lt;/artifactId&gt;</span>
+		<span class="nt">&lt;version&gt;</span>5.2.3.RELEASE<span class="nt">&lt;/version&gt;</span>
+	<span class="nt">&lt;/dependency&gt;</span>
+	<span class="c">&lt;!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc --&gt;</span>
+	<span class="nt">&lt;dependency&gt;</span>
+		<span class="nt">&lt;groupId&gt;</span>org.springframework<span class="nt">&lt;/groupId&gt;</span>
+		<span class="nt">&lt;artifactId&gt;</span>spring-webmvc<span class="nt">&lt;/artifactId&gt;</span>
+		<span class="nt">&lt;version&gt;</span>5.2.3.RELEASE<span class="nt">&lt;/version&gt;</span>
+	<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;/dependencies&gt;</span>
+</code></pre></div></div><p>初次之外，还需要导入 tomcat 的两个 jar 包<br /> <code class="language-plaintext highlighter-rouge">.\apache-tomcat-9.0.50\lib</code> 下的</p><ul><li>jsp-api.jar</li><li>servlet-api.jar</li></ul><p>也可以通过 Maven 依赖导入这两个包</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
+	<span class="nt">&lt;groupId&gt;</span>javax.servlet<span class="nt">&lt;/groupId&gt;</span>
+	<span class="nt">&lt;artifactId&gt;</span>servlet-api<span class="nt">&lt;/artifactId&gt;</span>
+	<span class="nt">&lt;version&gt;</span>2.5<span class="nt">&lt;/version&gt;</span>
+	<span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+	<span class="nt">&lt;groupId&gt;</span>javax.servlet<span class="nt">&lt;/groupId&gt;</span>
+	<span class="nt">&lt;artifactId&gt;</span>jsp-api<span class="nt">&lt;/artifactId&gt;</span>
+	<span class="nt">&lt;version&gt;</span>2.0<span class="nt">&lt;/version&gt;</span>
+	<span class="nt">&lt;scope&gt;</span>provided<span class="nt">&lt;/scope&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div></div><p>使用 Maven 导入时要注意是否与本地所使用的 tomcat 兼容。</p><h3 id="2-编写-webxml-文件">2. 编写 web.xml 文件</h3><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!--配置前端控制器--&gt;</span>
+<span class="nt">&lt;servlet&gt;</span>
+	<span class="nt">&lt;servlet-name&gt;</span>springmvc<span class="nt">&lt;/servlet-name&gt;</span>
+	<span class="nt">&lt;servlet-class&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="nt">&lt;/servlet-class&gt;</span>
+	<span class="c">&lt;!-- 设置初始化参数，指定默认的 springmvc 的配置文件 --&gt;</span>
+	<span class="nt">&lt;init-param&gt;</span>
+		<span class="nt">&lt;param-name&gt;</span>contextConfigLocation<span class="nt">&lt;/param-name&gt;</span>
+		<span class="nt">&lt;param-value&gt;</span>classpath:springmvc.xml<span class="nt">&lt;/param-value&gt;</span>
+	<span class="nt">&lt;/init-param&gt;</span>
+<span class="nt">&lt;/servlet&gt;</span>
+
+<span class="c">&lt;!-- 添加前端控制器对应的 mapping 映射 --&gt;</span>
+<span class="nt">&lt;servlet-mapping&gt;</span>
+	<span class="nt">&lt;servlet-name&gt;</span>springmvc<span class="nt">&lt;/servlet-name&gt;</span>
+	<span class="nt">&lt;url-pattern&gt;</span>/<span class="nt">&lt;/url-pattern&gt;</span>
+<span class="nt">&lt;/servlet-mapping&gt;</span>
+</code></pre></div></div><p>这里一共有三个操作：</p><ol><li>创建一个 <code class="language-plaintext highlighter-rouge">org.springframework.web.servlet.DispatcherServlet</code> 的对象 <code class="language-plaintext highlighter-rouge">springmvc</code>，即前端控制器。<br /> 当用户发送请求时，会先送到这里。</li><li>设置 <code class="language-plaintext highlighter-rouge">springmvc</code> 通过读取 <code class="language-plaintext highlighter-rouge">springmvc.xml</code> 进行初始化。</li><li>设置 <code class="language-plaintext highlighter-rouge">springmvc</code> 将接收哪些 url。<br /> 此处设置为 <code class="language-plaintext highlighter-rouge">/</code> ，即接收所有的 url。</li></ol><h3 id="3-编写-springxml-文件">3. 编写 spring.xml 文件</h3><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span>
+       <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+       <span class="na">xsi:schemaLocation=</span><span class="s">"http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd"</span><span class="nt">&gt;</span>
+
+    <span class="c">&lt;!--将逻辑视图转换成真实资源--&gt;</span>
+    <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.springframework.web.servlet.view.InternalResourceViewResolver"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"prefix"</span> <span class="na">value=</span><span class="s">"/WEB-INF/page/"</span><span class="nt">&gt;&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"suffix"</span> <span class="na">value=</span><span class="s">".jsp"</span><span class="nt">&gt;&lt;/property&gt;</span>
+    <span class="nt">&lt;/bean&gt;</span>
+	
+    <span class="c">&lt;!--设置某一具体请求的处理类--&gt;</span>
+    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"/hello"</span> <span class="na">class=</span><span class="s">"com.kky.controller.HelloController"</span><span class="nt">&gt;&lt;/bean&gt;</span>
+	
+<span class="nt">&lt;/beans&gt;</span>
+</code></pre></div></div><p>第一个 bean 对象通过设置<strong>前缀</strong>和<strong>后缀</strong>用于将逻辑视图转换成真实的资源。<br /> prefix 是前缀，suffix 是后缀。</p><p>假如此时的逻辑视图是 <code class="language-plaintext highlighter-rouge">hello</code><br /></p><ul><li>加上前缀<br /> <code class="language-plaintext highlighter-rouge">/WEB-INF/page/hello</code></li><li>加上后缀<br /> <code class="language-plaintext highlighter-rouge">/WEB-INF/page/hello.jsp</code></li></ul><p>这样就找到了真实存在的资源了</p><p>第二个 bean 对象用于配置处理<strong>具体请求</strong>的对象。<br /> 即当请求为 <code class="language-plaintext highlighter-rouge">localhost:8080/hello</code> 时，<br /> 该请求将交予 <code class="language-plaintext highlighter-rouge">com.kky.controller.HelloController</code> 处理。</p><h3 id="4-编写-hellocontroller-类">4. 编写 HelloController 类</h3><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">org.springframework.web.servlet.ModelAndView</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.servlet.mvc.Controller</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloController</span> <span class="kd">implements</span> <span class="nc">Controller</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nc">ModelAndView</span> <span class="nf">handleRequest</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">httpServletRequest</span><span class="o">,</span> <span class="nc">HttpServletResponse</span> <span class="n">httpServletResponse</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="c1">//创建对象</span>
+        <span class="nc">ModelAndView</span> <span class="n">modelAndView</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ModelAndView</span><span class="o">();</span>
+        <span class="c1">//添加视图名称，要跳转的页面的名称</span>
+        <span class="n">modelAndView</span><span class="o">.</span><span class="na">setViewName</span><span class="o">(</span><span class="s">"hello"</span><span class="o">);</span>
+        <span class="c1">//向前端页面添加的属性值</span>
+        <span class="n">modelAndView</span><span class="o">.</span><span class="na">addObject</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="s">"hello,springmvc"</span><span class="o">);</span>
+        <span class="c1">//返回对象</span>
+        <span class="k">return</span> <span class="n">modelAndView</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div></div><p>继承于 <code class="language-plaintext highlighter-rouge">org.springframework.web.servlet.mvc.Controller</code> 接口。<br /> 请注意，不是 <code class="language-plaintext highlighter-rouge">org.springframework.stereotype.Controller</code>。</p><p>可以看到，此时跳转的页面名称只是 <code class="language-plaintext highlighter-rouge">hello</code>，这只是逻辑视图。 它会根据第 3 步编写的 springmvc.xml 文件转成真实资源 <code class="language-plaintext highlighter-rouge">/WEB-INF/page/hello.jsp</code></p><h3 id="5-编写-hellojsp">5. 编写 hello.jsp</h3><div class="language-jsp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;%@ page </span><span class="na">contentType=</span><span class="s">"text/html;charset=UTF-8"</span><span class="na"> language=</span><span class="s">"java"</span> <span class="nt">%&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span>Title<span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+欢迎
+${hello}
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div><h3 id="6-配置-tomcat发送请求">6. 配置 tomcat，发送请求</h3><p><img src="\images\posts\java\framework\spring-mvc\01-introduce\hello.png" alt="" /></p><hr /><p>当使用 Idea 开发项目时，有时会遇到以下错误<br /> <img src="\images\posts\java\framework\spring-mvc\01-introduce\500.png" alt="" /><br /> 仔细看，异常信息是 <code class="language-plaintext highlighter-rouge">java.lang.ClassNotFoundException: org.springframework.web.servlet.DispatcherServlet</code><br /> 说明 Spring MVC 相关的 jar 包并没有导入到程序中。</p><p>打开 <code class="language-plaintext highlighter-rouge">Project Structure</code>，在 <code class="language-plaintext highlighter-rouge">WEB-INF</code> 目录下新建一个 <code class="language-plaintext highlighter-rouge">lib</code> 包<br /> <img src="\images\posts\java\framework\spring-mvc\01-introduce\500-1.png" alt="" /><br /> <img src="\images\posts\java\framework\spring-mvc\01-introduce\500-2.png" alt="" /><br /></p><p>右键 <code class="language-plaintext highlighter-rouge">lib</code> 包，点击 <code class="language-plaintext highlighter-rouge">Add Copy of</code> ，点击 <code class="language-plaintext highlighter-rouge">Library Files</code><br /> <img src="\images\posts\java\framework\spring-mvc\01-introduce\500-3.png" alt="" /></p><p>将 Spring MVC 相关的 jar 包导进去<br /> <img src="\images\posts\java\framework\spring-mvc\01-introduce\500-4.png" alt="" /><br /> <img src="\images\posts\java\framework\spring-mvc\01-introduce\500-5.png" alt="" /><br /></p><p>重新运行即可解决该错误</p><h2 id="基于注解实现">基于注解实现</h2><p>基于 xml 实现比较麻烦，更多的时候使用注解实现</p><p>以下内容部分与 <strong>基于 XML 的实现</strong> 相同，不做解释。</p><h3 id="1-添加pom依赖">1. 添加pom依赖</h3><p>与 <strong>基于 XML 的实现</strong> 相同</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependencies&gt;</span>
+	<span class="c">&lt;!-- https://mvnrepository.com/artifact/org.springframework/spring-context --&gt;</span>
+	<span class="nt">&lt;dependency&gt;</span>
+		<span class="nt">&lt;groupId&gt;</span>org.springframework<span class="nt">&lt;/groupId&gt;</span>
+		<span class="nt">&lt;artifactId&gt;</span>spring-context<span class="nt">&lt;/artifactId&gt;</span>
+		<span class="nt">&lt;version&gt;</span>5.2.3.RELEASE<span class="nt">&lt;/version&gt;</span>
+	<span class="nt">&lt;/dependency&gt;</span>
+	<span class="c">&lt;!-- https://mvnrepository.com/artifact/org.springframework/spring-web --&gt;</span>
+	<span class="nt">&lt;dependency&gt;</span>
+		<span class="nt">&lt;groupId&gt;</span>org.springframework<span class="nt">&lt;/groupId&gt;</span>
+		<span class="nt">&lt;artifactId&gt;</span>spring-web<span class="nt">&lt;/artifactId&gt;</span>
+		<span class="nt">&lt;version&gt;</span>5.2.3.RELEASE<span class="nt">&lt;/version&gt;</span>
+	<span class="nt">&lt;/dependency&gt;</span>
+	<span class="c">&lt;!-- https://mvnrepository.com/artifact/org.springframework/spring-webmvc --&gt;</span>
+	<span class="nt">&lt;dependency&gt;</span>
+		<span class="nt">&lt;groupId&gt;</span>org.springframework<span class="nt">&lt;/groupId&gt;</span>
+		<span class="nt">&lt;artifactId&gt;</span>spring-webmvc<span class="nt">&lt;/artifactId&gt;</span>
+		<span class="nt">&lt;version&gt;</span>5.2.3.RELEASE<span class="nt">&lt;/version&gt;</span>
+	<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;/dependencies&gt;</span>
+</code></pre></div></div><h3 id="2-编写-webxml-文件-1">2. 编写 web.xml 文件</h3><p>与 <strong>基于 XML 的实现</strong> 相同</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!--配置前端控制器--&gt;</span>
+<span class="nt">&lt;servlet&gt;</span>
+	<span class="nt">&lt;servlet-name&gt;</span>springmvc<span class="nt">&lt;/servlet-name&gt;</span>
+	<span class="nt">&lt;servlet-class&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="nt">&lt;/servlet-class&gt;</span>
+	<span class="c">&lt;!-- 设置初始化参数，指定默认的 springmvc 的配置文件 --&gt;</span>
+	<span class="nt">&lt;init-param&gt;</span>
+		<span class="nt">&lt;param-name&gt;</span>contextConfigLocation<span class="nt">&lt;/param-name&gt;</span>
+		<span class="nt">&lt;param-value&gt;</span>classpath:springmvc.xml<span class="nt">&lt;/param-value&gt;</span>
+	<span class="nt">&lt;/init-param&gt;</span>
+<span class="nt">&lt;/servlet&gt;</span>
+
+<span class="c">&lt;!-- 添加前端控制器对应的 mapping 映射 --&gt;</span>
+<span class="nt">&lt;servlet-mapping&gt;</span>
+	<span class="nt">&lt;servlet-name&gt;</span>springmvc<span class="nt">&lt;/servlet-name&gt;</span>
+	<span class="nt">&lt;url-pattern&gt;</span>/<span class="nt">&lt;/url-pattern&gt;</span>
+<span class="nt">&lt;/servlet-mapping&gt;</span>
+</code></pre></div></div><h3 id="3-编写-springmvcxml-文件">3. 编写 springmvc.xml 文件</h3><p>注意导入 context <strong>命名空间</strong></p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span>
+       <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+       <span class="na">xmlns:context=</span><span class="s">"http://www.springframework.org/schema/context"</span>
+       <span class="na">xmlns:mvc=</span><span class="s">"http://www.springframework.org/schema/mvc"</span>
+       <span class="na">xsi:schemaLocation=</span><span class="s">"http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd"</span><span class="nt">&gt;</span>
+
+    <span class="c">&lt;!--开启自动扫描功能--&gt;</span>
+    <span class="nt">&lt;context:component-scan</span> <span class="na">base-package=</span><span class="s">"com.kky"</span><span class="nt">&gt;&lt;/context:component-scan&gt;</span>
+	
+    <span class="c">&lt;!--将逻辑视图转换成真实资源--&gt;</span>
+    <span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.springframework.web.servlet.view.InternalResourceViewResolver"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"prefix"</span> <span class="na">value=</span><span class="s">"/WEB-INF/page/"</span><span class="nt">&gt;&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"suffix"</span> <span class="na">value=</span><span class="s">".jsp"</span><span class="nt">&gt;&lt;/property&gt;</span>
+    <span class="nt">&lt;/bean&gt;</span>
+
+<span class="nt">&lt;/beans&gt;</span>
+</code></pre></div></div><h3 id="4-编写-hellocontroller">4. 编写 HelloController</h3><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"hello"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloController</span> <span class="o">{</span>
+    <span class="c1">//处理哪个请求</span>
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"/hello"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">hello</span><span class="o">(</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">map</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//传回 jsp 的信息</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="s">"hello,Springmvc"</span><span class="o">);</span>
+        <span class="c1">//传回哪个 jsp</span>
+        <span class="k">return</span> <span class="s">"hello"</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><ul><li>使用 <code class="language-plaintext highlighter-rouge">@RequestMapping</code> 配置处理的请求。</li><li>使用 <code class="language-plaintext highlighter-rouge">map</code> 配置传回 jsp 的信息。</li><li><code class="language-plaintext highlighter-rouge">return</code> 表示要返回的 jsp 。</li></ul><h3 id="5-编写-hellojsp-1">5. 编写 hello.jsp</h3><p>与 <strong>基于 XML 的实现</strong> 相同</p><h4 id="注意">注意</h4><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"hello"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloController</span> <span class="o">{</span>
+    <span class="c1">//处理哪个请求</span>
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"/hello"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">hello</span><span class="o">(</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">map</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//传回 jsp 的信息</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="s">"hello,springmvc"</span><span class="o">);</span>
+        <span class="c1">//传回哪个 jsp</span>
+        <span class="k">return</span> <span class="s">"hello"</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>此时匹配的请求是 <code class="language-plaintext highlighter-rouge">localhost:8080/hello/hello</code>。<br /> 因为类和方法都有 <code class="language-plaintext highlighter-rouge">@RequestMapping</code> 注解</p><p>而如果把类的 <code class="language-plaintext highlighter-rouge">@RequestMapping</code> 注解去掉</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloController</span> <span class="o">{</span>
+    <span class="c1">//处理哪个请求</span>
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"/hello"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">hello</span><span class="o">(</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">map</span><span class="o">)</span> <span class="o">{</span>
+        <span class="c1">//传回 jsp 的信息</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="s">"hello,springmvc"</span><span class="o">);</span>
+        <span class="c1">//传回哪个 jsp</span>
+        <span class="k">return</span> <span class="s">"hello"</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>此时匹配的请求是 <code class="language-plaintext highlighter-rouge">localhost:8080/hello</code>。</p><hr /><p>在学习时，为了简化操作，可以不给类加 <code class="language-plaintext highlighter-rouge">@RequestMapping</code> 注解。</p><p>但是在企业开发中，是要加的。</p><p>因为整个项目中是<strong>不允许</strong>出现<strong>一个请求匹配多个 Controller</strong> 的情况的。</p><p>所以为了保证你负责的模块和别人负责的模块不会出现<strong>冲突</strong>，给类加 <code class="language-plaintext highlighter-rouge">@RequestMapping</code> 注解是很有必要的。</p><h3 id="6-配置-tomcat发送请求-1">6. 配置 tomcat，发送请求</h3><p><img src="\images\posts\java\framework\spring-mvc\01-introduce\hello.png" alt="" /></p><h2 id="总结">总结</h2><h3 id="spring-mvc-的运行流程">Spring MVC 的运行流程</h3><p>通过上述的代码，我们能够总结出具体的运行流程：</p><ol><li>客户端发送请求 <code class="language-plaintext highlighter-rouge">http://localhost:8080/xxx</code></li><li>由 tomcat 接受到对应的请求</li><li>SpringMVC 的<strong>前端控制器</strong> DispatcherServlet 接收到所有的请求</li><li>根据请求地址寻找对应的 <code class="language-plaintext highlighter-rouge">@RequestMapping</code> 注解，进而找到处理该请求的类和方法。</li><li>前端控制器找到目标处理类和方法之后，执行目标方法。</li><li>方法执行完成之后会有一个返回值，Spring MVC 会将这个返回值用视图解析器进行解析拼接成完整的页面地址。</li><li>DispatcherServlet 拿到页面地址之后，转发到具体的页面</li></ol><h3 id="spring-mvc-的配置文件">Spring MVC 的配置文件</h3><p>web.xml</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;web-app</span> <span class="na">xmlns=</span><span class="s">"http://xmlns.jcp.org/xml/ns/javaee"</span>
+         <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+         <span class="na">xsi:schemaLocation=</span><span class="s">"http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"</span>
+         <span class="na">version=</span><span class="s">"4.0"</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!--配置DispatcherServlet--&gt;</span>
+    <span class="nt">&lt;servlet&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>springmvc<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;servlet-class&gt;</span>org.springframework.web.servlet.DispatcherServlet<span class="nt">&lt;/servlet-class&gt;</span>
+        <span class="c">&lt;!--
+		关联springmvc的配置文件
+		此配置文件的属性可以不添加，但是需要在WEB-INF的目录下创建 前端控制器名称-servlet.xml文件
+		--&gt;</span>
+        <span class="nt">&lt;init-param&gt;</span>
+            <span class="nt">&lt;param-name&gt;</span>contextConfigLocation<span class="nt">&lt;/param-name&gt;</span>
+            <span class="nt">&lt;param-value&gt;</span>classpath:applicationContext.xml<span class="nt">&lt;/param-value&gt;</span>
+        <span class="nt">&lt;/init-param&gt;</span>
+    <span class="nt">&lt;/servlet&gt;</span>
+    <span class="nt">&lt;servlet-mapping&gt;</span>
+        <span class="nt">&lt;servlet-name&gt;</span>springmvc<span class="nt">&lt;/servlet-name&gt;</span>
+        <span class="nt">&lt;url-pattern&gt;</span>/<span class="nt">&lt;/url-pattern&gt;</span>
+    <span class="nt">&lt;/servlet-mapping&gt;</span>
+<span class="nt">&lt;/web-app&gt;</span>
+</code></pre></div></div><h3 id="dispatcherservlet-的-url-pattern">DispatcherServlet 的 url-pattern</h3><p>在前文配置 DispatcherServlet 时，需要配置一个 <code class="language-plaintext highlighter-rouge">&lt;url-pattern&gt;</code> 的属性，一般而言有两种方式。</p><ul><li><code class="language-plaintext highlighter-rouge">&lt;url-pattern&gt;/&lt;/url-pattern&gt;</code><br /> 匹配所有请求。</li><li><code class="language-plaintext highlighter-rouge">&lt;url-pattern&gt;/*&lt;/url-pattern&gt;</code><br /> 匹配所有请求，但是会拦截 jsp 页面（无法跳转到 jsp 页面）。</li></ul><h4 id="如何访问-html-页面">如何访问 html 页面</h4><p>此时如果创建一个 html 页面，是<strong>无法访问</strong>的。 如 <code class="language-plaintext highlighter-rouge">http://localhost:8080/heihei.html</code> 这样的访问会出错。</p><p>原因是因为每个项目的 web.xml 文件都是继承于 tomcat 的 web.xml 文件的。 tomcat 的 web.xml 文件有一个 DefaultServlet 的处理类用来处理静态资源。</p><p>但是我们在编写自己的 DispatcherServlet 的时候使用了 / 的方式，此方式<strong>覆盖</strong>了父 web.xml 对于静态资源的处理。 所以此时所有的静态资源的访问也需要由 DispatcherServlet 来进行处理，但是我们并没有设置对应的 Controller，所以报 404。</p><p>而 jsp 能够处理是因为父 web.xml 文件中包含了一个 JSPServlet 的处理类，会由 tomcat 进行处理，而不是我们定义的 DispatcherServlet。</p><p>如果想要访问 html 页面，在 web.xml 中添加</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;servlet&gt;</span>
+	<span class="nt">&lt;servlet-name&gt;</span>default<span class="nt">&lt;/servlet-name&gt;</span>
+	<span class="nt">&lt;servlet-class&gt;</span>org.apache.catalina.servlets.DefaultServlet<span class="nt">&lt;/servlet-class&gt;</span>
+<span class="nt">&lt;/servlet&gt;</span>
+<span class="nt">&lt;servlet-mapping&gt;</span>
+	<span class="nt">&lt;servlet-name&gt;</span>default<span class="nt">&lt;/servlet-name&gt;</span>
+	<span class="nt">&lt;url-pattern&gt;</span>*.html<span class="nt">&lt;/url-pattern&gt;</span>
+<span class="nt">&lt;/servlet-mapping&gt;</span>
+</code></pre></div></div><h1 id="详解基于注解实现-spring-mvc">详解基于注解实现 Spring MVC</h1><h2 id="requestmapping">@RequestMapping</h2><p>@RequestMapping用来匹配客户端发送的请求，可以在方法上使用，也可以在类上使用。</p><p>方法：表示用来匹配要处理的请求</p><p>类上：表示为当前类的所有方法的请求地址添加一个前置路径，访问的时候必须要添加此路径</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.mashibing.controller</span><span class="o">;</span><span class="kn">import</span> <span class="nn">org.springframework.stereotype.Controller</span><span class="o">;</span><span class="kn">import</span> <span class="nn">org.springframework.ui.Model</span><span class="o">;</span><span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RequestMapping</span><span class="o">;</span><span class="nd">@Controller@RequestMapping</span><span class="o">(</span><span class="s">"/mashibing"</span><span class="o">)</span><span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloController</span><span class="o">{</span>    <span class="cm">/*    * @RequestMapping就是用来标识此方法用来处理什么请求，其中的/可以取消    * 取消后默认也是从当前项目的根目录开始查找，一般在编写的时候看个人习惯    * 同时，@RequestMapping也可以用来加在类上，    * */</span>    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/hello"</span><span class="o">)</span>    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">hello</span><span class="o">(</span><span class="nc">Model</span> <span class="n">model</span><span class="o">){</span>        <span class="n">model</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">"msg"</span><span class="o">,</span><span class="s">"hello,SpringMVC"</span><span class="o">);</span>        <span class="k">return</span> <span class="s">"hello"</span><span class="o">;</span>    <span class="o">}}</span>
+</code></pre></div></div><p><strong>注意：在整个项目的不同方法上不能包含相同的@RequestMapping值</strong></p><p>除此以外，@RequestMapping注解还可以添加很多额外的属性值，用来精确匹配请求</p><h3 id="requestmapping-的属性值">@RequestMapping 的属性值</h3><p><code class="language-plaintext highlighter-rouge">@RequestMapping</code> 还可以添加很多额外的属性值，用来精准匹配请求</p><h4 id="value">value</h4><p>要匹配的请求</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"/hello"</span><span class="o">)</span>
+</code></pre></div></div><h4 id="method">method</h4><p>限定请求方式</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"/hello"</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="nc">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+</code></pre></div></div><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"/hello"</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="nc">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">)</span>
+</code></pre></div></div><h4 id="params">params</h4><p>限定参数</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"/hello"</span><span class="o">,</span> <span class="n">params</span> <span class="o">=</span> <span class="o">{</span><span class="s">"username"</span><span class="o">})</span>
+</code></pre></div></div><p>此时访问的 url 中<strong>必须有</strong> username 参数</p><div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://localhost:8080/hello/hello?username=zhangsan
+</code></pre></div></div><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"/hello"</span><span class="o">,</span> <span class="n">params</span> <span class="o">=</span> <span class="o">{</span><span class="s">"!username"</span><span class="o">})</span>
+</code></pre></div></div><p>此时访问的 url 中<strong>不能有</strong> username 参数</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"/hello"</span><span class="o">,</span> <span class="n">params</span> <span class="o">=</span> <span class="o">{</span><span class="s">"username=zhangsan"</span><span class="o">,</span><span class="s">"age"</span><span class="o">})</span>
+</code></pre></div></div><p>此时访问的 url 中参数 username <strong>必须是 zhangsan</strong>，参数 age 随意。<br /> username 和 age <strong>顺序无所谓</strong>。</p><h4 id="headers">headers</h4><p>限制请求头</p><p>这是使用 Google Chrome 浏览器访问时的请求头<br /> <img src="\images\posts\java\framework\spring-mvc\01-introduce\request-headers.png" alt="mvc" /><br /> 可以看到，信息非常多。</p><p>其中的 <code class="language-plaintext highlighter-rouge">Upgrade-Insecure-Requests=1</code><br /> 所以当我们把请求头限制为</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"/hello"</span><span class="o">,</span> <span class="n">headers</span> <span class="o">=</span> <span class="o">{</span><span class="s">"Upgrade-Insecure-Requests=2"</span><span class="o">})</span>
+</code></pre></div></div><p>时，将无法通过 Google Chrome 访问该网页。</p><p>当然，这个属性一般不用。</p><p>谁会嫌弃访问量多呢？</p><h4 id="produces">produces</h4><p>和 headers 同理，也是限制请求头。<br /> 但是只限制 Context-Type 属性。</p><h4 id="consumer">consumer</h4><p>限制响应头中的 Context-Type 属性。</p><h4 id="模糊匹配">模糊匹配</h4><p>通配符：</p><ul><li><code class="language-plaintext highlighter-rouge">?</code><br /> 替代任意一个字符</li><li><code class="language-plaintext highlighter-rouge">*</code><br /> 替代多个字符</li><li><code class="language-plaintext highlighter-rouge">**</code><br /> 替代多层路径</li></ul><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"/**/h*llo?"</span><span class="o">)</span>
+</code></pre></div></div><p>当匹配到多个请求时，优先精准匹配，其次是模糊匹配。</p><h3 id="pathvariable">@PathVariable</h3><p>之前我们在请求路径中是如何定义参数的？</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://localhost:8080/hello?username=zhangsan
+</code></pre></div></div><p>通过这种方式我们可以获取到 <code class="language-plaintext highlighter-rouge">username=zhangsan</code></p><p>但我们能否读取到 <code class="language-plaintext highlighter-rouge">http://localhost:8080/hello/zhangsan</code> 中的 <code class="language-plaintext highlighter-rouge">zhangsan</code>？<br /> 即将路径读取为参数。</p><p>可以使用 <code class="language-plaintext highlighter-rouge">@PathVariable</code> 注解。<br /> 此注解就是提供了对占位符 URL 的支持，就是将 URL 中占位符参数绑定到控制器处理方法的参数中。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PathVariableController</span> <span class="o">{</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/hello/{username}"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">testPathVariable</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">"username"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">username</span><span class="o">,</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">map</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="n">username</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">"hello"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div><p>把要读取的路径用 <code class="language-plaintext highlighter-rouge">{参数名}</code> 括起来做标识，再用 <code class="language-plaintext highlighter-rouge">@PathVariable("参数名")</code> 传入方法参数列表。</p><p>当路径中的参数和方法参数<strong>同名</strong>时，可以<strong>省略</strong> <code class="language-plaintext highlighter-rouge">@PathVariable</code> 括号中的内容。<br /> 例如：此时路径和方法参数名都是 username。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PathVariableController</span> <span class="o">{</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/hello/{username}"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">testPathVariable</span><span class="o">(</span><span class="nd">@PathVariable</span> <span class="nc">String</span> <span class="n">username</span><span class="o">,</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">map</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="n">username</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">"hello"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div><p>但是建议还是采取 <code class="language-plaintext highlighter-rouge">@PathVariable("username")</code> 的方式。</p><p><img src="\images\posts\java\framework\spring-mvc\01-introduce\hello-zhangsan.png" alt="mvc" /></p><hr /><p>多个参数的设置</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">PathVariableController</span> <span class="o">{</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/hello/{id}/{username}"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">testPathVariable</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">"id"</span><span class="o">)</span> <span class="nc">Integer</span> <span class="n">id</span><span class="o">,</span>
+                                   <span class="nd">@PathVariable</span><span class="o">(</span><span class="s">"username"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">username</span><span class="o">,</span>
+                                   <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">String</span><span class="o">&gt;</span> <span class="n">map</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"hello"</span><span class="o">,</span> <span class="n">id</span> <span class="o">+</span> <span class="s">"号"</span> <span class="o">+</span> <span class="n">username</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">"hello"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div><p><img src="\images\posts\java\framework\spring-mvc\01-introduce\hello-1-zhangsan.png" alt="mvc" /></p><h2 id="rest">REST</h2><p>REST即表述性状态传递（英文：Representational State Transfer，简称REST）是Roy Fielding博士在2000年他的博士论文中提出来的一种<a href="https://baike.baidu.com/item/软件架构">软件架构</a>风格。它是一种针对<a href="https://baike.baidu.com/item/网络应用/2196523">网络应用</a>的设计和开发方式，可以降低开发的复杂性，提高系统的可伸缩性。</p><p>在三种主流的<a href="https://baike.baidu.com/item/Web服务">Web服务</a>实现方案中，因为REST模式的Web服务与复杂的<a href="https://baike.baidu.com/item/SOAP/4684413">SOAP</a>和<a href="https://baike.baidu.com/item/XML-RPC">XML-RPC</a>对比来讲明显的更加简洁，越来越多的web服务开始采用REST风格设计和实现。例如，Amazon.com提供接近REST风格的Web服务进行图书查找；<a href="https://baike.baidu.com/item/雅虎/108276">雅虎</a>提供的Web服务也是REST风格的。</p><p>REST,翻译过来叫做表现层状态转化，是目前最流行的一个互联网软件架构，它架构清晰，符合标准，易于理解，扩展方便。</p><p><strong>表现层（Representation）</strong>：把资源具体呈现出来的形式，因此叫做表现层。</p><p><strong>资源（Resource）</strong>：网络上的一个具体信息，文本，图片，音频，视频都可以称之为资源，如果想要访问到互联网上的某一个资源，那么就必须要使用一个URL来唯一性的获取改资源，也可以这么说，URL是每一个资源的唯一标识符。</p><p><strong>状态转化（State Transfer）</strong>：当客户端发出一个请求的时候，就代表客户端跟服务端的一次交互过程，HTTP是一种无状态协议，即所有的状态都保存在服务器端，因此，客户端如果想要操作服务器，必须通过某些手段，让服务器的状态发生转化，而这种转化是建立在表现层的，这就是名字的由来（非人话）</p><hr /><p>以上是官方说明，下面通过一些简单描述和案例介绍 REST</p><p>首先考虑，我们如何通过 web 实现增删改查？</p><p>如果按照原来的架构，应该这样的：</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"user"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserController</span> <span class="o">{</span>
+    <span class="nd">@Autowired</span>
+    <span class="nc">UserService</span> <span class="n">userService</span><span class="o">;</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/insert"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">insert</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">userService</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="k">new</span> <span class="nc">User</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/delete"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">delete</span><span class="o">(</span><span class="nc">Integer</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">userService</span><span class="o">.</span><span class="na">delete</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/update"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">update</span><span class="o">(</span><span class="nc">Integer</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">userService</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/select"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">select</span><span class="o">(</span><span class="nc">Integer</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">userService</span><span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>无需关心 User 和 UserDao 的实现，那无关紧要。</p><p>如果我们是这样的设计，我们应该这样访问</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://localhost:8080/user/insert
+http://localhost:8080/user/delete?id=1
+http://localhost:8080/user/update?id=1
+http://localhost:8080/user/select?id=1
+</code></pre></div></div><p>看上去有些麻烦。</p><p>于是有人提出了 REST：<br /> 在 HTTP 协议中，有不同的请求方法，为什么不能<strong>将发送请求方法和增删改查联系到一起</strong>呢？</p><p>一共有 8 种请求方法：</p><ul><li>GET</li><li>HEAD</li><li>POST</li><li>PUT</li><li>DELETE</li><li>CONNECT</li><li>OPTIONS</li><li>TRACE</li></ul><p>现在让我们不要考虑这些请求方法的原意是什么，直接进行如下定义：</p><table><thead><tr><th style="text-align: center">请求类型</th><th style="text-align: center">执行操作</th></tr></thead><tbody><tr><td style="text-align: center">POST</td><td style="text-align: center">insert</td></tr><tr><td style="text-align: center">DELETE</td><td style="text-align: center">delete</td></tr><tr><td style="text-align: center">PUT</td><td style="text-align: center">update</td></tr><tr><td style="text-align: center">GET</td><td style="text-align: center">select</td></tr></tbody></table><p>通过这样的定义，请求的 url 将变得<strong>高度统一</strong>：</p><ul><li>无参<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  http://localhost:8080/user
+</code></pre></div></div></li><li>有参<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  http://localhost:8080/user/1
+</code></pre></div></div></li></ul><p>设计很美，如何实现呢？</p><h3 id="添加-filter">添加 Filter</h3><p>我们无法直接发送 DELETE 和 PUT 请求，必须借助于 Spring MVC 的 Filter 实现</p><p>修改 web.xml</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>
+...
+
+<span class="c">&lt;!--此过滤器完成请求方式的转换，将 post 请求转换为 put 或 delete--&gt;</span>
+<span class="nt">&lt;filter&gt;</span>
+	<span class="nt">&lt;filter-name&gt;</span>hidden<span class="nt">&lt;/filter-name&gt;</span>
+	<span class="nt">&lt;filter-class&gt;</span>org.springframework.web.filter.HiddenHttpMethodFilter<span class="nt">&lt;/filter-class&gt;</span>
+<span class="nt">&lt;/filter&gt;</span>
+<span class="nt">&lt;filter-mapping&gt;</span>
+	<span class="nt">&lt;filter-name&gt;</span>hidden<span class="nt">&lt;/filter-name&gt;</span>
+	<span class="nt">&lt;url-pattern&gt;</span>/*<span class="nt">&lt;/url-pattern&gt;</span>
+<span class="nt">&lt;/filter-mapping&gt;</span>
+</code></pre></div></div><h3 id="修改-controller">修改 Controller</h3><p>在方法中限定 <code class="language-plaintext highlighter-rouge">method</code> 属性，并使用 <code class="language-plaintext highlighter-rouge">@PathVariable()</code> 读取路径中的参数</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"user"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserController</span> <span class="o">{</span>
+    <span class="nd">@Autowired</span>
+    <span class="nc">UserService</span> <span class="n">userService</span><span class="o">;</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">method</span> <span class="o">=</span> <span class="nc">RequestMethod</span><span class="o">.</span><span class="na">POST</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">insert</span><span class="o">()</span> <span class="o">{</span>
+        <span class="n">userService</span><span class="o">.</span><span class="na">insert</span><span class="o">(</span><span class="k">new</span> <span class="nc">User</span><span class="o">());</span>
+    <span class="o">}</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"/{id}"</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="nc">RequestMethod</span><span class="o">.</span><span class="na">DELETE</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">delete</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">"id"</span><span class="o">)</span> <span class="nc">Integer</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">userService</span><span class="o">.</span><span class="na">delete</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"/{id}"</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="nc">RequestMethod</span><span class="o">.</span><span class="na">PUT</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">update</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">"id"</span><span class="o">)</span> <span class="nc">Integer</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">userService</span><span class="o">.</span><span class="na">update</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"/{id}"</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="nc">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">select</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">"id"</span><span class="o">)</span> <span class="nc">Integer</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">userService</span><span class="o">.</span><span class="na">select</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><h3 id="创建-jsp-页面">创建 jsp 页面</h3><p>直接修改 index.jsp</p><div class="language-jsp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;%@ page </span><span class="na">contentType=</span><span class="s">"text/html;charset=UTF-8"</span><span class="na"> language=</span><span class="s">"java"</span> <span class="nt">%&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span>$Title$<span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+
+<span class="nt">&lt;%</span>
+    <span class="n">pageContext</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">"baseUrl"</span><span class="o">,</span> <span class="n">request</span><span class="o">.</span><span class="na">getContextPath</span><span class="o">());</span>
+<span class="nt">%&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"${baseUrl}/user"</span> <span class="na">method=</span><span class="s">"post"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"post"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"${baseUrl}/user/1"</span> <span class="na">method=</span><span class="s">"post"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">name=</span><span class="s">"_method"</span> <span class="na">value=</span><span class="s">"delete"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"delete"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"${baseUrl}/user/1"</span> <span class="na">method=</span><span class="s">"post"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"hidden"</span> <span class="na">name=</span><span class="s">"_method"</span> <span class="na">value=</span><span class="s">"put"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"put"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"${baseUrl}/user/1"</span> <span class="na">method=</span><span class="s">"get"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"get"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div><p><code class="language-plaintext highlighter-rouge">post</code> 和 <code class="language-plaintext highlighter-rouge">get</code> 请求可以<strong>直接</strong>发送。</p><p><code class="language-plaintext highlighter-rouge">delete</code> 和 <code class="language-plaintext highlighter-rouge">put</code> 请求必须借助于 Spring MVC 实现，格式十分严格。</p><ul><li><code class="language-plaintext highlighter-rouge">type = "hidden"</code></li><li><code class="language-plaintext highlighter-rouge">name = "_method"</code></li><li><code class="language-plaintext highlighter-rouge">method = "delete"</code> 或 <code class="language-plaintext highlighter-rouge">method = "put"</code></li></ul><p><img src="\images\posts\java\framework\spring-mvc\01-introduce\index.png" alt="mvc" /><br /> 点击按钮提交对应表单即可实现<strong>增删改查</strong></p><h1 id="源码链接">源码链接</h1><p>该文章源码链接 <a href="https://github.com/kekaiyuan/java/tree/main/framework/springmvc/springmvc_helloworld">Github</a></p><div style="margin-top:2em;padding:0 1.5em;border:1px solid #d3d3d3;background-color:#deebf7"><h3>文档信息</h3><ul><li>本文作者：<a href="https://kekaiyuan.github.io/" target="_blank">Kaiyuan Ke</a></li><li>本文链接：<a href="https://kekaiyuan.github.io//2021/08/05/01-introduce/" target="_blank">https://kekaiyuan.github.io//2021/08/05/01-introduce/</a></li><li>版权声明：自由转载-非商用-非衍生-保持署名（<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank">创意共享3.0许可证</a>）</li></ul></div></article><div class="share"></div><div class="comment"><div id="gitalk-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/gitalk/gitalk.css"> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <script> var gitalk = new Gitalk({ id: '/2021/08/05/01-introduce/', clientID: '', clientSecret: '', repo: '', owner: '', admin: [''], labels: ['gitment'], perPage: 50, }); gitalk.render('gitalk-container'); </script></div></div><div class="column one-fourth"><h3>Search</h3><div id="site_search"> <input style="width:350px" type="text" id="search_box" placeholder="Search"></div><ul id="search_results" style="font-size:16px;list-style-type:none;padding-top:10px;padding-left:10px;"></ul><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/simple-jekyll-search.min.js"></script> <script type="text/javascript"> SimpleJekyllSearch({ searchInput: document.getElementById('search_box'), resultsContainer: document.getElementById('search_results'), json: 'https://kekaiyuan.github.io//assets/search_data.json?v=1646200239', searchResultTemplate: '<li><a href="{url}" title="{title}">{title}</a></li>', noResultsText: 'No results found', limit: 10, fuzzy: false, exclude: ['Welcome'] }) </script><h3 class="post-directory-title mobile-hidden">Table of Contents</h3><div id="post-directory-module" class="mobile-hidden"><section class="post-directory"><dl></dl></section></div><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/jquery.toc.js"></script></div></div></section><footer class="container"><div class="site-footer" role="contentinfo"><div class="copyright left mobile-block"> © 2015 <span title="Kaiyuan Ke">Kaiyuan Ke</span> <a href="javascript:window.scrollTo(0,0)" class="right mobile-visible">TOP</a></div><ul class="site-footer-links right mobile-hidden"><li> <a href="javascript:window.scrollTo(0,0)" >TOP</a></li></ul><a href="https://github.com/kekaiyuan/kekaiyuan.github.io" target="_blank" aria-label="view source code"> <span class="mega-octicon octicon-mark-github" title="GitHub"></span> </a><ul class="site-footer-links mobile-hidden"><li> <a href="https://kekaiyuan.github.io//" title="首页" target="">首页</a></li><li> <a href="https://kekaiyuan.github.io//categories/" title="分类" target="">分类</a></li><li> <a href="https://kekaiyuan.github.io//archives/" title="归档" target="">归档</a></li><li> <a href="https://kekaiyuan.github.io//wiki/" title="维基" target="">维基</a></li><li> <a href="https://kekaiyuan.github.io//links/" title="链接" target="">链接</a></li><li> <a href="https://kekaiyuan.github.io//about/" title="关于" target="">关于</a></li><li><a href="https://kekaiyuan.github.io//feed.xml"><span class="octicon octicon-rss" style="color:orange;"></span></a></li></ul></div></footer><div class="tools-wrapper"> <a class="gotop" href="#" title="回到顶部"><span class="octicon octicon-arrow-up"></span></a></div><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/geopattern.js"></script> <script> jQuery(document).ready(function($) { $('.geopattern').each(function(){ $(this).geopattern($(this).data('pattern-id')); }); /* hljs.initHighlightingOnLoad(); */ }); </script><div style="display:none"> <script> (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); ga('create', 'UA-80669434-1', 'auto'); ga('send', 'pageview'); </script></div></body></html>

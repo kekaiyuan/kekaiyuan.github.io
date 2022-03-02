@@ -1,0 +1,162 @@
+<!DOCTYPE html><html lang="zh-cmn-Hans" prefix="og: http://ogp.me/ns#" class="han-init"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /><title>Java 学习笔记之 06 ——异常 &mdash; 菜鸟日记</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/primer-css/css/primer.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/collection.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/repo-card.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/sections/repo-list.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/boxed-group.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/globals/common.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/globals/responsive.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/posts/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/octicons/octicons/octicons.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mzlogin/rouge-themes@master/dist/github.css"><link rel="canonical" href="https://kekaiyuan.github.io//2021/06/02/06-exception/"><link rel="alternate" type="application/atom+xml" title="菜鸟日记" href="https://kekaiyuan.github.io//feed.xml"><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/favicon.ico"><meta property="og:title" content="Java 学习笔记之 06 ——异常"><meta name="keywords" content="Java，异常"><meta name="og:keywords" content="Java，异常"><meta name="description" content="Java 学习笔记之 06 ——异常"><meta name="og:description" content="Java 学习笔记之 06 ——异常"><meta property="og:url" content="https://kekaiyuan.github.io//2021/06/02/06-exception/"><meta property="og:site_name" content="菜鸟日记"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN" /><meta property="article:published_time" content="2021-06-02"> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/jquery/dist/jquery.min.js"></script> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/jquery-ui.js"></script> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/main.js"></script></head><body class="" data-mz=""><header class="site-header"><div class="container"><h1><a href="https://kekaiyuan.github.io//" title="菜鸟日记"><span class="octicon octicon-mark-github"></span> 菜鸟日记</a></h1><button class="collapsed mobile-visible" type="button" onclick="toggleMenu();"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button><nav class="site-header-nav" role="navigation"> <a href="https://kekaiyuan.github.io//" class=" site-header-nav-item" target="" title="首页">首页</a> <a href="https://kekaiyuan.github.io//categories/" class=" site-header-nav-item" target="" title="分类">分类</a> <a href="https://kekaiyuan.github.io//archives/" class=" site-header-nav-item" target="" title="归档">归档</a> <a href="https://kekaiyuan.github.io//wiki/" class=" site-header-nav-item" target="" title="维基">维基</a> <a href="https://kekaiyuan.github.io//links/" class=" site-header-nav-item" target="" title="链接">链接</a> <a href="https://kekaiyuan.github.io//about/" class=" site-header-nav-item" target="" title="关于">关于</a></nav></div></header><section class="collection-head small geopattern" data-pattern-id="Java 学习笔记之 06 —"><div class="container"><div class="columns"><div class="column three-fourths"><div class="collection-title"><h1 class="collection-header">Java 学习笔记之 06 ——异常</h1><div class="collection-info"> <span class="meta-info"> <span class="octicon octicon-calendar"></span> 2021/06/02 </span> <span class="meta-info"> <span class="octicon octicon-file-directory"></span> <a href="https://kekaiyuan.github.io//categories/#Java" title="Java">Java</a> </span> <span class="meta-info"> <span class="octicon octicon-clock"></span> 共 4053 字，约 12 分钟 </span></div></div></div><div class="column one-fourth mobile-hidden"><div class="collection-title"> <img style="height:72px;width:72px" src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/images/qrcode.jpg" alt="闷骚的程序员" /></div></div></div></div></section><section class="container content"><div class="columns"><div class="column three-fourths" ><article class="article-content markdown-body"><p>Java 学习笔记之 06 ——异常</p><h1 id="什么是异常">什么是异常</h1><p>异常是指在程序的运行过程中所发生的不正常的事件，它会中断正在运行的程序。</p><p>除数为0，数组越界，空指针都属于异常。</p><p>当异常发生时，程序会中断运行。</p><h1 id="异常处理">异常处理</h1><p>Java编程语言使用异常处理机制为程序提供了错误处理的能力。</p><p>加入异常处理后，程序遇到异常后不会中断，而是会转入异常处理程序，正确处理后继续运行。</p><p><img src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/images/posts/java/11exception/java-exception-process.jpg" alt="image" /></p><h1 id="关键字">关键字</h1><ul><li>try</li><li>catch</li><li>finally</li><li>throw</li><li>throws</li></ul><h1 id="捕获异常">捕获异常</h1><p><img src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/images/posts/java/11exception/java-exception-catch.jpg" alt="image" /></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span><span class="o">{</span>
+	<span class="c1">//可能会发生异常的代码块</span>
+<span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">ExceptionType</span> <span class="n">e</span><span class="o">){</span>
+	<span class="c1">//处理异常</span>
+<span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+	<span class="c1">//无论是否发生异常都会执行的块</span>
+<span class="o">}</span>
+</code></pre></div></div><ul><li>执行过程中可能会发生的情况<ul><li>正常执行，只执行try中的代码</li><li>遇到异常情况，会处理try中异常代码之前的逻辑，后面的逻辑不会执行，然后执行catch中的代码</li></ul></li><li>try块中存放可能会发生异常的代码。<ul><li>尽量放置少量的代码，做到精准地处理程序中的异常。</li></ul></li><li>catch块将对异常进行处理。<ul><li>参数为某具体异常 <img src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/images/posts/java/11exception/java-exception-type.jpg" alt="常见的异常类型" /></li><li>可使用printStackTrace函数的堆栈跟踪功能显示出程序运行到当前类的执行流程</li></ul></li><li>多重catch块<ul><li>引发多种类型的异常</li><li>排列catch 语句的顺序：先子类后父类</li><li>发生异常时按顺序逐个匹配</li><li>只执行第一个与异常类型匹配的catch语句</li></ul></li></ul><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">try</span><span class="o">{</span>
+	<span class="o">...</span>
+<span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">ExceptionType1</span> <span class="n">e</span><span class="o">){</span>
+	<span class="c1">//捕获到ExceptionType1的异常如何处理</span>
+	<span class="o">...</span>
+<span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">ExceptionType2</span> <span class="n">e</span><span class="o">){</span>
+	<span class="c1">//捕获到ExceptionType2的异常如何处理</span>
+	<span class="o">...</span>
+<span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">ExceptionType3</span> <span class="n">e</span><span class="o">){</span>
+	<span class="c1">//捕获到ExceptionType3的异常如何处理</span>
+	<span class="o">...</span>
+<span class="o">}</span>
+<span class="o">...</span>
+	
+</code></pre></div></div><ul><li>finally块<ul><li>finally块中存放的代码是一定会被执行的，除了唯一一种情况：在try块或catch块中添加System.exit(1)</li><li>finally包含哪些处理逻辑？<ul><li>IO流的关闭操作</li><li>数据库的连接关闭操作</li></ul></li></ul></li></ul><h1 id="声明异常">声明异常</h1><p><img src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/images/posts/java/11exception/java-exception-throws.jpg" alt="常见的异常类型" /></p><p>有时可以将异常抛出，由外部的调用方法进行处理</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ExceptionThrow</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">try</span><span class="o">{</span>
+			<span class="n">test</span><span class="o">();</span>
+		<span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">){</span>
+			<span class="o">...</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">test</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span><span class="o">{</span>
+	 <span class="o">...</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><ul><li>应用场景：<ul><li>多个方法之间的调用，每个方法中都可能出现异常。此时可选择将所有异常由最外层的方法进行统一处理。</li><li>在程序的调用过程中，如果某方法的外层的调用方法有对异常的处理，那么可以直接使用throws，否则，需要使用try…catch…处理本方法中的异常</li></ul></li><li>如果程序中一直都在声明异常（包括main方法），那么最终异常将交由JVM处理，不推荐。</li></ul><h1 id="抛出异常">抛出异常</h1><p><img src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/images/posts/java/11exception/java-exception-throw.jpg" alt="常见的异常类型" /></p><p>除了被自动捕获的异常外，我们还可以手动地抛出异常</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ExceptionThrow</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="n">test</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">test</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span><span class="o">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">Exception</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>结果</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Exception</span>
+	<span class="n">at</span> <span class="nc">ExceptionThrow</span><span class="o">.</span><span class="na">test</span><span class="o">(</span><span class="nc">ExceptionThrow</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">16</span><span class="o">)</span>
+	<span class="n">at</span> <span class="nc">ExceptionThrow</span><span class="o">.</span><span class="na">main</span><span class="o">(</span><span class="nc">ExceptionThrow</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">9</span><span class="o">)</span>
+</code></pre></div></div><p>可以在Exception()中添加参数，打印错误信息</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">ExceptionThrow</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">try</span><span class="o">{</span>
+            <span class="n">test</span><span class="o">();</span>
+        <span class="o">}</span><span class="k">catch</span> <span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">){</span>
+            <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">test</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span><span class="o">{</span>
+        <span class="k">throw</span> <span class="k">new</span> <span class="nf">Exception</span><span class="o">(</span><span class="s">"It's exception!!!"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>结果</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">java</span><span class="o">.</span><span class="na">lang</span><span class="o">.</span><span class="na">Exception</span><span class="o">:</span> <span class="nc">It</span><span class="err">'</span><span class="n">s</span> <span class="n">exception</span><span class="o">!!!</span>
+	<span class="n">at</span> <span class="nc">ExceptionThrow</span><span class="o">.</span><span class="na">test</span><span class="o">(</span><span class="nc">ExceptionThrow</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">16</span><span class="o">)</span>
+	<span class="n">at</span> <span class="nc">ExceptionThrow</span><span class="o">.</span><span class="na">main</span><span class="o">(</span><span class="nc">ExceptionThrow</span><span class="o">.</span><span class="na">java</span><span class="o">:</span><span class="mi">9</span><span class="o">)</span>
+</code></pre></div></div><h1 id="自定义异常">自定义异常</h1><p>在java的api中提供了非常丰富的异常类，但是在某些情况下不太满足我们的需求，此时需要自定义异常</p><p>步骤：</p><ul><li>继承Exception类</li><li>自定义实现构造方法</li><li>需要使用的时候，使用throw new 自定义异常的名称</li></ul><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">GenderException</span> <span class="kd">extends</span> <span class="nc">Exception</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nf">GenderException</span><span class="o">(){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"性别异常"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="nf">GenderException</span><span class="o">(</span><span class="nc">String</span> <span class="n">msg</span><span class="o">){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">msg</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><h1 id="异常中的return">异常中的return</h1><ul><li>情况一：try中有return，finally中没有return<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TryTest</span><span class="o">{</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">test</span><span class="o">());</span>
+  <span class="o">}</span>
+
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">test</span><span class="o">(){</span>
+      <span class="kt">int</span> <span class="n">num</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+      <span class="k">try</span><span class="o">{</span>
+          <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"try"</span><span class="o">);</span>
+          <span class="k">return</span> <span class="n">num</span> <span class="o">+=</span> <span class="mi">80</span><span class="o">;</span>
+      <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">){</span>
+          <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"error"</span><span class="o">);</span>
+      <span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+          <span class="k">if</span> <span class="o">(</span><span class="n">num</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="o">){</span>
+              <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"num : "</span> <span class="o">+</span> <span class="n">num</span><span class="o">);</span>
+          <span class="o">}</span>
+          <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"finally"</span><span class="o">);</span>
+      <span class="o">}</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"method end"</span><span class="o">);</span>
+      <span class="k">return</span> <span class="n">num</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><ul><li>执行结果<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">try</span>
+  <span class="n">num</span> <span class="o">:</span> <span class="mi">90</span>
+  <span class="k">finally</span>
+  <span class="mi">90</span>
+</code></pre></div></div></li><li>执行顺序：<ul><li>“return num += 80;”被拆分成了“num = num+80;”和“return num;”两个语句</li><li>num = num+80;</li><li>finally块</li><li>return num;</li><li>外面的”System.out.println(“method end”);”则不会被执行</li></ul></li></ul></li><li>情况二：try和finally中均有return<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TryTest</span><span class="o">{</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">test</span><span class="o">());</span>
+  <span class="o">}</span>
+
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">test</span><span class="o">(){</span>
+      <span class="k">try</span><span class="o">{</span>
+          <span class="k">return</span> <span class="mi">80</span><span class="o">;</span>
+      <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">){</span>
+      <span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+          <span class="k">return</span> <span class="mi">100</span><span class="o">;</span>
+      <span class="o">}</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><ul><li>执行结果：<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="mi">100</span>
+</code></pre></div></div></li><li><p>原因：</p><ul><li>try中的return语句会被finally中的return语句覆盖。</li></ul></li></ul></li><li>情况三：finally中改变返回值num<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">TryTest</span><span class="o">{</span>
+
+  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">test</span><span class="o">());</span>
+  <span class="o">}</span>
+
+  <span class="kd">private</span> <span class="kd">static</span> <span class="kt">int</span> <span class="nf">test</span><span class="o">(){</span>
+      <span class="kt">int</span> <span class="n">num</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+      <span class="k">try</span><span class="o">{</span>
+          <span class="k">return</span> <span class="n">num</span><span class="o">;</span>
+      <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">){</span>
+      <span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+          <span class="n">num</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
+      <span class="o">}</span>
+      <span class="k">return</span> <span class="n">num</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><ul><li>执行结果：<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="mi">10</span>
+</code></pre></div></div></li><li>原因：<ul><li>在执行”return num;”语句时分为三步:<ul><li>存储num的值</li><li>执行finally块</li><li>return第一步存储的num的值</li></ul></li></ul></li></ul></li><li>情况四：将num的值包装在Num类中<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">TryTest</span><span class="o">{</span>
+      <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">){</span>
+          <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">test</span><span class="o">().</span><span class="na">num</span><span class="o">);</span>
+      <span class="o">}</span>
+
+      <span class="kd">private</span> <span class="kd">static</span> <span class="nc">Num</span> <span class="nf">test</span><span class="o">(){</span>
+          <span class="nc">Num</span> <span class="n">number</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Num</span><span class="o">();</span>
+          <span class="k">try</span><span class="o">{</span>
+              <span class="k">return</span> <span class="n">number</span><span class="o">;</span>
+          <span class="o">}</span><span class="k">catch</span><span class="o">(</span><span class="nc">Exception</span> <span class="n">e</span><span class="o">){</span>
+          <span class="o">}</span><span class="k">finally</span><span class="o">{</span>
+              <span class="n">number</span><span class="o">.</span><span class="na">num</span> <span class="o">=</span> <span class="mi">100</span><span class="o">;</span>
+          <span class="o">}</span>
+          <span class="k">return</span> <span class="n">number</span><span class="o">;</span>
+      <span class="o">}</span>
+  <span class="o">}</span>
+
+  <span class="kd">class</span> <span class="nc">Num</span><span class="o">{</span>
+      <span class="kd">public</span> <span class="kt">int</span> <span class="n">num</span> <span class="o">=</span> <span class="mi">10</span><span class="o">;</span>
+  <span class="o">}</span>
+</code></pre></div></div></li><li>执行结果：<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="mi">100</span>
+</code></pre></div></div></li><li><p>原因：</p><ul><li>try中的”return number;”存储的是number的引用，所以会被finally块修改其中的值</li></ul></li><li><p>总结：</p><ul><li>try语句在返回前，将其他所有的操作执行完，保留好要返回的值，而后转入执行finally中的语句，而后分为以下三种情况：<ul><li>情况一：如果finally中有return语句，则会将try中的return语句”覆盖“掉，直接执行finally中的return语句，得到返回值，这样便无法得到try之前保留好的返回值。</li><li>情况二：如果finally中没有return语句，也没有改变要返回值，则执行完finally中的语句后，会接着执行try中的return语句，返回之前保留的值。</li><li>情况三：如果finally中没有return语句，但是改变了要返回的值，这里有点类似与引用传递和值传递的区别，分以下两种情况：<ul><li>1）如果return的数据是基本数据类型或文本字符串，则在finally中对该基本数据的改变不起作用，try中的return语句依然会返回进入finally块之前保留的值。</li><li>2）如果return的数据是引用数据类型，而在finally中对该引用数据类型的属性值的改变起作用，try中的return语句返回的就是在finally中改变后的该属性的值。</li></ul></li></ul></li></ul></li></ul><p>     </p><h1 id="异常的分类">异常的分类</h1><p><img src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/images/posts/java/11exception/java-exception-class.jpg" alt="常见的异常类型" /></p><ul><li>checked异常<ul><li>主流ide在编译时check出的代码错误。</li></ul></li><li>RunTimeException<ul><li>运行时在某种条件下才会发生的异常，例如除0异常、空指针异常</li></ul></li><li>Q:所有异常的父类?<ul><li>A:Throwable</li></ul></li></ul><h1 id="源码链接">源码链接</h1><p>本文源码链接 <a href="https://github.com/kky970614/javase/tree/main/code/exception">https://github.com/kky970614/javase/tree/main/code/exception</a></p><div style="margin-top:2em;padding:0 1.5em;border:1px solid #d3d3d3;background-color:#deebf7"><h3>文档信息</h3><ul><li>本文作者：<a href="https://kekaiyuan.github.io/" target="_blank">Kaiyuan Ke</a></li><li>本文链接：<a href="https://kekaiyuan.github.io//2021/06/02/06-exception/" target="_blank">https://kekaiyuan.github.io//2021/06/02/06-exception/</a></li><li>版权声明：自由转载-非商用-非衍生-保持署名（<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank">创意共享3.0许可证</a>）</li></ul></div></article><div class="share"></div><div class="comment"><div id="gitalk-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/gitalk/gitalk.css"> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <script> var gitalk = new Gitalk({ id: '/2021/06/02/06-exception/', clientID: '', clientSecret: '', repo: '', owner: '', admin: [''], labels: ['gitment'], perPage: 50, }); gitalk.render('gitalk-container'); </script></div></div><div class="column one-fourth"><h3>Search</h3><div id="site_search"> <input style="width:350px" type="text" id="search_box" placeholder="Search"></div><ul id="search_results" style="font-size:16px;list-style-type:none;padding-top:10px;padding-left:10px;"></ul><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/simple-jekyll-search.min.js"></script> <script type="text/javascript"> SimpleJekyllSearch({ searchInput: document.getElementById('search_box'), resultsContainer: document.getElementById('search_results'), json: 'https://kekaiyuan.github.io//assets/search_data.json?v=1646200237', searchResultTemplate: '<li><a href="{url}" title="{title}">{title}</a></li>', noResultsText: 'No results found', limit: 10, fuzzy: false, exclude: ['Welcome'] }) </script><h3 class="post-directory-title mobile-hidden">Table of Contents</h3><div id="post-directory-module" class="mobile-hidden"><section class="post-directory"><dl></dl></section></div><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/jquery.toc.js"></script></div></div></section><footer class="container"><div class="site-footer" role="contentinfo"><div class="copyright left mobile-block"> © 2015 <span title="Kaiyuan Ke">Kaiyuan Ke</span> <a href="javascript:window.scrollTo(0,0)" class="right mobile-visible">TOP</a></div><ul class="site-footer-links right mobile-hidden"><li> <a href="javascript:window.scrollTo(0,0)" >TOP</a></li></ul><a href="https://github.com/kekaiyuan/kekaiyuan.github.io" target="_blank" aria-label="view source code"> <span class="mega-octicon octicon-mark-github" title="GitHub"></span> </a><ul class="site-footer-links mobile-hidden"><li> <a href="https://kekaiyuan.github.io//" title="首页" target="">首页</a></li><li> <a href="https://kekaiyuan.github.io//categories/" title="分类" target="">分类</a></li><li> <a href="https://kekaiyuan.github.io//archives/" title="归档" target="">归档</a></li><li> <a href="https://kekaiyuan.github.io//wiki/" title="维基" target="">维基</a></li><li> <a href="https://kekaiyuan.github.io//links/" title="链接" target="">链接</a></li><li> <a href="https://kekaiyuan.github.io//about/" title="关于" target="">关于</a></li><li><a href="https://kekaiyuan.github.io//feed.xml"><span class="octicon octicon-rss" style="color:orange;"></span></a></li></ul></div></footer><div class="tools-wrapper"> <a class="gotop" href="#" title="回到顶部"><span class="octicon octicon-arrow-up"></span></a></div><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/geopattern.js"></script> <script> jQuery(document).ready(function($) { $('.geopattern').each(function(){ $(this).geopattern($(this).data('pattern-id')); }); /* hljs.initHighlightingOnLoad(); */ }); </script><div style="display:none"> <script> (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); ga('create', 'UA-80669434-1', 'auto'); ga('send', 'pageview'); </script></div></body></html>

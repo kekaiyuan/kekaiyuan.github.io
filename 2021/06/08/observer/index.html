@@ -1,0 +1,206 @@
+<!DOCTYPE html><html lang="zh-cmn-Hans" prefix="og: http://ogp.me/ns#" class="han-init"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /><title>设计模式之——观察者 Observer &mdash; 菜鸟日记</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/primer-css/css/primer.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/collection.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/repo-card.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/sections/repo-list.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/boxed-group.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/globals/common.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/globals/responsive.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/posts/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/octicons/octicons/octicons.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mzlogin/rouge-themes@master/dist/github.css"><link rel="canonical" href="https://kekaiyuan.github.io//2021/06/08/observer/"><link rel="alternate" type="application/atom+xml" title="菜鸟日记" href="https://kekaiyuan.github.io//feed.xml"><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/favicon.ico"><meta property="og:title" content="设计模式之——观察者 Observer"><meta name="keywords" content="Java，设计模式"><meta name="og:keywords" content="Java，设计模式"><meta name="description" content="设计模式之——观察者 Observer"><meta name="og:description" content="设计模式之——观察者 Observer"><meta property="og:url" content="https://kekaiyuan.github.io//2021/06/08/observer/"><meta property="og:site_name" content="菜鸟日记"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN" /><meta property="article:published_time" content="2021-06-08"> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/jquery/dist/jquery.min.js"></script> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/jquery-ui.js"></script> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/main.js"></script></head><body class="" data-mz=""><header class="site-header"><div class="container"><h1><a href="https://kekaiyuan.github.io//" title="菜鸟日记"><span class="octicon octicon-mark-github"></span> 菜鸟日记</a></h1><button class="collapsed mobile-visible" type="button" onclick="toggleMenu();"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button><nav class="site-header-nav" role="navigation"> <a href="https://kekaiyuan.github.io//" class=" site-header-nav-item" target="" title="首页">首页</a> <a href="https://kekaiyuan.github.io//categories/" class=" site-header-nav-item" target="" title="分类">分类</a> <a href="https://kekaiyuan.github.io//archives/" class=" site-header-nav-item" target="" title="归档">归档</a> <a href="https://kekaiyuan.github.io//wiki/" class=" site-header-nav-item" target="" title="维基">维基</a> <a href="https://kekaiyuan.github.io//links/" class=" site-header-nav-item" target="" title="链接">链接</a> <a href="https://kekaiyuan.github.io//about/" class=" site-header-nav-item" target="" title="关于">关于</a></nav></div></header><section class="collection-head small geopattern" data-pattern-id="设计模式之——观察者 Obse"><div class="container"><div class="columns"><div class="column three-fourths"><div class="collection-title"><h1 class="collection-header">设计模式之——观察者 Observer</h1><div class="collection-info"> <span class="meta-info"> <span class="octicon octicon-calendar"></span> 2021/06/08 </span> <span class="meta-info"> <span class="octicon octicon-file-directory"></span> <a href="https://kekaiyuan.github.io//categories/#DesignPatterns" title="DesignPatterns">DesignPatterns</a> </span> <span class="meta-info"> <span class="octicon octicon-clock"></span> 共 4322 字，约 13 分钟 </span></div></div></div><div class="column one-fourth mobile-hidden"><div class="collection-title"> <img style="height:72px;width:72px" src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/images/qrcode.jpg" alt="闷骚的程序员" /></div></div></div></div></section><section class="container content"><div class="columns"><div class="column three-fourths" ><article class="article-content markdown-body"><p>设计模式之——观察者 Observer</p><h2 id="观察者模式">观察者模式</h2><p>观察者是非常常用的模式，在Java中，以下名词均是观察者模式</p><ul><li>Observer 观察者</li><li>Listener 监听器</li><li>Hook 钩子</li><li>Callback 回调函数</li></ul><p>其意义也非常容易理解。</p><p>该模式中有观察者和被观察者，在被观察者做出某种行为后，所有观察者都需要作出某种反应。</p><p>比如说有十个人在观察一个花的花开。<br /> 当花开的时候。<br /> 这十个人都应该观察到“花开”，并作出响应。</p><h2 id="概念">概念</h2><blockquote><p>以下内容引用自 <a href="https://www.runoob.com/design-pattern/observer-pattern.html">菜鸟教程</a></p><h3 id="观察者模式-1">观察者模式</h3><p>当对象间存在一对多关系时，则使用观察者模式（Observer Pattern）。比如，当一个对象被修改时，则会自动通知依赖它的对象。观察者模式属于行为型模式。</p><h3 id="介绍">介绍</h3><ul><li>意图<ul><li>定义对象间的一种一对多的依赖关系，当一个对象的状态发生改变时，所有依赖于它的对象都得到通知并被自动更新。</li></ul></li><li>主要解决<ul><li>一个对象状态改变给其他对象通知的问题，而且要考虑到易用和低耦合，保证高度的协作。</li></ul></li><li>何时使用<ul><li>一个对象（目标对象）的状态发生改变，所有的依赖对象（观察者对象）都将得到通知，进行广播通知。</li></ul></li><li>如何解决<ul><li>使用面向对象技术，可以将这种依赖关系弱化。</li></ul></li><li>关键代码<ul><li>在抽象类里有一个 ArrayList 存放观察者们。</li></ul></li><li>应用实例<ul><li>拍卖的时候，拍卖师观察最高标价，然后通知给其他竞价者竞价。</li><li>西游记里面悟空请求菩萨降服红孩儿，菩萨洒了一地水招来一个老乌龟，这个乌龟就是观察者，他观察菩萨洒水这个动作。</li></ul></li><li>优点<ul><li>观察者和被观察者是抽象耦合的。</li><li>建立一套触发机制。</li></ul></li><li>缺点<ul><li>如果一个被观察者对象有很多的直接和间接的观察者的话，将所有的观察者都通知到会花费很多时间。</li><li>如果在观察者和观察目标之间有循环依赖的话，观察目标会触发它们之间进行循环调用，可能导致系统崩溃。 3、观察者模式没有相应的机制让观察者知道所观察的目标对象是怎么发生变化的，而仅仅只是知道观察目标发生了变化。</li></ul></li><li>使用场景<ul><li>一个抽象模型有两个方面，其中一个方面依赖于另一个方面。将这些方面封装在独立的对象中使它们可以各自独立地改变和复用。</li><li>一个对象的改变将导致其他一个或多个对象也发生改变，而不知道具体有多少对象将发生改变，可以降低对象之间的耦合度。</li><li>一个对象必须通知其他对象，而并不知道这些对象是谁。</li><li>需要在系统中创建一个触发链，A对象的行为将影响B对象，B对象的行为将影响C对象……，可以使用观察者模式创建一种链式触发机制。</li></ul></li><li>注意事项<ul><li>JAVA 中已经有了对观察者模式的支持类。</li><li>避免循环引用。</li><li>如果顺序执行，某一观察者错误会导致系统卡壳，一般采用异步方式。</li></ul></li></ul></blockquote><h2 id="代码示例">代码示例</h2><p>通过一个案例说明观察者的设计。</p><p>孩子是被观察者，爸爸、妈妈、小狗是观察者。</p><p>观察的事件是孩子的哭，当孩子哭时，爸爸会找食物，妈妈会抱孩子，小狗会叫。</p><ul><li><p>UML图 <img src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/images/posts/designpatterns/observer/uml.png" alt="image" /></p></li><li>抽象事件类<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Event</span><span class="o">&lt;</span><span class="no">T</span><span class="o">&gt;</span> <span class="o">{</span>
+      <span class="no">T</span> <span class="n">source</span><span class="o">;</span>
+      <span class="kd">public</span> <span class="no">T</span> <span class="nf">getSource</span><span class="o">(){</span>
+          <span class="k">return</span> <span class="n">source</span><span class="o">;</span>
+      <span class="o">};</span>
+  <span class="o">}</span>
+</code></pre></div></div><ul><li>记录细节<ul><li>在观察者模式有事件的概念，是因为根据细节的不同，观察者会有不同的行为，此时需要将观察时的细节记录下来，就有了事件类。例如该例子就是哭事件<code class="language-plaintext highlighter-rouge">CryEvent</code>，记录孩子在哪里哭的，在什么时间哭的…</li></ul></li><li>代码复用<ul><li><code class="language-plaintext highlighter-rouge">Event</code>类是所有具体的事件类的父类，因为可能不同的事件调用的是观察者的同一个方法，如果将观察者的方法形参写为某个具体的事件类，那么其他的事件类将无法传入方法。而如果将方法形参写为<code class="language-plaintext highlighter-rouge">Event</code>类，那么就可以实现一个方法处理多种事件。</li></ul></li><li>事件源<code class="language-plaintext highlighter-rouge">source</code><ul><li>上面代码中的<code class="language-plaintext highlighter-rouge">source</code>代表着事件源，即事件的源头是谁发出的，即被观察者是谁。在通过<code class="language-plaintext highlighter-rouge">Event</code>类完成一个方法处理多种事件的同时，我们希望能让观察者知道该事件是由谁发出的，这样观察者就可以做出一些细节上的调整。</li><li>除了作出细节的调整，观察者还可以利用事件源调用事件源的方法。</li></ul></li></ul></li><li>具体事件类<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">class</span> <span class="nc">CryEvent</span><span class="o">&lt;</span><span class="no">T</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="nc">Event</span><span class="o">{</span>
+
+      <span class="kt">long</span> <span class="n">timestamp</span><span class="o">;</span>
+      <span class="nc">String</span> <span class="n">location</span><span class="o">;</span>
+
+      <span class="kd">public</span> <span class="nf">CryEvent</span><span class="o">(</span><span class="kt">long</span> <span class="n">timestamp</span><span class="o">,</span> <span class="nc">String</span> <span class="n">location</span><span class="o">,</span> <span class="no">T</span> <span class="n">source</span><span class="o">)</span> <span class="o">{</span>
+          <span class="k">this</span><span class="o">.</span><span class="na">timestamp</span> <span class="o">=</span> <span class="n">timestamp</span><span class="o">;</span>
+          <span class="k">this</span><span class="o">.</span><span class="na">location</span> <span class="o">=</span> <span class="n">location</span><span class="o">;</span>
+          <span class="kd">super</span><span class="o">.</span><span class="na">source</span> <span class="o">=</span> <span class="n">source</span><span class="o">;</span>
+      <span class="o">}</span>
+
+  <span class="o">}</span>
+</code></pre></div></div><ul><li>记录哭的时间、地点、事件源</li></ul></li><li>观察者接口<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">interface</span> <span class="nc">Observer</span> <span class="o">{</span>
+
+      <span class="kt">void</span> <span class="nf">actionOnCry</span><span class="o">(</span><span class="nc">Event</span> <span class="n">event</span><span class="o">);</span>
+
+  <span class="o">}</span>
+</code></pre></div></div><ul><li>定义所有观察者都需要实现的方法。</li></ul></li><li>具体的观察者<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">class</span> <span class="nc">Dad</span> <span class="kd">implements</span> <span class="nc">Observer</span> <span class="o">{</span>
+
+      <span class="nd">@Override</span>
+      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionOnCry</span><span class="o">(</span><span class="nc">Event</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+          <span class="k">if</span> <span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getSource</span><span class="o">()</span> <span class="k">instanceof</span> <span class="nc">Child</span><span class="o">)</span> <span class="o">{</span>
+              <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"dad feeding..."</span><span class="o">);</span>
+          <span class="o">}</span>
+      <span class="o">}</span>
+
+  <span class="o">}</span>
+
+  <span class="kd">class</span> <span class="nc">Mom</span> <span class="kd">implements</span> <span class="nc">Observer</span> <span class="o">{</span>
+
+      <span class="nd">@Override</span>
+      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionOnCry</span><span class="o">(</span><span class="nc">Event</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+          <span class="k">if</span> <span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getSource</span><span class="o">()</span> <span class="k">instanceof</span> <span class="nc">Child</span><span class="o">)</span> <span class="o">{</span>
+              <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"mom hugging..."</span><span class="o">);</span>
+          <span class="o">}</span>
+      <span class="o">}</span>
+
+  <span class="o">}</span>
+
+  <span class="kd">class</span> <span class="nc">Dog</span> <span class="kd">implements</span> <span class="nc">Observer</span> <span class="o">{</span>
+
+      <span class="nd">@Override</span>
+      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionOnCry</span><span class="o">(</span><span class="nc">Event</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+          <span class="k">if</span> <span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getSource</span><span class="o">()</span> <span class="k">instanceof</span> <span class="nc">Child</span><span class="o">)</span> <span class="o">{</span>
+              <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"dog wang..."</span><span class="o">);</span>
+          <span class="o">}</span>
+      <span class="o">}</span>
+
+  <span class="o">}</span>
+</code></pre></div></div></li><li>被观察者<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">class</span> <span class="nc">Child</span> <span class="o">{</span>
+
+      <span class="kd">private</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Observer</span><span class="o">&gt;</span> <span class="n">observers</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span>
+
+      <span class="c1">//添加观察者</span>
+      <span class="o">{</span>
+          <span class="n">observers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">Dad</span><span class="o">());</span>
+          <span class="n">observers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">Mom</span><span class="o">());</span>
+          <span class="n">observers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">Dog</span><span class="o">());</span>
+      <span class="o">}</span>
+
+      <span class="kd">public</span> <span class="kt">void</span> <span class="nf">cry</span><span class="o">(</span><span class="nc">String</span> <span class="n">location</span><span class="o">)</span> <span class="o">{</span>
+
+          <span class="c1">//记录事件</span>
+          <span class="nc">CryEvent</span> <span class="n">event</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">CryEvent</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">(),</span> <span class="n">location</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span>
+
+          <span class="c1">//通知所有观察者</span>
+          <span class="k">for</span> <span class="o">(</span><span class="nc">Observer</span> <span class="n">o</span> <span class="o">:</span> <span class="n">observers</span><span class="o">)</span> <span class="o">{</span>
+              <span class="n">o</span><span class="o">.</span><span class="na">actionOnCry</span><span class="o">(</span><span class="n">event</span><span class="o">);</span>
+          <span class="o">}</span>
+      <span class="o">}</span>
+
+  <span class="o">}</span>
+</code></pre></div></div></li></ul><h2 id="完整代码及测试">完整代码及测试</h2><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nc">Child</span> <span class="n">child</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Child</span><span class="o">();</span>
+		<span class="n">child</span><span class="o">.</span><span class="na">cry</span><span class="o">(</span><span class="s">"bed"</span><span class="o">);</span>
+
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"------"</span><span class="o">);</span>
+
+		<span class="nc">Child2</span> <span class="n">child2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Child2</span><span class="o">();</span>
+		<span class="n">child2</span><span class="o">.</span><span class="na">cry</span><span class="o">(</span><span class="s">"bed"</span><span class="o">);</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Child</span> <span class="o">{</span>
+
+	<span class="kd">private</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Observer</span><span class="o">&gt;</span> <span class="n">observers</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span>
+
+	<span class="c1">//添加观察者</span>
+	<span class="o">{</span>
+		<span class="n">observers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">Dad</span><span class="o">());</span>
+		<span class="n">observers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">Mom</span><span class="o">());</span>
+		<span class="n">observers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">Dog</span><span class="o">());</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">cry</span><span class="o">(</span><span class="nc">String</span> <span class="n">location</span><span class="o">)</span> <span class="o">{</span>
+
+		<span class="c1">//记录事件</span>
+		<span class="nc">CryEvent</span> <span class="n">event</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">CryEvent</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">(),</span> <span class="n">location</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span>
+
+		<span class="c1">//通知所有观察者</span>
+		<span class="k">for</span> <span class="o">(</span><span class="nc">Observer</span> <span class="n">o</span> <span class="o">:</span> <span class="n">observers</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">o</span><span class="o">.</span><span class="na">actionOnCry</span><span class="o">(</span><span class="n">event</span><span class="o">);</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Child2</span> <span class="o">{</span>
+
+	<span class="kd">private</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Observer</span><span class="o">&gt;</span> <span class="n">observers</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ArrayList</span><span class="o">&lt;&gt;();</span>
+
+	<span class="c1">//添加观察者</span>
+	<span class="o">{</span>
+		<span class="n">observers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">Dad</span><span class="o">());</span>
+		<span class="n">observers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">Mom</span><span class="o">());</span>
+		<span class="n">observers</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="k">new</span> <span class="nc">Dog</span><span class="o">());</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">cry</span><span class="o">(</span><span class="nc">String</span> <span class="n">location</span><span class="o">)</span> <span class="o">{</span>
+
+		<span class="c1">//记录事件</span>
+		<span class="nc">CryEvent</span> <span class="n">event</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">CryEvent</span><span class="o">(</span><span class="nc">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">(),</span> <span class="n">location</span><span class="o">,</span> <span class="k">this</span><span class="o">);</span>
+
+		<span class="c1">//通知所有观察者</span>
+		<span class="k">for</span> <span class="o">(</span><span class="nc">Observer</span> <span class="n">o</span> <span class="o">:</span> <span class="n">observers</span><span class="o">)</span> <span class="o">{</span>
+			<span class="n">o</span><span class="o">.</span><span class="na">actionOnCry</span><span class="o">(</span><span class="n">event</span><span class="o">);</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Event</span><span class="o">&lt;</span><span class="no">T</span><span class="o">&gt;</span> <span class="o">{</span>
+
+	<span class="no">T</span> <span class="n">source</span><span class="o">;</span>
+
+	<span class="kd">public</span> <span class="no">T</span> <span class="nf">getSource</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="n">source</span><span class="o">;</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">CryEvent</span><span class="o">&lt;</span><span class="no">T</span><span class="o">&gt;</span> <span class="kd">extends</span> <span class="nc">Event</span> <span class="o">{</span>
+
+	<span class="kt">long</span> <span class="n">timestamp</span><span class="o">;</span>
+	<span class="nc">String</span> <span class="n">location</span><span class="o">;</span>
+
+	<span class="kd">public</span> <span class="nf">CryEvent</span><span class="o">(</span><span class="kt">long</span> <span class="n">timestamp</span><span class="o">,</span> <span class="nc">String</span> <span class="n">location</span><span class="o">,</span> <span class="no">T</span> <span class="n">source</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">timestamp</span> <span class="o">=</span> <span class="n">timestamp</span><span class="o">;</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">location</span> <span class="o">=</span> <span class="n">location</span><span class="o">;</span>
+		<span class="kd">super</span><span class="o">.</span><span class="na">source</span> <span class="o">=</span> <span class="n">source</span><span class="o">;</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="kd">interface</span> <span class="nc">Observer</span> <span class="o">{</span>
+
+	<span class="kt">void</span> <span class="nf">actionOnCry</span><span class="o">(</span><span class="nc">Event</span> <span class="n">event</span><span class="o">);</span>
+
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Dad</span> <span class="kd">implements</span> <span class="nc">Observer</span> <span class="o">{</span>
+
+	<span class="nd">@Override</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionOnCry</span><span class="o">(</span><span class="nc">Event</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">if</span> <span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getSource</span><span class="o">()</span> <span class="k">instanceof</span> <span class="nc">Child</span><span class="o">)</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"dad feeding..."</span><span class="o">);</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Mom</span> <span class="kd">implements</span> <span class="nc">Observer</span> <span class="o">{</span>
+
+	<span class="nd">@Override</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionOnCry</span><span class="o">(</span><span class="nc">Event</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">if</span> <span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getSource</span><span class="o">()</span> <span class="k">instanceof</span> <span class="nc">Child</span><span class="o">)</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"mom hugging..."</span><span class="o">);</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Dog</span> <span class="kd">implements</span> <span class="nc">Observer</span> <span class="o">{</span>
+
+	<span class="nd">@Override</span>
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">actionOnCry</span><span class="o">(</span><span class="nc">Event</span> <span class="n">event</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">if</span> <span class="o">(</span><span class="n">event</span><span class="o">.</span><span class="na">getSource</span><span class="o">()</span> <span class="k">instanceof</span> <span class="nc">Child</span><span class="o">)</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"dog wang..."</span><span class="o">);</span>
+		<span class="o">}</span>
+	<span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div><ul><li>结果<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="n">dad</span> <span class="n">feeding</span><span class="o">...</span>
+  <span class="n">mom</span> <span class="n">hugging</span><span class="o">...</span>
+  <span class="n">dog</span> <span class="n">wang</span><span class="o">...</span>
+  <span class="o">------</span>
+</code></pre></div></div></li><li>结论 可以看到<code class="language-plaintext highlighter-rouge">Child2</code>和<code class="language-plaintext highlighter-rouge">Child</code>的代码一模一样，但是观察者并没有对Child2的哭作出反应。</li></ul><h2 id="源码链接">源码链接</h2><p>该文章源码链接 <a href="https://github.com/kekaiyuan/designpatterns/tree/main/src/main/java/com/kky/dp/observer">Github</a></p><div style="margin-top:2em;padding:0 1.5em;border:1px solid #d3d3d3;background-color:#deebf7"><h3>文档信息</h3><ul><li>本文作者：<a href="https://kekaiyuan.github.io/" target="_blank">Kaiyuan Ke</a></li><li>本文链接：<a href="https://kekaiyuan.github.io//2021/06/08/observer/" target="_blank">https://kekaiyuan.github.io//2021/06/08/observer/</a></li><li>版权声明：自由转载-非商用-非衍生-保持署名（<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank">创意共享3.0许可证</a>）</li></ul></div></article><div class="share"></div><div class="comment"><div id="gitalk-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/gitalk/gitalk.css"> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <script> var gitalk = new Gitalk({ id: '/2021/06/08/observer/', clientID: '', clientSecret: '', repo: '', owner: '', admin: [''], labels: ['gitment'], perPage: 50, }); gitalk.render('gitalk-container'); </script></div></div><div class="column one-fourth"><h3>Search</h3><div id="site_search"> <input style="width:350px" type="text" id="search_box" placeholder="Search"></div><ul id="search_results" style="font-size:16px;list-style-type:none;padding-top:10px;padding-left:10px;"></ul><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/simple-jekyll-search.min.js"></script> <script type="text/javascript"> SimpleJekyllSearch({ searchInput: document.getElementById('search_box'), resultsContainer: document.getElementById('search_results'), json: 'https://kekaiyuan.github.io//assets/search_data.json?v=1646200237', searchResultTemplate: '<li><a href="{url}" title="{title}">{title}</a></li>', noResultsText: 'No results found', limit: 10, fuzzy: false, exclude: ['Welcome'] }) </script><h3 class="post-directory-title mobile-hidden">Table of Contents</h3><div id="post-directory-module" class="mobile-hidden"><section class="post-directory"><dl></dl></section></div><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/jquery.toc.js"></script></div></div></section><footer class="container"><div class="site-footer" role="contentinfo"><div class="copyright left mobile-block"> © 2015 <span title="Kaiyuan Ke">Kaiyuan Ke</span> <a href="javascript:window.scrollTo(0,0)" class="right mobile-visible">TOP</a></div><ul class="site-footer-links right mobile-hidden"><li> <a href="javascript:window.scrollTo(0,0)" >TOP</a></li></ul><a href="https://github.com/kekaiyuan/kekaiyuan.github.io" target="_blank" aria-label="view source code"> <span class="mega-octicon octicon-mark-github" title="GitHub"></span> </a><ul class="site-footer-links mobile-hidden"><li> <a href="https://kekaiyuan.github.io//" title="首页" target="">首页</a></li><li> <a href="https://kekaiyuan.github.io//categories/" title="分类" target="">分类</a></li><li> <a href="https://kekaiyuan.github.io//archives/" title="归档" target="">归档</a></li><li> <a href="https://kekaiyuan.github.io//wiki/" title="维基" target="">维基</a></li><li> <a href="https://kekaiyuan.github.io//links/" title="链接" target="">链接</a></li><li> <a href="https://kekaiyuan.github.io//about/" title="关于" target="">关于</a></li><li><a href="https://kekaiyuan.github.io//feed.xml"><span class="octicon octicon-rss" style="color:orange;"></span></a></li></ul></div></footer><div class="tools-wrapper"> <a class="gotop" href="#" title="回到顶部"><span class="octicon octicon-arrow-up"></span></a></div><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/geopattern.js"></script> <script> jQuery(document).ready(function($) { $('.geopattern').each(function(){ $(this).geopattern($(this).data('pattern-id')); }); /* hljs.initHighlightingOnLoad(); */ }); </script><div style="display:none"> <script> (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); ga('create', 'UA-80669434-1', 'auto'); ga('send', 'pageview'); </script></div></body></html>

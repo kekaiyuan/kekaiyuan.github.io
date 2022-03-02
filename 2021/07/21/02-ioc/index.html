@@ -1,0 +1,525 @@
+<!DOCTYPE html><html lang="zh-cmn-Hans" prefix="og: http://ogp.me/ns#" class="han-init"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /><title>Java Spring 02—— IOC 基本使用 &mdash; 菜鸟日记</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/primer-css/css/primer.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/collection.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/repo-card.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/sections/repo-list.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/boxed-group.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/globals/common.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/globals/responsive.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/posts/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/octicons/octicons/octicons.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mzlogin/rouge-themes@master/dist/github.css"><link rel="canonical" href="https://kekaiyuan.github.io//2021/07/21/02-ioc/"><link rel="alternate" type="application/atom+xml" title="菜鸟日记" href="https://kekaiyuan.github.io//feed.xml"><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/favicon.ico"><meta property="og:title" content="Java Spring 02—— IOC 基本使用"><meta name="keywords" content="Java，Spring"><meta name="og:keywords" content="Java，Spring"><meta name="description" content="Java Spring 02—— IOC 基本使用"><meta name="og:description" content="Java Spring 02—— IOC 基本使用"><meta property="og:url" content="https://kekaiyuan.github.io//2021/07/21/02-ioc/"><meta property="og:site_name" content="菜鸟日记"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN" /><meta property="article:published_time" content="2021-07-21"> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/jquery/dist/jquery.min.js"></script> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/jquery-ui.js"></script> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/main.js"></script></head><body class="" data-mz=""><header class="site-header"><div class="container"><h1><a href="https://kekaiyuan.github.io//" title="菜鸟日记"><span class="octicon octicon-mark-github"></span> 菜鸟日记</a></h1><button class="collapsed mobile-visible" type="button" onclick="toggleMenu();"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button><nav class="site-header-nav" role="navigation"> <a href="https://kekaiyuan.github.io//" class=" site-header-nav-item" target="" title="首页">首页</a> <a href="https://kekaiyuan.github.io//categories/" class=" site-header-nav-item" target="" title="分类">分类</a> <a href="https://kekaiyuan.github.io//archives/" class=" site-header-nav-item" target="" title="归档">归档</a> <a href="https://kekaiyuan.github.io//wiki/" class=" site-header-nav-item" target="" title="维基">维基</a> <a href="https://kekaiyuan.github.io//links/" class=" site-header-nav-item" target="" title="链接">链接</a> <a href="https://kekaiyuan.github.io//about/" class=" site-header-nav-item" target="" title="关于">关于</a></nav></div></header><section class="collection-head small geopattern" data-pattern-id="Java Spring 02—"><div class="container"><div class="columns"><div class="column three-fourths"><div class="collection-title"><h1 class="collection-header">Java Spring 02—— IOC 基本使用</h1><div class="collection-info"> <span class="meta-info"> <span class="octicon octicon-calendar"></span> 2021/07/21 </span> <span class="meta-info"> <span class="octicon octicon-file-directory"></span> <a href="https://kekaiyuan.github.io//categories/#Spring" title="Spring">Spring</a> </span> <span class="meta-info"> <span class="octicon octicon-clock"></span> 共 21870 字，约 63 分钟 </span></div></div></div><div class="column one-fourth mobile-hidden"><div class="collection-title"> <img style="height:72px;width:72px" src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/images/qrcode.jpg" alt="闷骚的程序员" /></div></div></div></div></section><section class="container content"><div class="columns"><div class="column three-fourths" ><article class="article-content markdown-body"><p>Java Spring 02—— IOC 基本使用</p><h1 id="基本使用">基本使用</h1><h2 id="1-导包">1. 导包</h2><p><strong>手动</strong>请加载以下包（不推荐）</p><ul><li>commons-logging-1.2.jar</li><li>spring-beans-5.2.3.RELEASE.jar</li><li>spring-context-5.2.3.RELEASE.jar</li><li>spring-core-5.2.3.RELEASE.jar</li><li>spring-expression-5.2.3.RELEASE.jar</li></ul><p>通过 Maven <strong>自动</strong>导包（推荐）</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependecies&gt;</span>
+	<span class="c">&lt;!-- https://mvnrepository.com/artifact/org.springframework/spring-context --&gt;</span>
+	<span class="nt">&lt;dependency&gt;</span>
+		<span class="nt">&lt;groupId&gt;</span>org.springframework<span class="nt">&lt;/groupId&gt;</span>
+		<span class="nt">&lt;artifactId&gt;</span>spring-context<span class="nt">&lt;/artifactId&gt;</span>
+		<span class="nt">&lt;version&gt;</span>5.2.3.RELEASE<span class="nt">&lt;/version&gt;</span>
+	<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;/dependecies&gt;</span>
+</code></pre></div></div><h2 id="2-新建-person-类">2. 新建 Person 类</h2><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
+	<span class="kd">private</span> <span class="kt">int</span> <span class="n">id</span><span class="o">;</span>
+	<span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+	<span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+	<span class="kd">private</span> <span class="nc">String</span> <span class="n">gender</span><span class="o">;</span>
+
+	<span class="kd">public</span> <span class="nf">Person</span><span class="o">(){</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">int</span> <span class="nf">getId</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="n">id</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setId</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">id</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="nc">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">int</span> <span class="nf">getAge</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="n">age</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setAge</span><span class="o">(</span><span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="nc">String</span> <span class="nf">getGender</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="n">gender</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setGender</span><span class="o">(</span><span class="nc">String</span> <span class="n">gender</span><span class="o">)</span> <span class="o">{</span>
+		<span class="k">this</span><span class="o">.</span><span class="na">gender</span> <span class="o">=</span> <span class="n">gender</span><span class="o">;</span>
+	<span class="o">}</span>
+
+	<span class="nd">@Override</span>
+	<span class="kd">public</span> <span class="nc">String</span> <span class="nf">toString</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">return</span> <span class="s">"Person{"</span> <span class="o">+</span>
+			  <span class="s">"id="</span> <span class="o">+</span> <span class="n">id</span> <span class="o">+</span>
+			  <span class="s">", name='"</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="sc">'\''</span> <span class="o">+</span>
+			  <span class="s">", age="</span> <span class="o">+</span> <span class="n">age</span> <span class="o">+</span>
+			  <span class="s">", gender='"</span> <span class="o">+</span> <span class="n">gender</span> <span class="o">+</span> <span class="sc">'\''</span> <span class="o">+</span>
+			  <span class="sc">'}'</span><span class="o">;</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><h2 id="3-新建-iocxml-文件">3. 新建 ioc.xml 文件</h2><p>请将 ioc.xml 文件放在正确的路径中：</p><ul><li>普通项目路径<br /> src/ioc.xml</li><li>IDEA Maven项目路径<br /> src/main/resources/ioc.xml</li></ul><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span>
+       <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+       <span class="na">xsi:schemaLocation=</span><span class="s">"http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd"</span><span class="nt">&gt;</span>
+    <span class="c">&lt;!--注册一个对象，spring会自动创建这个对象--&gt;</span>
+    <span class="c">&lt;!--
+    一个bean标签就表示一个对象
+    id:这个对象的唯一标识
+    class:注册对象的完全限定名
+    --&gt;</span>
+    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person"</span> <span class="na">class=</span><span class="s">"com.kky.bean.Person"</span><span class="nt">&gt;</span>
+        <span class="c">&lt;!--使用property标签给对象的属性赋值
+        name:表示属性的名称
+        value：表示属性的值
+        --&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"id"</span> <span class="na">value=</span><span class="s">"1"</span><span class="nt">&gt;&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"name"</span> <span class="na">value=</span><span class="s">"zhangsan"</span><span class="nt">&gt;&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"age"</span> <span class="na">value=</span><span class="s">"18"</span><span class="nt">&gt;&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"gender"</span> <span class="na">value=</span><span class="s">"男"</span><span class="nt">&gt;&lt;/property&gt;</span>
+    <span class="nt">&lt;/bean&gt;</span>
+<span class="nt">&lt;/beans&gt;</span>
+</code></pre></div></div><h2 id="测试">测试</h2><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="c1">//ApplicationContext:表示ioc容器</span>
+		<span class="c1">//ClassPathXmlApplicationContext:表示从当前classpath路径中获取xml文件的配置</span>
+		<span class="c1">//根据spring的配置文件来获取ioc容器对象</span>
+		<span class="nc">ApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ClassPathXmlApplicationContext</span><span class="o">(</span><span class="s">"ioc.xml"</span><span class="o">);</span>
+		<span class="nc">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"person"</span><span class="o">,</span> <span class="nc">Person</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">person</span><span class="o">);</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>结果</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Person{id=1, name='zhangsan', age=18, gender='男'}
+</code></pre></div></div><p>可以看到，我们写入 ioc.xml 的对象成功被创建并读取。</p><h2 id="一些细节">一些细节</h2><p>1 . ApplicationContext 就是 IOC 容器的接口，可以通过此对象获取容器中创建的对象</p><hr /><p>2 . Spring IOC 底层是通过 <a href="https://kekaiyuan.github.io//2021/07/05/reflect/">反射</a> 创建对象的，所以请注意实现无参构造方法。</p><p>在 Java 中，如果类中<strong>没有构造方法</strong>，那么会<strong>自动</strong>为其设置一个无参构造方法。<br /> 此时使用 Spring IOC <strong>不会报错</strong>。</p><p>但如果类中<strong>存在有参</strong>构造方法，但是<strong>没有无参</strong>构造方法时。<br /> 此时使用 Spring IOC <strong>会报错</strong>。</p><hr /><p>3 . 对象的属性是由 setter/getter 方法决定的，而不是定义的成员属性</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"id"</span> <span class="na">value=</span><span class="s">"1"</span><span class="nt">&gt;&lt;/property&gt;</span>
+</code></pre></div></div><p>中 <code class="language-plaintext highlighter-rouge">name="id"</code> 到底是哪个 <code class="language-plaintext highlighter-rouge">id</code> ？</p><p>很多人会以为是这个 <code class="language-plaintext highlighter-rouge">id</code></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="kt">int</span> <span class="n">id</span><span class="o">;</span>
+</code></pre></div></div><p>即成员变量</p><p>但其实是这个 <code class="language-plaintext highlighter-rouge">id</code></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kt">int</span> <span class="nf">getId</span><span class="o">()</span> <span class="o">{</span>
+	<span class="k">return</span> <span class="n">id</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">setId</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">)</span> <span class="o">{</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">id</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div><p>即 IOC 会自动把 <code class="language-plaintext highlighter-rouge">id</code> 首字母大写变成 <code class="language-plaintext highlighter-rouge">Id</code>，然后去寻找对应的 <code class="language-plaintext highlighter-rouge">set</code> 和 <code class="language-plaintext highlighter-rouge">get</code> 方法</p><p>所以在使用 IOC 时要注意，要将类的 setter/getter 方法名与 ioc.xml 中的 <code class="language-plaintext highlighter-rouge">name</code> 名对应起来。<br /></p><p>当然了，一般情况下，类的属性名和 setter/getter 方法名本身就是对应的。</p><h1 id="获取对象的方式">获取对象的方式</h1><p>一共有三种获取对象的方式：</p><ol><li>通过 <strong>id</strong> ，需要转换数据类型<br /><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nc">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="o">(</span><span class="nc">Person</span><span class="o">)</span><span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"person"</span><span class="o">)</span>
+</code></pre></div></div></li><li>通过<strong>类型</strong><br /><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="nc">Person</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</code></pre></div></div><p>注意：当存在多个同类型的对象时无法使用该方法。</p></li><li>通过 <strong>id</strong> + <strong>类型</strong><br /><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nc">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"person"</span> <span class="o">,</span><span class="nc">Person</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+</code></pre></div></div></li></ol><h1 id="其他赋值方式">其他赋值方式</h1><p>前文使用类的 <code class="language-plaintext highlighter-rouge">setter</code> 方法赋值，除此之外还有两种赋值方式</p><h2 id="通过构造器给-bean-对象赋值">通过构造器给 bean 对象赋值</h2><p>首先得定义构造器</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nf">Person</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">,</span> <span class="nc">String</span> <span class="n">name</span><span class="o">,</span> <span class="nc">Integer</span> <span class="n">age</span><span class="o">,</span> <span class="nc">String</span> <span class="n">gender</span><span class="o">)</span> <span class="o">{</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">id</span><span class="o">;</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">gender</span> <span class="o">=</span> <span class="n">gender</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div><p>然后在 ioc.xml 中使用该构造器</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person2"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Person"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">name=</span><span class="s">"id"</span> <span class="na">value=</span><span class="s">"1"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">name=</span><span class="s">"name"</span> <span class="na">value=</span><span class="s">"lisi"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">name=</span><span class="s">"age"</span> <span class="na">value=</span><span class="s">"20"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">name=</span><span class="s">"gender"</span> <span class="na">value=</span><span class="s">"女"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><p>效果等同于</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Person</span> <span class="n">person2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Person</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="s">"lisi"</span><span class="o">,</span> <span class="mi">20</span><span class="o">,</span> <span class="s">"女"</span><span class="o">);</span>
+</code></pre></div></div><p>提问：此时配置文件中的 <code class="language-plaintext highlighter-rouge">name</code> 是什么的 <code class="language-plaintext highlighter-rouge">name</code> ？</p><p>回答：<br /> 依然不是类的成员变量的 <code class="language-plaintext highlighter-rouge">name</code>，而是构造方法中的形参列表中的 <code class="language-plaintext highlighter-rouge">name</code><br /> 即</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nf">Person</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">,</span> <span class="nc">String</span> <span class="n">name</span><span class="o">,</span> <span class="nc">Integer</span> <span class="n">age</span><span class="o">,</span> <span class="nc">String</span> <span class="n">gender</span><span class="o">)</span> 
+</code></pre></div></div><p>中的 <code class="language-plaintext highlighter-rouge">id</code> <code class="language-plaintext highlighter-rouge">name</code> <code class="language-plaintext highlighter-rouge">age</code> <code class="language-plaintext highlighter-rouge">gender</code></p><hr /><p>在严格遵守形参列表的<strong>顺序</strong>的情况下，可以<strong>省略</strong> <code class="language-plaintext highlighter-rouge">name</code>。</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person3"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Person"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"1"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"lisi"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"20"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"女"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><p>效果等同于</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Person</span> <span class="n">person3</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Person</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="s">"lisi"</span><span class="o">,</span> <span class="mi">20</span><span class="o">,</span> <span class="s">"女"</span><span class="o">);</span>
+</code></pre></div></div><hr /><p>可以使用 <code class="language-plaintext highlighter-rouge">index</code> 指明该属性对应形参列表的哪个属性，下标从 <strong>0</strong> 开始。</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person4"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Person"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"lisi"</span> <span class="na">index=</span><span class="s">"1"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"1"</span> <span class="na">index=</span><span class="s">"0"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"女"</span> <span class="na">index=</span><span class="s">"3"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"20"</span> <span class="na">index=</span><span class="s">"2"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><p>效果等同于</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Person</span> <span class="n">person4</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Person</span><span class="o">(</span><span class="mi">1</span><span class="o">,</span> <span class="s">"lisi"</span><span class="o">,</span> <span class="mi">20</span><span class="o">,</span> <span class="s">"女"</span><span class="o">);</span>
+</code></pre></div></div><hr /><p>来看一个很深井冰的问题：</p><ol><li>存在多个<strong>形参个数相同</strong>的构造器</li><li>通过构造器给 bean 对象赋值，<strong>省略 name</strong></li></ol><p>给 Person 类添加构造器</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nf">Person</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">,</span> <span class="nc">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">id</span><span class="o">;</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="nf">Person</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">,</span> <span class="nc">String</span> <span class="n">name</span><span class="o">,</span> <span class="nc">String</span> <span class="n">gender</span><span class="o">)</span> <span class="o">{</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">id</span><span class="o">;</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">gender</span> <span class="o">=</span> <span class="n">gender</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div><p>使用省略 <strong>name</strong> 的方式赋值</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person4"</span> <span class="na">class=</span><span class="s">"com.kky.bean.Person"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"4"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"wangwu"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"22"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><p>仔细观察，两个构造器的不同在于<strong>第三个形参</strong>，一个是 <code class="language-plaintext highlighter-rouge">int age</code> ，一个是 <code class="language-plaintext highlighter-rouge">String gender</code> 。<br /> 有趣的地方在于，我们赋值时所使用的 <code class="language-plaintext highlighter-rouge">22</code> ，即能视为 <code class="language-plaintext highlighter-rouge">age = 22</code> ，也能视为 <code class="language-plaintext highlighter-rouge">gender = "22"</code>。<br /> 所以最后创建出来的对象是哪个呢？</p><p>测试</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Person</span> <span class="n">person4</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"person4"</span><span class="o">,</span> <span class="nc">Person</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">person4</span><span class="o">);</span>
+</code></pre></div></div><p>结果</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Person{id=4, name='wangwu', age=0, gender='22'}
+</code></pre></div></div><p>下面的构造器被调用了。</p><p>难道跟顺序有关吗？<br /> 试着把构造器换一下位置：</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nf">Person</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">,</span> <span class="nc">String</span> <span class="n">name</span><span class="o">,</span> <span class="nc">String</span> <span class="n">gender</span><span class="o">)</span> <span class="o">{</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">id</span><span class="o">;</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">gender</span> <span class="o">=</span> <span class="n">gender</span><span class="o">;</span>
+<span class="o">}</span>
+
+<span class="kd">public</span> <span class="nf">Person</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">,</span> <span class="nc">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">id</span><span class="o">;</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div><p>测试</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Person</span> <span class="n">person4</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"person4"</span><span class="o">,</span> <span class="nc">Person</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">person4</span><span class="o">);</span>
+</code></pre></div></div><p>结果</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Person{id=4, name='wangwu', age=22, gender='null'}
+</code></pre></div></div><p>看来是哪个构造器在<strong>下面</strong>就调用哪个。</p><p>那此时我想强制调用<strong>上面</strong>的构造器怎么办？<br /> 指定第三个参数的数据类型。</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person4"</span> <span class="na">class=</span><span class="s">"com.kky.bean.Person"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"4"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"wangwu"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"22"</span> <span class="na">type=</span><span class="s">"int"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><p>测试</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Person</span> <span class="n">person4</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"person4"</span><span class="o">,</span> <span class="nc">Person</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">person4</span><span class="o">);</span>
+</code></pre></div></div><p>结果</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Person{id=22, name='4', age=0, gender='wangwu'}
+</code></pre></div></div><p>为什么会出现这种结果，因为</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="nf">Person</span><span class="o">(</span><span class="kt">int</span> <span class="n">id</span><span class="o">,</span> <span class="nc">String</span> <span class="n">name</span><span class="o">,</span> <span class="kt">int</span> <span class="n">age</span><span class="o">)</span> <span class="o">{</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">id</span> <span class="o">=</span> <span class="n">id</span><span class="o">;</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+	<span class="k">this</span><span class="o">.</span><span class="na">age</span> <span class="o">=</span> <span class="n">age</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div><p>该方法中存在两个 <strong>int</strong> 类型的形参。</p><p>所以还应该指定下标位置</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person4"</span> <span class="na">class=</span><span class="s">"com.kky.bean.Person"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"4"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"wangwu"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+	<span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"22"</span> <span class="na">type=</span><span class="s">"int"</span> <span class="na">index=</span><span class="s">"2"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><p>测试</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Person</span> <span class="n">person4</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"person4"</span><span class="o">,</span> <span class="nc">Person</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">person4</span><span class="o">);</span>
+</code></pre></div></div><p>结果</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Person{id=4, name='wangwu', age=22, gender='null'}
+</code></pre></div></div><p>结果正确。</p><h3 id="总结">总结</h3><p>通过构造器给 bean 对象赋值时，一共有以下属性：</p><ul><li>name<br /> 形参的名称，而非成员变量的名称</li><li>value<br /> 实参的值</li><li>type<br /> 参数的名称</li><li>index<br /> 对应的形参的下标，从 0 开始</li></ul><h2 id="通过命名空间赋值">通过命名空间赋值</h2><p>通过 p 命名空间为bean赋值，简化配置文件中属性声明的写法</p><ol><li>导入命名空间<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+ <span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span>
+         <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+         <span class="na">xmlns:p=</span><span class="s">"http://www.springframework.org/schema/p"</span>
+         <span class="na">xsi:schemaLocation=</span><span class="s">"http://www.springframework.org/schema/beans
+         http://www.springframework.org/schema/beans/spring-beans.xsd"</span><span class="nt">&gt;</span>
+</code></pre></div></div></li><li>在配置中添加 bean<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>     <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person6"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Person"</span> <span class="na">p:id=</span><span class="s">"3"</span> <span class="na">p:name=</span><span class="s">"wangwu"</span> <span class="na">p:age=</span><span class="s">"22"</span> <span class="na">p:gender=</span><span class="s">"男"</span><span class="nt">&gt;&lt;/bean&gt;</span>
+</code></pre></div></div></li></ol><h1 id="复杂类型的赋值操作">复杂类型的赋值操作</h1><p>在之前的测试代码中，我们都是给最基本的属性进行赋值操作。<br /> 在正常的企业级开发中还会遇到给各种复杂类型赋值，如集合、数组、其他对象等。</p><p>修改 Person 类</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">id</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">age</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">gender</span><span class="o">;</span>
+    
+    <span class="kd">private</span> <span class="nc">String</span><span class="o">[]</span> <span class="n">hobbies</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Address</span> <span class="n">address</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Address</span><span class="o">&gt;</span> <span class="n">lists</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">sets</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">maps</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Properties</span> <span class="n">properties</span><span class="o">;</span>
+</code></pre></div></div><p>并新建 Address 类</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Address</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">province</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">city</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">town</span><span class="o">;</span>
+</code></pre></div></div><p>省略两个类的<strong>无参构造器</strong>，所有属性的 <strong>getter/setter 方法</strong>，<strong>toString() 方法</strong>。</p><h3 id="给数组类型赋值">给数组类型赋值</h3><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="nc">String</span><span class="o">[]</span> <span class="n">hobbies</span><span class="o">;</span>
+</code></pre></div></div><p>方式一</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person6"</span> <span class="na">class=</span><span class="s">"com.kky.bean.Person"</span><span class="nt">&gt;</span>
+	...
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"hobbies"</span> <span class="na">value=</span><span class="s">"book,girl,movie"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	...
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><p>Spring 会自动把 “book,girl,movie” 转成数组</p><hr /><p>方式二</p><p>使用 array 标签</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person6"</span> <span class="na">class=</span><span class="s">"com.kky.bean.Person"</span><span class="nt">&gt;</span>
+	...
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"hobbies"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;array&gt;</span>
+			<span class="nt">&lt;value&gt;</span>book<span class="nt">&lt;/value&gt;</span>
+			<span class="nt">&lt;value&gt;</span>girl<span class="nt">&lt;/value&gt;</span>
+			<span class="nt">&lt;value&gt;</span>movie<span class="nt">&lt;/value&gt;</span>
+		<span class="nt">&lt;/array&gt;</span>
+	<span class="nt">&lt;/property&gt;</span>
+	...
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><h3 id="给引用类型赋值">给引用类型赋值</h3><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="nc">Address</span> <span class="n">address</span><span class="o">;</span>
+</code></pre></div></div><p>方式一：内部 bean</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person6"</span> <span class="na">class=</span><span class="s">"com.kky.bean.Person"</span><span class="nt">&gt;</span>
+	...
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"address"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"address"</span> <span class="na">class=</span><span class="s">"com.kky.bean.Address"</span><span class="nt">&gt;</span>
+			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"province"</span> <span class="na">value=</span><span class="s">"江苏省"</span><span class="nt">&gt;&lt;/property&gt;</span>
+			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"city"</span> <span class="na">value=</span><span class="s">"南京市"</span><span class="nt">&gt;&lt;/property&gt;</span>
+			<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"town"</span> <span class="na">value=</span><span class="s">"玄武区"</span><span class="nt">&gt;&lt;/property&gt;</span>
+		<span class="nt">&lt;/bean&gt;</span>
+	<span class="nt">&lt;/property&gt;</span>
+	...
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><p>该方式创建的对象无法从 IOC 容器中取出</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Address</span> <span class="n">address</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"address"</span><span class="o">,</span><span class="nc">Address</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</code></pre></div></div><p>执行该语句会<strong>报错</strong>。</p><hr /><p>方式二：引用外部 bean</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person6"</span> <span class="na">class=</span><span class="s">"com.kky.bean.Person"</span><span class="nt">&gt;</span>
+	...
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"address"</span> <span class="na">ref=</span><span class="s">"address"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	...
+<span class="nt">&lt;/bean&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"address"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Address"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"province"</span> <span class="na">value=</span><span class="s">"河北省"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"city"</span> <span class="na">value=</span><span class="s">"邯郸"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"town"</span> <span class="na">value=</span><span class="s">"武安"</span><span class="nt">&gt;&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><p>该方式创建的 Address 对象可从 IOC 容器中取出</p><h3 id="给-list-赋值">给 List 赋值</h3><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="nc">List</span><span class="o">&lt;</span><span class="nc">Address</span><span class="o">&gt;</span> <span class="n">lists</span><span class="o">;</span>
+</code></pre></div></div><p>同样地可以使用内部 bean 和外部 bean 的方式</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person6"</span> <span class="na">class=</span><span class="s">"com.kky.bean.Person"</span><span class="nt">&gt;</span>
+	...
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"lists"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;list&gt;</span>
+			<span class="c">&lt;!--使用内部bean,无法从IOC容器中直接获取对象的值--&gt;</span>
+			<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"address2"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Address"</span><span class="nt">&gt;</span>
+				<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"province"</span> <span class="na">value=</span><span class="s">"北京"</span><span class="nt">&gt;&lt;/property&gt;</span>
+			<span class="nt">&lt;/bean&gt;</span>
+			<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Address"</span><span class="nt">&gt;</span>
+				<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"province"</span> <span class="na">value=</span><span class="s">"上海"</span><span class="nt">&gt;&lt;/property&gt;</span>
+			<span class="nt">&lt;/bean&gt;</span>
+			<span class="c">&lt;!--使用外部bean，可以随意从IOC容器获取对象的值--&gt;</span>
+			<span class="nt">&lt;ref</span> <span class="na">bean=</span><span class="s">"address"</span><span class="nt">&gt;&lt;/ref&gt;</span>
+		<span class="nt">&lt;/list&gt;</span>
+	<span class="nt">&lt;/property&gt;</span>
+	...
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><h2 id="给-set-赋值">给 Set 赋值</h2><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="nc">Set</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">sets</span><span class="o">;</span>
+</code></pre></div></div><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person6"</span> <span class="na">class=</span><span class="s">"com.kky.bean.Person"</span><span class="nt">&gt;</span>
+	...
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"sets"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;set&gt;</span>
+			<span class="nt">&lt;value&gt;</span>zhangsan<span class="nt">&lt;/value&gt;</span>
+			<span class="nt">&lt;value&gt;</span>lisi<span class="nt">&lt;/value&gt;</span>
+			<span class="nt">&lt;value&gt;</span>wangwu<span class="nt">&lt;/value&gt;</span>
+		<span class="nt">&lt;/set&gt;</span>
+	<span class="nt">&lt;/property&gt;</span>
+	...
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><h2 id="给-map-赋值">给 Map 赋值</h2><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">Object</span><span class="o">&gt;</span> <span class="n">maps</span><span class="o">;</span>
+</code></pre></div></div><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person6"</span> <span class="na">class=</span><span class="s">"com.kky.bean.Person"</span><span class="nt">&gt;</span>
+	...
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"maps"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;map&gt;</span>
+			<span class="nt">&lt;entry</span> <span class="na">key=</span><span class="s">"a"</span> <span class="na">value=</span><span class="s">"aaa"</span><span class="nt">&gt;&lt;/entry&gt;</span>
+			<span class="nt">&lt;entry</span> <span class="na">key=</span><span class="s">"address"</span> <span class="na">value-ref=</span><span class="s">"address"</span><span class="nt">&gt;&lt;/entry&gt;</span>
+			<span class="nt">&lt;entry</span> <span class="na">key=</span><span class="s">"address2"</span><span class="nt">&gt;</span>
+				<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Address"</span><span class="nt">&gt;</span>
+					<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"province"</span> <span class="na">value=</span><span class="s">"广东省"</span><span class="nt">&gt;&lt;/property&gt;</span>
+				<span class="nt">&lt;/bean&gt;</span>
+			<span class="nt">&lt;/entry&gt;</span>
+			<span class="nt">&lt;entry&gt;</span>
+				<span class="nt">&lt;key&gt;</span>
+					<span class="nt">&lt;value&gt;</span>heihei<span class="nt">&lt;/value&gt;</span>
+				<span class="nt">&lt;/key&gt;</span>
+				<span class="nt">&lt;value&gt;</span>haha<span class="nt">&lt;/value&gt;</span>
+			<span class="nt">&lt;/entry&gt;</span>
+			<span class="nt">&lt;entry</span> <span class="na">key=</span><span class="s">"list"</span><span class="nt">&gt;</span>
+				<span class="nt">&lt;list&gt;</span>
+					<span class="nt">&lt;value&gt;</span>11<span class="nt">&lt;/value&gt;</span>
+					<span class="nt">&lt;value&gt;</span>22<span class="nt">&lt;/value&gt;</span>
+				<span class="nt">&lt;/list&gt;</span>
+			<span class="nt">&lt;/entry&gt;</span>
+		<span class="nt">&lt;/map&gt;</span>
+	<span class="nt">&lt;/property&gt;</span>
+	...
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><h2 id="给-properties-赋值">给 properties 赋值</h2><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">private</span> <span class="nc">Properties</span> <span class="n">properties</span><span class="o">;</span>
+</code></pre></div></div><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person6"</span> <span class="na">class=</span><span class="s">"com.kky.bean.Person"</span><span class="nt">&gt;</span>
+	...
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"properties"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;props&gt;</span>
+			<span class="nt">&lt;prop</span> <span class="na">key=</span><span class="s">"111"</span><span class="nt">&gt;</span>aaa<span class="nt">&lt;/prop&gt;</span>
+			<span class="nt">&lt;prop</span> <span class="na">key=</span><span class="s">"222"</span><span class="nt">&gt;</span>bbb<span class="nt">&lt;/prop&gt;</span>
+		<span class="nt">&lt;/props&gt;</span>
+	<span class="nt">&lt;/property&gt;</span>
+	...
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><h2 id="自动装配">自动装配</h2><p>当一个对象中需要引用另外一个对象的时候。<br /> 除了通过 property 标签来进行手动配置的，还可以让 Spring 根据某种规则帮我们自动装配。</p><p>default/no：不自动装配</p><p>byName：按照名字进行装配，以属性名作为id去容器中查找组件，进行赋值，如果找不到则装配null</p><p>byType：按照类型进行装配,以属性的类型作为查找依据去容器中找到这个组件，如果有多个类型相同的bean对象，那么会报异常，如果找不到则装配null</p><p>constructor：按照构造器进行装配，先按照有参构造器参数的类型进行装配，没有就直接装配null；如果按照类型找到了多个，那么就使用参数名作为id继续匹配，找到就装配，找不到就装配null</p><p>ioc.xml</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"address"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Address"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"province"</span> <span class="na">value=</span><span class="s">"河北"</span><span class="nt">&gt;&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"city"</span> <span class="na">value=</span><span class="s">"邯郸"</span><span class="nt">&gt;&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"town"</span> <span class="na">value=</span><span class="s">"武安"</span><span class="nt">&gt;&lt;/property&gt;</span>
+    <span class="nt">&lt;/bean&gt;</span>
+    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person1"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Person"</span> <span class="na">autowire=</span><span class="s">"byName"</span><span class="nt">&gt;&lt;/bean&gt;</span>
+    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person2"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Person"</span> <span class="na">autowire=</span><span class="s">"byType"</span><span class="nt">&gt;&lt;/bean&gt;</span>
+    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person3"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Person"</span> <span class="na">autowire=</span><span class="s">"constructor"</span><span class="nt">&gt;&lt;/bean&gt;</span>
+<span class="nt">&lt;/beans&gt;</span>
+</code></pre></div></div><h1 id="bean-之间的继承关系">bean 之间的继承关系</h1><p>bean 之间是可以继承的</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"parent"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Person"</span> <span class="na">abstract=</span><span class="s">"false"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"id"</span> <span class="na">value=</span><span class="s">"1"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"name"</span> <span class="na">value=</span><span class="s">"zhangsan"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"age"</span> <span class="na">value=</span><span class="s">"20"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"gender"</span> <span class="na">value=</span><span class="s">"男"</span><span class="nt">&gt;&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+<span class="c">&lt;!--可以通过 parent 属性来获取父 bean 中的某些属性值--&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"son"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Person"</span> <span class="na">parent=</span><span class="s">"parent"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"name"</span> <span class="na">value=</span><span class="s">"haha"</span><span class="nt">&gt;&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><p>测试</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Person</span> <span class="n">son</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"son"</span><span class="o">,</span> <span class="nc">Person</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">son</span><span class="o">);</span>
+</code></pre></div></div><p>结果</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Person{id=1, name='haha', age=20, gender='男', address=null,...}
+</code></pre></div></div><p>即自己定义的属性是<strong>覆盖</strong>父 bean 的属性的。</p><hr /><p>在 bean 中添加 <code class="language-plaintext highlighter-rouge">abstract="true"</code> ，则该 bean 是抽象的，不会实例化。<br /> 如果想实现类似于 Java 中的抽象类，不需要将当前 bean 实例化的话，可以使用 abstract 属性。</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"parent"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Person"</span> <span class="na">abstract=</span><span class="s">"false"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"id"</span> <span class="na">value=</span><span class="s">"1"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"name"</span> <span class="na">value=</span><span class="s">"zhangsan"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"age"</span> <span class="na">value=</span><span class="s">"20"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"gender"</span> <span class="na">value=</span><span class="s">"男"</span><span class="nt">&gt;&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><p>该 bean 不会实例化</p><h1 id="bean-之间的依赖关系">bean 之间的依赖关系</h1><p>在配置文件中先定义的 bean 对象先被创建。</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"address"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Address"</span><span class="nt">&gt;&lt;/bean&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Person"</span><span class="nt">&gt;&lt;/bean&gt;</span>
+</code></pre></div></div><p>address 先创建，person 后创建。</p><p>使用 depend-on 标签改变创建顺序</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"address"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Address"</span> <span class="na">depends-on=</span><span class="s">"person"</span><span class="nt">&gt;&lt;/bean&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Person"</span><span class="nt">&gt;&lt;/bean&gt;</span>
+</code></pre></div></div><p>此时 person 先创建，address 后创建。</p><hr /><p><strong>不需要关心 Spring IOC 的创建对象的顺序问题。</strong></p><p>现在 Person 类中包含 Address 对象。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span><span class="o">{</span>
+	<span class="o">...</span>
+	<span class="kd">private</span> <span class="nc">Address</span> <span class="n">address</span><span class="o">;</span>
+	<span class="o">...</span>
+<span class="o">}</span>
+</code></pre></div></div><p>我们平时是这么做的。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Address</span> <span class="n">address</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Address</span><span class="o">(...);</span>
+<span class="nc">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Person</span><span class="o">(...</span> <span class="o">,</span><span class="n">address</span> <span class="o">,...);</span>
+</code></pre></div></div><p>即先创建子对象。</p><p>但是在 Spring IOC 中无需关心这个问题，Spring IOC 先创建的对象中即使有空对象，后续也会进行正确的设置。</p><h1 id="bean-的作用域">bean 的作用域</h1><p>bean 有两种作用域：singleton 和 prototype</p><p>默认情况下是 singleton <a href="https://kekaiyuan.github.io//2021/06/02/singleton/">单例模式</a></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ClassPathXmlApplicationContext</span><span class="o">(</span><span class="s">"ioc.xml"</span><span class="o">);</span>
+<span class="nc">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"person"</span><span class="o">,</span> <span class="nc">Person</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="nc">Person</span> <span class="n">person1</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"person"</span><span class="o">,</span> <span class="nc">Person</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">person</span> <span class="o">==</span> <span class="n">person1</span><span class="o">);</span>
+</code></pre></div></div><p>结果</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kc">true</span>
+</code></pre></div></div><p>也就是说，<code class="language-plaintext highlighter-rouge">person</code> 和 <code class="language-plaintext highlighter-rouge">person1</code> 是<strong>同一个对象</strong>，修改 <code class="language-plaintext highlighter-rouge">person</code> 中的属性值，<code class="language-plaintext highlighter-rouge">person1</code> 也会被修改。</p><hr /><p>prototype <a href="https://kekaiyuan.github.io//2021/06/18/prototype/">原型模式</a> ，可以简单地理解成 <strong>“多例模式”</strong>。<br /> 即该模式每次创建的都是一个新对象。<br /></p><p>如果要使用 prototype 请修改 <code class="language-plaintext highlighter-rouge">scope</code> 属性</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person"</span> <span class="na">class=</span><span class="s">"com.kky.bean.Person"</span> <span class="na">scope=</span><span class="s">"prototype"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"id"</span> <span class="na">value=</span><span class="s">"1"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"name"</span> <span class="na">value=</span><span class="s">"zhangsan"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"age"</span> <span class="na">value=</span><span class="s">"18"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"gender"</span> <span class="na">value=</span><span class="s">"男"</span><span class="nt">&gt;&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><p>此时从容器中取出的是不同的对象</p><p>测试</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ClassPathXmlApplicationContext</span><span class="o">(</span><span class="s">"ioc.xml"</span><span class="o">);</span>
+<span class="nc">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"person"</span><span class="o">,</span> <span class="nc">Person</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="nc">Person</span> <span class="n">person1</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"person"</span><span class="o">,</span> <span class="nc">Person</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">person</span> <span class="o">==</span> <span class="n">person1</span><span class="o">);</span>
+</code></pre></div></div><p>结果</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kc">false</span>
+</code></pre></div></div><hr /><table><thead><tr><th style="text-align: center">容器的模式</th><th style="text-align: center">对象何时创建</th></tr></thead><tbody><tr><td style="text-align: center">单例模式</td><td style="text-align: center">容器创建完成时自动创建</td></tr><tr><td style="text-align: center">原型模式</td><td style="text-align: center">从容器中取出对象时才创建</td></tr></tbody></table><hr /><p>在 Spring 4.x 的版本中还包含另外两种作用域：</p><ul><li>request<br /> 每次发送请求都会有一个新的对象</li><li>session<br /> 每一次会话都会有一个新的对象</li></ul><p>使用率极低，于是在 Spring 5.x 版本的时候被淘汰了</p><h1 id="利用工厂模式创建-bean-对象">利用工厂模式创建 bean 对象</h1><h2 id="自定义工厂">自定义工厂</h2><p>在之前的案例中，所有 bean 对象的创建都是通过反射得到对应的 bean 实例。<br /> 但其实 Spring 还支持另一种创建 bean 实例的方式——<a href="https://kekaiyuan.github.io//2021/06/04/factory/">工厂模式</a>。</p><p>在利用工厂模式创建 bean 实例的时候有<strong>两种</strong>方式</p><ul><li>静态工厂<br /> 不需要创建工厂对象，直接通过 <code class="language-plaintext highlighter-rouge">对象=工厂类.静态工厂方法名()</code> 调用。</li><li>实例工厂 需要创建工厂对象。<br /><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  工厂类 工厂对象 = new 工厂类();
+  对象 = 工厂对象.get对象名();
+</code></pre></div></div></li></ul><h3 id="静态工厂">静态工厂</h3><p>新建静态工厂类 PersonStaticFactory</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">PersonStaticFactory</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">Person</span> <span class="nf">getPerson</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">){</span>
+        <span class="nc">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Person</span><span class="o">();</span>
+        <span class="n">person</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+        <span class="n">person</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">person</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>写入配置文件：</p><ul><li><code class="language-plaintext highlighter-rouge">class</code><br /> 指定静态工厂类</li><li><code class="language-plaintext highlighter-rouge">factory-method</code><br /> 指定哪个方法是工厂方法</li></ul><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person5"</span> <span class="na">class=</span><span class="s">"com.mashibing.factory.PersonStaticFactory"</span> <span class="na">factory-method=</span><span class="s">"getPerson"</span><span class="nt">&gt;</span>
+        <span class="c">&lt;!--constructor-arg：可以为方法指定参数--&gt;</span>
+        <span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"lisi"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><h3 id="实例工厂">实例工厂</h3><p>新建实例工厂类 PersonInstanceFactory</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">PersonInstanceFactory</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="nc">Person</span> <span class="nf">getPerson</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">){</span>
+        <span class="nc">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Person</span><span class="o">();</span>
+        <span class="n">person</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+        <span class="n">person</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">person</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>写入配置文件：</p><ol><li>创建实例工厂类对象<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>     <span class="c">&lt;!--创建实例工厂类--&gt;</span>
+     <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"personInstanceFactory"</span> <span class="na">class=</span><span class="s">"com.mashibing.factory.PersonInstanceFactory"</span><span class="nt">&gt;&lt;/bean&gt;</span>
+</code></pre></div></div></li><li>调用对象<ul><li><code class="language-plaintext highlighter-rouge">factory-bean</code><br /> 指定使用哪个工厂实例</li><li><code class="language-plaintext highlighter-rouge">factory-method</code><br /> 指定使用哪个工厂实例的方法</li></ul><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person6"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Person"</span> <span class="na">factory-bean=</span><span class="s">"personInstanceFactory"</span> <span class="na">factory-method=</span><span class="s">"getPerson"</span><span class="nt">&gt;</span>
+     <span class="nt">&lt;constructor-arg</span> <span class="na">value=</span><span class="s">"wangwu"</span><span class="nt">&gt;&lt;/constructor-arg&gt;</span>
+ <span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div></li></ol><h2 id="继承-factorybean-接口">继承 FactoryBean 接口</h2><p><code class="language-plaintext highlighter-rouge">FactoryBean</code> 是 Spring 规定的一个接口。<br /> 实现该接口后 Spring 会<strong>自动调用</strong>以创建实例。<br /> 但是在 IOC 容器启动的时候不会创建实例，只有在使用的时候才会创建对象。</p><p>该接口必须实现的两个方法：</p><ul><li><code class="language-plaintext highlighter-rouge">getObject()</code><br /> 工厂方法，返回需要创建的对象</li><li><code class="language-plaintext highlighter-rouge">getObjectType()</code><br /> 返回对象类型</li></ul><p>以及一个可选方法 <code class="language-plaintext highlighter-rouge">isSingleton</code><br /> Spring 通过调用该方法得知该对象是单例模式还是原型模式。<br /> 该方法在接口有默认实现：</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">default</span> <span class="kt">boolean</span> <span class="nf">isSingleton</span><span class="o">()</span> <span class="o">{</span>
+	<span class="k">return</span> <span class="kc">true</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div><p>可以看到，默认是单例模式。<br /> 当我们需要使用原型模式时，重写该方法使返回值为 <code class="language-plaintext highlighter-rouge">false</code> 。</p><p>Spring 会<strong>自动调用</strong>这三个方法，我们只需要关心实现即可。</p><p>案例</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyFactoryBean</span> <span class="kd">implements</span> <span class="nc">FactoryBean</span><span class="o">&lt;</span><span class="nc">Person</span><span class="o">&gt;</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Person</span> <span class="nf">getObject</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="nc">Person</span> <span class="n">person</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Person</span><span class="o">();</span>
+        <span class="n">person</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">"maliu"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">person</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Class</span><span class="o">&lt;?&gt;</span> <span class="n">getObjectType</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="nc">Person</span><span class="o">.</span><span class="na">class</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">isSingleton</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>写入配置文件</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"myfactorybean"</span> <span class="na">class=</span><span class="s">"com.mashibing.factory.MyFactoryBean"</span><span class="nt">&gt;&lt;/bean&gt;</span>
+</code></pre></div></div><h1 id="添加-bean-对象的初始化和销毁方法">添加 bean 对象的初始化和销毁方法</h1><p>我们可以根据需要为 bean 对象添加<strong>初始化方法</strong>和<strong>销毁方法</strong>。</p><ul><li>初始化方法<br /> 创建对象后调用。</li><li>销毁方法<br /> 销毁对象前调用。</li></ul><p>在 Person 类中添加 <code class="language-plaintext highlighter-rouge">init()</code> 方法和 <code class="language-plaintext highlighter-rouge">destory()</code> 方法</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span><span class="o">{</span>
+    <span class="o">...</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">(){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"对象被初始化"</span><span class="o">);</span>
+    <span class="o">}</span>
+    
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destory</span><span class="o">(){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"对象被销毁"</span><span class="o">);</span>
+    <span class="o">}</span>
+    <span class="o">...</span>
+</code></pre></div></div><p>写入配置文件</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"address"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Address"</span> <span class="na">init-method=</span><span class="s">"init"</span> <span class="na">destroy-method=</span><span class="s">"destory"</span><span class="nt">&gt;&lt;/bean&gt;</span>
+</code></pre></div></div><hr /><p>当容器 <code class="language-plaintext highlighter-rouge">scope = singleton</code> 时。<br /> 容器创建后会<strong>自动</strong>创建对象，容器销毁时会<strong>自动</strong>销毁对象。</p><p>如何销毁容器？</p><p><code class="language-plaintext highlighter-rouge">ApplicationContext</code> 类没有 <code class="language-plaintext highlighter-rouge">close()</code> 方法。<br /> 但它的子类 <code class="language-plaintext highlighter-rouge">ClassPathXmlApplicationContext</code> 实现了 <code class="language-plaintext highlighter-rouge">close()</code> 方法。<br /> 只需要做<strong>强制类型转换</strong>即可。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ClassPathXmlApplicationContext</span><span class="o">(</span><span class="s">"ioc.xml"</span><span class="o">);</span>
+<span class="c1">//applicationContext没有close方法，需要使用具体的子类</span>
+<span class="o">((</span><span class="nc">ClassPathXmlApplicationContext</span><span class="o">)</span><span class="n">context</span><span class="o">).</span><span class="na">close</span><span class="o">();</span>
+</code></pre></div></div><hr /><p>当容器 <code class="language-plaintext highlighter-rouge">scope = prototype</code> 时。<br /> 从容器获取对象时才创建对象，并且销毁容器时<strong>不会销毁对象</strong>。</p><p>也就是说，原型模式时的 <code class="language-plaintext highlighter-rouge">destory()</code> 方法不会被自动调用的。</p><h1 id="配置-bean-对象初始化方法的前后处理方法">配置 bean 对象初始化方法的前后处理方法</h1><p>Spring中包含一个 <code class="language-plaintext highlighter-rouge">BeanPostProcessor</code> 的接口，可以在 bean 的初始化方法的<strong>前后</strong>调用该方法。<br /> <strong>如果配置了初始化方法的前置和后置处理器，无论是否包含初始化方法，都会进行调用。</strong></p><ol><li>实现 <code class="language-plaintext highlighter-rouge">BeanPostProcessor</code> 接口</li><li>重写两个方法<ul><li><code class="language-plaintext highlighter-rouge">postProcessBeforeInitialization()</code><br /> bean 对象初始化前调用</li><li><code class="language-plaintext highlighter-rouge">postProcessAfterInitialization()</code><br /> bean 对象初始化后调用</li></ul></li></ol><p>案例</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyBeanPostProcessor</span> <span class="kd">implements</span> <span class="nc">BeanPostProcessor</span> <span class="o">{</span>
+
+	<span class="c1">//初始化前调用</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">postProcessBeforeInitialization</span><span class="o">(</span><span class="nc">Object</span> <span class="n">bean</span><span class="o">,</span> <span class="nc">String</span> <span class="n">beanName</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">BeansException</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"初始化前"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">bean</span><span class="o">;</span>
+    <span class="o">}</span>
+
+	<span class="c1">//初始化后调用</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">Object</span> <span class="nf">postProcessAfterInitialization</span><span class="o">(</span><span class="nc">Object</span> <span class="n">bean</span><span class="o">,</span> <span class="nc">String</span> <span class="n">beanName</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">BeansException</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"初始化后"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">bean</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>写入配置文件</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"myBeanPostProcessor"</span> <span class="na">class=</span><span class="s">"com.kky.bean.MyBeanPostProcessor"</span><span class="nt">&gt;&lt;/bean&gt;</span>
+</code></pre></div></div><p>因为 bean 对象默认使用单例模式，会自动创建对象。<br /> 所以不需要编写测试代码，直接运行程序即可。</p><p><strong>注意：</strong><br /> BeanPostProcessor 是服务于<strong>所有</strong> bean 的。<br /> 也就是说，每一个 bean 初始化时都会调用 BeanPstProcessor 的方法 。</p><h1 id="spring创建第三方-bean-对象">Spring创建第三方 bean 对象</h1><p>在 Spring 中，很多对象都是单实例的，在日常的开发中，我们经常需要使用某些外部的单实例对象，例如数据库连接池。<br /> 下面我们来讲解下如何在 Spring 中创建第三方 bean 实例。</p><p>案例：创建 Druid 数据库连接池对象。</p><p>通过 Maven 导入相关 jar 包</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!-- https://mvnrepository.com/artifact/com.alibaba/druid --&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+	<span class="nt">&lt;groupId&gt;</span>com.alibaba<span class="nt">&lt;/groupId&gt;</span>
+	<span class="nt">&lt;artifactId&gt;</span>druid<span class="nt">&lt;/artifactId&gt;</span>
+	<span class="nt">&lt;version&gt;</span>1.1.21<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="c">&lt;!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java --&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+	<span class="nt">&lt;groupId&gt;</span>mysql<span class="nt">&lt;/groupId&gt;</span>
+	<span class="nt">&lt;artifactId&gt;</span>mysql-connector-java<span class="nt">&lt;/artifactId&gt;</span>
+	<span class="nt">&lt;version&gt;</span>5.1.47<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div></div><p>编写配置文件。<br /> 填写数据库的<strong>用户名</strong>、<strong>密码</strong>、<strong>地址</strong>、<strong>驱动</strong></p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span>
+       <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+       <span class="na">xsi:schemaLocation=</span><span class="s">"http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd"</span><span class="nt">&gt;</span>
+
+    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"dataSource"</span> <span class="na">class=</span><span class="s">"com.alibaba.druid.pool.DruidDataSource"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"username"</span> <span class="na">value=</span><span class="s">"root"</span><span class="nt">&gt;&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"password"</span> <span class="na">value=</span><span class="s">"123456"</span><span class="nt">&gt;&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"url"</span> <span class="na">value=</span><span class="s">"jdbc:mysql://localhost:3306/demo"</span><span class="nt">&gt;&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"driverClassName"</span> <span class="na">value=</span><span class="s">"com.mysql.jdbc.Driver"</span><span class="nt">&gt;&lt;/property&gt;</span>
+    <span class="nt">&lt;/bean&gt;</span>
+<span class="nt">&lt;/beans&gt;</span>
+</code></pre></div></div><p>使用</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">ApplicationContext</span> <span class="n">context</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ClassPathXmlApplicationContext</span><span class="o">(</span><span class="s">"ioc.xml"</span><span class="o">);</span>
+<span class="nc">DruidDataSource</span> <span class="n">dataSource</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="na">getBean</span><span class="o">(</span><span class="s">"dataSource"</span><span class="o">,</span> <span class="nc">DruidDataSource</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+</code></pre></div></div><h1 id="spring-引用外部配置文件">Spring 引用外部配置文件</h1><p>在项目开发中，有些数据定义在配置文件中比较好，比如<strong>用户名</strong>、<strong>密码</strong>……<br /> 那么如何使用 Spring 引用外部配置文件呢？</p><p>案例：创建数据库连接池对象</p><p>在 resource 中添加 dbconfig.properties</p><div class="language-properties highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="py">jdbc.username</span><span class="p">=</span><span class="s">root</span>
+<span class="py">jdbc.password</span><span class="p">=</span><span class="s">123456</span>
+<span class="py">jdbc.url</span><span class="p">=</span><span class="s">jdbc:mysql://localhost:3306/test</span>
+<span class="py">jdbc.driverClassName</span><span class="p">=</span><span class="s">com.mysql.jdbc.Driver</span>
+</code></pre></div></div><p>使用方法：</p><ol><li>导入 context 命名空间<br /><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nt">&lt;beans</span> 
+    <span class="err">...</span>
+    <span class="na">xmlns:context=</span><span class="s">"http://www.springframework.org/schema/context"</span>
+    <span class="na">xsi:schemaLocation=</span><span class="s">"
+    ...
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context.xsd
+    ..."</span><span class="nt">&gt;</span>
+ <span class="nt">&lt;/beans&gt;</span>
+</code></pre></div></div></li><li>引入配置文件<br /> <code class="language-plaintext highlighter-rouge">xml &lt;context:property-placeholder location="classpath:dbconfig.properties"/&gt; </code></li><li>使用 <code class="language-plaintext highlighter-rouge">${}</code> 来读取配置文件中的数据</li></ol><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>
+<span class="nt">&lt;beans</span> <span class="na">xmlns=</span><span class="s">"http://www.springframework.org/schema/beans"</span>
+       <span class="na">xmlns:xsi=</span><span class="s">"http://www.w3.org/2001/XMLSchema-instance"</span>
+       <span class="na">xmlns:context=</span><span class="s">"http://www.springframework.org/schema/context"</span>
+       <span class="na">xsi:schemaLocation=</span><span class="s">"http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd"</span><span class="nt">&gt;</span>
+	<span class="c">&lt;!--加载外部配置文件
+		在加载外部依赖文件的时候需要context命名空间
+	--&gt;</span>
+    <span class="nt">&lt;context:property-placeholder</span> <span class="na">location=</span><span class="s">"classpath:dbconfig.properties"</span><span class="nt">/&gt;</span>
+    <span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"dataSource"</span> <span class="na">class=</span><span class="s">"com.alibaba.druid.pool.DruidDataSource"</span><span class="nt">&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"username"</span> <span class="na">value=</span><span class="s">"${jdbc.username}"</span><span class="nt">&gt;&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"password"</span> <span class="na">value=</span><span class="s">"${jdbc.password}"</span><span class="nt">&gt;&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"url"</span> <span class="na">value=</span><span class="s">"${jdbc.url}"</span><span class="nt">&gt;&lt;/property&gt;</span>
+        <span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"driverClassName"</span> <span class="na">value=</span><span class="s">"${jdbc.driverClassName}"</span><span class="nt">&gt;&lt;/property&gt;</span>
+    <span class="nt">&lt;/bean&gt;</span>
+<span class="nt">&lt;/beans&gt;</span>
+</code></pre></div></div><h2 id="注意">注意</h2><p>有时通过 Spring 读取配置文件中的参数时会得到预期之外的效果。<br /> 这是因为 Spring 默认会将本机中的环境配置文件导入。<br /> 而当多个配置文件的参数名<strong>重名</strong>时，会发生读取错误。</p><p>特别是以下情形：<br /> dbconfig.properties</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>username=root
+</code></pre></div></div><p>此时使用 <code class="language-plaintext highlighter-rouge">${username}</code> 读取不到 root ，而会读取到本机当前的账户名：<br /> <img src="\images\posts\java\framework\spring\02-ioc\myaccount.png" alt="" /><br /> 即<strong>柯凯元</strong></p><p>所以使用 Spring 读取配置文件时，最好给参数名加上前缀，例如：<code class="language-plaintext highlighter-rouge">jdbc.username</code></p><h1 id="spel">SpEL</h1><p>SpEL—— Spring Expression Language。<br /> Spring 的表达式语言，支持运行时查询操作对象。</p><p>使用 <code class="language-plaintext highlighter-rouge">#{...}</code> 作为语法规则，所有的大括号中的字符都认为是 SpEL。</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"person4"</span> <span class="na">class=</span><span class="s">"com.mashibing.bean.Person"</span><span class="nt">&gt;</span>
+	<span class="c">&lt;!--支持任何运算符--&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"age"</span> <span class="na">value=</span><span class="s">"#{12*2}"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	<span class="c">&lt;!--可以引用其他bean的某个属性值--&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"name"</span> <span class="na">value=</span><span class="s">"#{address.province}"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	<span class="c">&lt;!--引用其他bean--&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"address"</span> <span class="na">value=</span><span class="s">"#{address}"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	<span class="c">&lt;!--调用静态方法--&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"hobbies"</span> <span class="na">value=</span><span class="s">"#{T(java.util.UUID).randomUUID().toString().substring(0,4)}"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	<span class="c">&lt;!--调用非静态方法--&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"gender"</span> <span class="na">value=</span><span class="s">"#{address.getCity()}"</span><span class="nt">&gt;&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><h1 id="源码链接">源码链接</h1><p>该文章源码链接 <a href="url">Github</a></p><div style="margin-top:2em;padding:0 1.5em;border:1px solid #d3d3d3;background-color:#deebf7"><h3>文档信息</h3><ul><li>本文作者：<a href="https://kekaiyuan.github.io/" target="_blank">Kaiyuan Ke</a></li><li>本文链接：<a href="https://kekaiyuan.github.io//2021/07/21/02-ioc/" target="_blank">https://kekaiyuan.github.io//2021/07/21/02-ioc/</a></li><li>版权声明：自由转载-非商用-非衍生-保持署名（<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank">创意共享3.0许可证</a>）</li></ul></div></article><div class="share"></div><div class="comment"><div id="gitalk-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/gitalk/gitalk.css"> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <script> var gitalk = new Gitalk({ id: '/2021/07/21/02-ioc/', clientID: '', clientSecret: '', repo: '', owner: '', admin: [''], labels: ['gitment'], perPage: 50, }); gitalk.render('gitalk-container'); </script></div></div><div class="column one-fourth"><h3>Search</h3><div id="site_search"> <input style="width:350px" type="text" id="search_box" placeholder="Search"></div><ul id="search_results" style="font-size:16px;list-style-type:none;padding-top:10px;padding-left:10px;"></ul><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/simple-jekyll-search.min.js"></script> <script type="text/javascript"> SimpleJekyllSearch({ searchInput: document.getElementById('search_box'), resultsContainer: document.getElementById('search_results'), json: 'https://kekaiyuan.github.io//assets/search_data.json?v=1646200239', searchResultTemplate: '<li><a href="{url}" title="{title}">{title}</a></li>', noResultsText: 'No results found', limit: 10, fuzzy: false, exclude: ['Welcome'] }) </script><h3 class="post-directory-title mobile-hidden">Table of Contents</h3><div id="post-directory-module" class="mobile-hidden"><section class="post-directory"><dl></dl></section></div><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/jquery.toc.js"></script></div></div></section><footer class="container"><div class="site-footer" role="contentinfo"><div class="copyright left mobile-block"> © 2015 <span title="Kaiyuan Ke">Kaiyuan Ke</span> <a href="javascript:window.scrollTo(0,0)" class="right mobile-visible">TOP</a></div><ul class="site-footer-links right mobile-hidden"><li> <a href="javascript:window.scrollTo(0,0)" >TOP</a></li></ul><a href="https://github.com/kekaiyuan/kekaiyuan.github.io" target="_blank" aria-label="view source code"> <span class="mega-octicon octicon-mark-github" title="GitHub"></span> </a><ul class="site-footer-links mobile-hidden"><li> <a href="https://kekaiyuan.github.io//" title="首页" target="">首页</a></li><li> <a href="https://kekaiyuan.github.io//categories/" title="分类" target="">分类</a></li><li> <a href="https://kekaiyuan.github.io//archives/" title="归档" target="">归档</a></li><li> <a href="https://kekaiyuan.github.io//wiki/" title="维基" target="">维基</a></li><li> <a href="https://kekaiyuan.github.io//links/" title="链接" target="">链接</a></li><li> <a href="https://kekaiyuan.github.io//about/" title="关于" target="">关于</a></li><li><a href="https://kekaiyuan.github.io//feed.xml"><span class="octicon octicon-rss" style="color:orange;"></span></a></li></ul></div></footer><div class="tools-wrapper"> <a class="gotop" href="#" title="回到顶部"><span class="octicon octicon-arrow-up"></span></a></div><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/geopattern.js"></script> <script> jQuery(document).ready(function($) { $('.geopattern').each(function(){ $(this).geopattern($(this).data('pattern-id')); }); /* hljs.initHighlightingOnLoad(); */ }); </script><div style="display:none"> <script> (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); ga('create', 'UA-80669434-1', 'auto'); ga('send', 'pageview'); </script></div></body></html>

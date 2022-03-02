@@ -1,0 +1,588 @@
+<!DOCTYPE html><html lang="zh-cmn-Hans" prefix="og: http://ogp.me/ns#" class="han-init"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /><title>Java Spring MVC 02——使用方法（二） &mdash; 菜鸟日记</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/primer-css/css/primer.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/collection.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/repo-card.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/sections/repo-list.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/boxed-group.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/globals/common.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/globals/responsive.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/posts/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/octicons/octicons/octicons.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mzlogin/rouge-themes@master/dist/github.css"><link rel="canonical" href="https://kekaiyuan.github.io//2021/08/14/02-usage/"><link rel="alternate" type="application/atom+xml" title="菜鸟日记" href="https://kekaiyuan.github.io//feed.xml"><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/favicon.ico"><meta property="og:title" content="Java Spring MVC 02——使用方法（二）"><meta name="keywords" content="Java, SpringMVC"><meta name="og:keywords" content="Java, SpringMVC"><meta name="description" content="Java Spring MVC 02——使用方法（二）"><meta name="og:description" content="Java Spring MVC 02——使用方法（二）"><meta property="og:url" content="https://kekaiyuan.github.io//2021/08/14/02-usage/"><meta property="og:site_name" content="菜鸟日记"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN" /><meta property="article:published_time" content="2021-08-14"> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/jquery/dist/jquery.min.js"></script> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/jquery-ui.js"></script> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/main.js"></script></head><body class="" data-mz=""><header class="site-header"><div class="container"><h1><a href="https://kekaiyuan.github.io//" title="菜鸟日记"><span class="octicon octicon-mark-github"></span> 菜鸟日记</a></h1><button class="collapsed mobile-visible" type="button" onclick="toggleMenu();"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button><nav class="site-header-nav" role="navigation"> <a href="https://kekaiyuan.github.io//" class=" site-header-nav-item" target="" title="首页">首页</a> <a href="https://kekaiyuan.github.io//categories/" class=" site-header-nav-item" target="" title="分类">分类</a> <a href="https://kekaiyuan.github.io//archives/" class=" site-header-nav-item" target="" title="归档">归档</a> <a href="https://kekaiyuan.github.io//wiki/" class=" site-header-nav-item" target="" title="维基">维基</a> <a href="https://kekaiyuan.github.io//links/" class=" site-header-nav-item" target="" title="链接">链接</a> <a href="https://kekaiyuan.github.io//about/" class=" site-header-nav-item" target="" title="关于">关于</a></nav></div></header><section class="collection-head small geopattern" data-pattern-id="Java Spring MVC"><div class="container"><div class="columns"><div class="column three-fourths"><div class="collection-title"><h1 class="collection-header">Java Spring MVC 02——使用方法（二）</h1><div class="collection-info"> <span class="meta-info"> <span class="octicon octicon-calendar"></span> 2021/08/14 </span> <span class="meta-info"> <span class="octicon octicon-file-directory"></span> <a href="https://kekaiyuan.github.io//categories/#SpringMVC" title="SpringMVC">SpringMVC</a> </span> <span class="meta-info"> <span class="octicon octicon-clock"></span> 共 20554 字，约 59 分钟 </span></div></div></div><div class="column one-fourth mobile-hidden"><div class="collection-title"> <img style="height:72px;width:72px" src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/images/qrcode.jpg" alt="闷骚的程序员" /></div></div></div></div></section><section class="container content"><div class="columns"><div class="column three-fourths" ><article class="article-content markdown-body"><p>Java Spring MVC 02——使用方法（二）</p><h1 id="springmvc-对请求的处理">SpringMVC 对请求的处理</h1><h2 id="参数处理">参数处理</h2><p>在 servlet 中，我们通过 <code class="language-plaintext highlighter-rouge">request.getParameter()</code> 获取请求中的参数。<br /> 但是在 Spring MVC 中并没有 <code class="language-plaintext highlighter-rouge">request</code> 参数，此时如何处理？</p><h3 id="获取参数-requestparam">获取参数 @RequestParam</h3><p>当请求中的参数和方法形参<strong>同名</strong>时，可以<strong>直接获取</strong>参数。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">RequestController</span> <span class="o">{</span>
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/request"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">request</span><span class="o">(</span><span class="nc">String</span> <span class="n">name</span><span class="o">){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>请求</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://localhost:8080/request?name=zhangsan
+</code></pre></div></div><p>此时请求和方法中的参数名都是 username，可以<strong>直接获取</strong>。</p><p>但如果不同名，例如此时请求是这样的</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://localhost:8080/request?username=zhangsan
+</code></pre></div></div><p>那么方法将获取不到 <code class="language-plaintext highlighter-rouge">username=zhangsan</code>。<br /> 此时需要使用 <code class="language-plaintext highlighter-rouge">@RequestParam</code> 注解来获取参数</p><hr /><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/request"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">request</span><span class="o">(</span><span class="nd">@RequestParam</span><span class="o">(</span> <span class="s">"username"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">name</span><span class="o">){</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div><p>请求</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://localhost:8080/request?username=zhangsan
+</code></pre></div></div><p>结果</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zhangsan
+</code></pre></div></div><p>请注意将 <code class="language-plaintext highlighter-rouge">@RequestParam</code> 与 <code class="language-plaintext highlighter-rouge">@PathVariable</code> 分开。</p><ul><li><code class="language-plaintext highlighter-rouge">@RequestParam</code> <br /> 读取 <code class="language-plaintext highlighter-rouge">?</code> 后的参数</li><li><code class="language-plaintext highlighter-rouge">@PathVariable</code> <br /> 读取路径作为参数</li></ul><h4 id="requestparam-的属性">@RequestParam 的属性</h4><h5 id="value">value</h5><p>表示要获取的参数值</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/request"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">request</span><span class="o">(</span><span class="nd">@RequestParam</span><span class="o">(</span> <span class="n">value</span> <span class="o">=</span> <span class="s">"username"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">name</span><span class="o">){</span>
+    <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div><h5 id="required">required</h5><p>表示该参数是否是<strong>必须</strong>的，<strong>默认是</strong>。</p><p>当方法这样时</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/request"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kt">void</span> <span class="nf">request</span><span class="o">(</span><span class="nd">@RequestParam</span><span class="o">(</span> <span class="n">value</span> <span class="o">=</span> <span class="s">"username"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">name</span><span class="o">){</span>
+	<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div></div><p>默认 <code class="language-plaintext highlighter-rouge">required = true</code> ，即请求必须带有 <code class="language-plaintext highlighter-rouge">username</code></p><p>如果请求是这样的</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>http://localhost:8080/request
+</code></pre></div></div><p>报错 400</p><p>所以如果 <code class="language-plaintext highlighter-rouge">request = false</code>，将允许请求中不携带该参数</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RequestParam</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"username"</span><span class="o">,</span> <span class="n">required</span> <span class="o">=</span> <span class="kc">true</span><span class="o">)</span>
+</code></pre></div></div><h5 id="defaultvalue">defaultValue</h5><p>设置参数的默认值</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RequestParam</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"username"</span><span class="o">,</span> <span class="n">defaultValue</span> <span class="o">=</span> <span class="s">"lisi"</span><span class="o">)</span>
+</code></pre></div></div><p>如果请求中没有 <code class="language-plaintext highlighter-rouge">username</code> ，则默认其 <code class="language-plaintext highlighter-rouge">username = lisi</code></p><p>所以，当有 <code class="language-plaintext highlighter-rouge">defaultValue</code> 时，<code class="language-plaintext highlighter-rouge">required = true</code> <strong>自动失效</strong>。<br /> 因为请求中<strong>一定</strong>会有 <code class="language-plaintext highlighter-rouge">username</code>。</p><h3 id="获取请求头-requestheader">获取请求头 @RequestHeader</h3><p><img src="\images\posts\java\framework\spring-mvc\02\requestHeader.png" alt="" /></p><p>获取整个请求头</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">RequestController</span> <span class="o">{</span>
+
+	<span class="o">...</span>
+	
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/requestHeader"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">requestHeader</span><span class="o">(</span><span class="nd">@RequestHeader</span> <span class="nc">HttpHeaders</span> <span class="n">headers</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">headers</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div><p>获取一部分请求头</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">RequestController</span> <span class="o">{</span>
+
+    <span class="o">...</span>
+	
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/requestHeader"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">requestHeader</span><span class="o">(</span><span class="nd">@RequestHeader</span><span class="o">(</span><span class="s">"Accept"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">accept</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">accept</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div><p><code class="language-plaintext highlighter-rouge">@RequestHeader</code> 同样拥有以下属性值，其效果等同于 <code class="language-plaintext highlighter-rouge">@RequestParam</code> 中的属性值</p><ul><li><code class="language-plaintext highlighter-rouge">value</code></li><li><code class="language-plaintext highlighter-rouge">required</code></li><li><code class="language-plaintext highlighter-rouge">defaultValue</code></li></ul><h3 id="获取-cookie-cookievalue">获取 Cookie @CookieValue</h3><p>Cookie 是 Request Header 的一部分</p><p>读取一部分 Cookie</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">RequestController</span> <span class="o">{</span>
+
+	<span class="o">...</span>
+	
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/cookie"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">cookie</span><span class="o">(</span><span class="nd">@CookieValue</span><span class="o">(</span><span class="s">"JSESSIONID"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">id</span><span class="o">){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">id</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>读取全部 Cookie，通过 <code class="language-plaintext highlighter-rouge">@RequestHeader</code> 读取</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@RequestHeader</span><span class="o">(</span><span class="s">"Cookie"</span><span class="o">)</span> <span class="nc">String</span> <span class="n">cookie</span>
+</code></pre></div></div><p><code class="language-plaintext highlighter-rouge">@CookieValue</code> 同样拥有以下属性值，其效果等同于 <code class="language-plaintext highlighter-rouge">@RequestParam</code> 中的属性值</p><ul><li><code class="language-plaintext highlighter-rouge">value</code></li><li><code class="language-plaintext highlighter-rouge">required</code></li><li><code class="language-plaintext highlighter-rouge">defaultValue</code></li></ul><h1 id="spring-mvc-传输对象">Spring MVC 传输对象</h1><p>使用 Spring MVC 传输对象非常方便。</p><p>User 类</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Integer</span> <span class="n">id</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Integer</span> <span class="n">age</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">date</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Address</span> <span class="n">address</span><span class="o">;</span>
+
+    <span class="c1">//省略无参构造器，setter/getter 方法，toString 方法</span>
+<span class="o">}</span>
+</code></pre></div></div><p>Address 类</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">com.mashibing.bean</span><span class="o">;</span>
+
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">Address</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">province</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">city</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">town</span><span class="o">;</span>
+
+    <span class="c1">//省略无参构造器，setter/getter 方法，toString 方法</span>
+<span class="o">}</span>
+</code></pre></div></div><p>user.jsp<br /> 把该 jsp 直接放置于 web 目录以直接访问</p><div class="language-jsp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;%@ page </span><span class="na">contentType=</span><span class="s">"text/html;charset=UTF-8"</span><span class="na"> language=</span><span class="s">"java"</span> <span class="nt">%&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span>Title<span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;%</span>
+    <span class="n">pageContext</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">"ctp"</span><span class="o">,</span><span class="n">request</span><span class="o">.</span><span class="na">getContextPath</span><span class="o">());</span>
+<span class="nt">%&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"${ctp}/testUser"</span> <span class="na">method=</span><span class="s">"post"</span><span class="nt">&gt;</span>
+    编号：<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"id"</span><span class="nt">&gt;&lt;br&gt;</span>
+    姓名：<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"name"</span><span class="nt">&gt;&lt;br&gt;</span>
+    年龄：<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"age"</span><span class="nt">&gt;&lt;br&gt;</span>
+    性别：<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"gender"</span><span class="nt">&gt;&lt;br&gt;</span>
+    省份：<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"address.province"</span><span class="nt">&gt;&lt;br&gt;</span>
+    城市：<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"address.city"</span><span class="nt">&gt;&lt;br&gt;</span>
+    区域：<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"address.town"</span><span class="nt">&gt;&lt;br&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"提交"</span><span class="nt">&gt;&lt;br&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div><p>UserController2</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserController2</span> <span class="o">{</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/testUser"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testUser</span><span class="o">(</span><span class="nc">User</span> <span class="n">user</span><span class="o">){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div><p>测试<br /> <img src="\images\posts\java\framework\spring-mvc\02\user.png" alt="" /></p><p>结果</p><div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>User{id=1, name='kky', age=24, gender='鐢�', address=Address{province='浜戝崡', city='澶х悊', town='涓嬪叧'}}
+</code></pre></div></div><p>有乱码问题，下文解决。</p><p>Spring MVC 会帮我们自动封装对象，十分方便。<br /> 与 Spring 同理，在表单中的 <code class="language-plaintext highlighter-rouge">编号：&lt;input type="text" name="id"&gt;</code> 中的 <code class="language-plaintext highlighter-rouge">id</code> 匹配的是<br /> User 类中的 <code class="language-plaintext highlighter-rouge">getId()</code>方法和 <code class="language-plaintext highlighter-rouge">setId()</code> 方法，并不是 <code class="language-plaintext highlighter-rouge">private Integer id;</code> 中的 <code class="language-plaintext highlighter-rouge">id</code>。</p><h2 id="解决乱码问题">解决乱码问题</h2><p>前后端交互时经常会出现乱码问题，如何解决？</p><h3 id="get-请求">GET 请求</h3><p>对于 GET 请求，直接在 .\apache-tomcat-9.0.50\conf\server.xml 中添加 <code class="language-plaintext highlighter-rouge">URIEncoding="UTF-8"</code></p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;Connector</span> <span class="na">port=</span><span class="s">"8080"</span> <span class="na">protocol=</span><span class="s">"HTTP/1.1"</span>
+		   <span class="na">connectionTimeout=</span><span class="s">"20000"</span>
+		   <span class="na">redirectPort=</span><span class="s">"8443"</span>
+		   <span class="na">URIEncoding=</span><span class="s">"UTF-8"</span><span class="nt">/&gt;</span>
+</code></pre></div></div><h3 id="post-请求">POST 请求</h3><p>对于 POST 请求，需要添加过滤器</p><h4 id="自定义编码过滤器">自定义编码过滤器</h4><p>MyFilter.java</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyFilter</span> <span class="kd">implements</span> <span class="nc">Filter</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">(</span><span class="nc">FilterConfig</span> <span class="n">filterConfig</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">ServletException</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"init"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doFilter</span><span class="o">(</span><span class="nc">ServletRequest</span> <span class="n">servletRequest</span><span class="o">,</span> <span class="nc">ServletResponse</span> <span class="n">servletResponse</span><span class="o">,</span> <span class="nc">FilterChain</span> <span class="n">filterChain</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">IOException</span><span class="o">,</span> <span class="nc">ServletException</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">"------start"</span><span class="o">);</span>
+        <span class="n">servletRequest</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">"UTF-8"</span><span class="o">);</span>
+        <span class="n">servletResponse</span><span class="o">.</span><span class="na">setCharacterEncoding</span><span class="o">(</span><span class="s">"UTF-8"</span><span class="o">);</span>
+        <span class="n">filterChain</span><span class="o">.</span><span class="na">doFilter</span><span class="o">(</span><span class="n">servletRequest</span><span class="o">,</span> <span class="n">servletResponse</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="k">this</span><span class="o">.</span><span class="na">getClass</span><span class="o">().</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">"------stop"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroy</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"destroy"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>在 web.xml 中添加过滤器</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!--自定义编码过滤器--&gt;</span>
+<span class="nt">&lt;filter&gt;</span>
+	<span class="nt">&lt;filter-name&gt;</span>myFilter<span class="nt">&lt;/filter-name&gt;</span>
+	<span class="nt">&lt;filter-class&gt;</span>com.kky.MyFilter<span class="nt">&lt;/filter-class&gt;</span>
+<span class="nt">&lt;/filter&gt;</span>
+<span class="nt">&lt;filter-mapping&gt;</span>
+	<span class="nt">&lt;filter-name&gt;</span>myFilter<span class="nt">&lt;/filter-name&gt;</span>
+	<span class="nt">&lt;url-pattern&gt;</span>/*<span class="nt">&lt;/url-pattern&gt;</span>
+<span class="nt">&lt;/filter-mapping&gt;</span>
+</code></pre></div></div><h4 id="spring-mvc-的编码过滤器">Spring MVC 的编码过滤器</h4><p>直接在 web.xml 中配置 Spring MVC 自带的编码过滤器即可</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">&lt;!--Spring MVC 的编码过滤器--&gt;</span>
+<span class="nt">&lt;filter&gt;</span>
+	<span class="nt">&lt;filter-name&gt;</span>encoding<span class="nt">&lt;/filter-name&gt;</span>
+	<span class="nt">&lt;filter-class&gt;</span>org.springframework.web.filter.CharacterEncodingFilter<span class="nt">&lt;/filter-class&gt;</span>
+	<span class="nt">&lt;init-param&gt;</span>
+		<span class="nt">&lt;param-name&gt;</span>encoding<span class="nt">&lt;/param-name&gt;</span>
+		<span class="nt">&lt;param-value&gt;</span>UTF-8<span class="nt">&lt;/param-value&gt;</span>
+	<span class="nt">&lt;/init-param&gt;</span>
+	<span class="nt">&lt;init-param&gt;</span>
+		<span class="nt">&lt;param-name&gt;</span>forceEncoding<span class="nt">&lt;/param-name&gt;</span>
+		<span class="nt">&lt;param-value&gt;</span>true<span class="nt">&lt;/param-value&gt;</span>
+	<span class="nt">&lt;/init-param&gt;</span>
+<span class="nt">&lt;/filter&gt;</span>
+<span class="nt">&lt;filter-mapping&gt;</span>
+	<span class="nt">&lt;filter-name&gt;</span>encoding<span class="nt">&lt;/filter-name&gt;</span>
+	<span class="nt">&lt;url-pattern&gt;</span>/*<span class="nt">&lt;/url-pattern&gt;</span>
+<span class="nt">&lt;/filter-mapping&gt;</span>
+</code></pre></div></div><h3 id="注意">注意</h3><p>如果项目中配置了多个过滤器，那么字符编码过滤器必须在<strong>最前面</strong>（谁在前面先执行谁），否则失效。</p><h1 id="spring-mvc对原生-api-的支持">Spring MVC对原生 API 的支持</h1><p>在 Spring MVC 中是可以使用原生 servlet 对象的，只需要在参数中给出好了。</p><p>例如，这是从 <a href="https://www.runoob.com/servlet/servlet-first-example.html">菜鸟教程</a> 中找的 servlet 教程</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// 导入必需的 java 库</span>
+<span class="kn">import</span> <span class="nn">java.io.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.*</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.*</span><span class="o">;</span>
+
+<span class="c1">// 扩展 HttpServlet 类</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloWorld</span> <span class="kd">extends</span> <span class="nc">HttpServlet</span> <span class="o">{</span>
+ 
+  <span class="kd">private</span> <span class="nc">String</span> <span class="n">message</span><span class="o">;</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">init</span><span class="o">()</span> <span class="kd">throws</span> <span class="nc">ServletException</span>
+  <span class="o">{</span>
+      <span class="c1">// 执行必需的初始化</span>
+      <span class="n">message</span> <span class="o">=</span> <span class="s">"Hello World"</span><span class="o">;</span>
+  <span class="o">}</span>
+
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span>
+                    <span class="nc">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span>
+            <span class="kd">throws</span> <span class="nc">ServletException</span><span class="o">,</span> <span class="nc">IOException</span>
+  <span class="o">{</span>
+      <span class="c1">// 设置响应内容类型</span>
+      <span class="n">response</span><span class="o">.</span><span class="na">setContentType</span><span class="o">(</span><span class="s">"text/html"</span><span class="o">);</span>
+
+      <span class="c1">// 实际的逻辑是在这里</span>
+      <span class="nc">PrintWriter</span> <span class="n">out</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="na">getWriter</span><span class="o">();</span>
+      <span class="n">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"&lt;h1&gt;"</span> <span class="o">+</span> <span class="n">message</span> <span class="o">+</span> <span class="s">"&lt;/h1&gt;"</span><span class="o">);</span>
+  <span class="o">}</span>
+  
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">destroy</span><span class="o">()</span>
+  <span class="o">{</span>
+      <span class="c1">// 什么也不做</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>可以看到，其中有两个重要的参数：</p><ul><li><code class="language-plaintext highlighter-rouge">HttpServletRequest request</code><br /> 封装请求</li><li><code class="language-plaintext highlighter-rouge">HttpServletResponse response</code><br /> 封装回应</li></ul><p>根据 <code class="language-plaintext highlighter-rouge">request</code> 中的内容，在 <code class="language-plaintext highlighter-rouge">response</code> 中填写要返回的内容，这就是 servlet 。</p><p>那么在 Spring MVC 中，同样支持 <code class="language-plaintext highlighter-rouge">HttpServletRequest request</code> 和 <code class="language-plaintext highlighter-rouge">HttpServletResponse response</code>。<br /> <strong>直接写入方法参数列表即可</strong>。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="nn">org.springframework.stereotype.Controller</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RequestMapping</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletRequest</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpServletResponse</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">javax.servlet.http.HttpSession</span><span class="o">;</span>
+
+<span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserController2</span> <span class="o">{</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"api"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">servletAPI</span><span class="o">(</span><span class="nc">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="nc">HttpServletResponse</span> <span class="n">response</span><span class="o">,</span> <span class="nc">HttpSession</span> <span class="n">session</span><span class="o">){</span>
+        <span class="n">request</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">"request"</span><span class="o">,</span><span class="s">"request"</span><span class="o">);</span>
+        <span class="n">session</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">"session"</span><span class="o">,</span><span class="s">"session"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">"success"</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>然后前端页面直接读取这些信息</p><div class="language-jsp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;%@ page </span><span class="na">contentType=</span><span class="s">"text/html;charset=UTF-8"</span><span class="na"> language=</span><span class="s">"java"</span> <span class="nt">%&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span>Title<span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+request:${requestScope.get("request")}
+session:${sessionScope.get("session")}
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div><p>那么，Spring MVC 到底支持哪些原生的 servlet 对象呢？</p><ul><li>HttpServletRequest</li><li>HttpServletResponse</li><li>HttpSession</li><li>Locale<br /> 设置区域信息，国际化操作使用</li><li>InputStream</li><li>OutputStream</li><li>Reader</li><li>Writer</li></ul><h1 id="传输数据到页面">传输数据到页面</h1><h2 id="使用-map-model-modelmap">使用 Map, Model, ModelMap</h2><p><code class="language-plaintext highlighter-rouge">return "要返回的页面"</code></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="nd">@SessionAttributes</span><span class="o">(</span><span class="n">types</span> <span class="o">=</span> <span class="nc">String</span><span class="o">.</span><span class="na">class</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">OutputController</span> <span class="o">{</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/output"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">output</span><span class="o">(</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">String</span><span class="o">&gt;</span> <span class="n">map</span><span class="o">){</span>
+        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="s">"msg"</span><span class="o">,</span><span class="s">"hello,output"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">"success"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/output2"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">output2</span><span class="o">(</span><span class="nc">Model</span> <span class="n">model</span><span class="o">){</span>
+        <span class="n">model</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">"msg"</span><span class="o">,</span><span class="s">"hello,output2"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">"success"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/output3"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">output3</span><span class="o">(</span><span class="nc">ModelMap</span> <span class="n">modelMap</span><span class="o">){</span>
+        <span class="n">modelMap</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">"msg"</span><span class="o">,</span><span class="s">"hello,output3"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">"success"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div><p>前端如何调用？</p><div class="language-jsp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>${msg}
+</code></pre></div></div><p>这三者的效果是一模一样的，而且作用域都是 <code class="language-plaintext highlighter-rouge">request</code> 。</p><p>因为这三者继承于同一个类：<br /></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">org</span><span class="o">.</span><span class="na">springframework</span><span class="o">.</span><span class="na">validation</span><span class="o">.</span><span class="na">support</span><span class="o">.</span><span class="na">BindingAwareModelMap</span>
+</code></pre></div></div><p><img src="\images\posts\java\framework\spring-mvc\02\BindingAwareModelMap.png" alt="" /></p><p>并且其数据都是放在 <code class="language-plaintext highlighter-rouge">ModelAndView</code> 中的。</p><h2 id="使用-modelandview">使用 ModelAndView</h2><p><code class="language-plaintext highlighter-rouge">setViewName(要返回的页面名称)</code></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">OutputController</span> <span class="o">{</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"mv"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">ModelAndView</span> <span class="nf">mv</span><span class="o">(){</span>
+        <span class="nc">ModelAndView</span> <span class="n">mv</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ModelAndView</span><span class="o">();</span>
+        <span class="n">mv</span><span class="o">.</span><span class="na">setViewName</span><span class="o">(</span><span class="s">"output"</span><span class="o">);</span>
+        <span class="n">mv</span><span class="o">.</span><span class="na">addObject</span><span class="o">(</span><span class="s">"msg"</span><span class="o">,</span><span class="s">"hello.modelAndView"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">mv</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>使用 ModelAndView 时，返回的数据同样是放在 request 作用域中。</p><h2 id="使用-session">使用 session</h2><p>当使用 Map, Model, ModelMap, ModelAndView 传输数据时，数据都是放入 request 作用域的。<br /> 如果此时添加 <code class="language-plaintext highlighter-rouge">@SessionAttribute</code> ，那么会将数据在 session 中<strong>也保存一份</strong>。</p><p>此注解有两个参数</p><ul><li><code class="language-plaintext highlighter-rouge">value</code><br /> 表示要添加哪些数据到 session 中</li><li><code class="language-plaintext highlighter-rouge">type</code><br /> 设置添加哪一类的数据<br /> 一般情况下不使用，因为会将很多数据都设置到 session 中，导致 session 异常。</li></ul><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="nd">@SessionAttributes</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">"msg"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">OutputController</span> <span class="o">{</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"output1"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">output1</span><span class="o">(</span><span class="nc">Model</span> <span class="n">model</span><span class="o">){</span>
+        <span class="n">model</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">"msg"</span><span class="o">,</span><span class="s">"hello,Springmvc"</span><span class="o">);</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">model</span><span class="o">.</span><span class="na">getClass</span><span class="o">());</span>
+        <span class="k">return</span> <span class="s">"sucess"</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><h1 id="使用-modelattribute-来获取请求中的数据">使用 @ModelAttribute 来获取请求中的数据</h1><p><code class="language-plaintext highlighter-rouge">@ModelAttribute</code> 注解用于将方法的参数或者方法的返回值绑定到指定的模型属性上，并返回给 web 视图。</p><p>介绍一下业务场景。<br /> 在某网站，用户可以查看自己的个人信息，此时我们会从数据库中读取该用户的数据并显示到网页上。<br /> 用户可以修改<strong>部分</strong>信息，但不能修改<strong>所有</strong>信息，例如其 id 就不能修改。</p><p>这些不允许修改的属性<strong>不应该被提交</strong>，因为没有意义，只是在浪费资源。<br /> 但是如果不提交，form 表单提交数据后，后端接收到的实体类会出现 <code class="language-plaintext highlighter-rouge">null</code>。<br /> 如何解决？</p><p>此时就有了这样的设计：</p><ol><li>执行查询操作时，把从数据库获取的对象保存下来。</li><li>用户提交表单时，根据其内容修改之前保存的对象。</li><li>把这个对象再存回数据库。</li></ol><p>对比之前的设计：</p><ol><li>执行查询操作时，<strong>创建一个新对象</strong>，保存数据。</li><li>把这个对象传到前端。</li><li>用户提交表单时，<strong>再创建一个新对象</strong>，保存数据。</li><li>把这个对象存回数据库。</li></ol><p>原来需要创建两个对象，现在只需要创建一个对象。</p><hr /><p>实体类 User</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nc">Integer</span> <span class="n">id</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">password</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Integer</span> <span class="n">age</span><span class="o">;</span>
+
+    <span class="c1">//省略构造方法，所有属性的 getter/setter 方法和 toString 方法</span>
+<span class="o">}</span>
+</code></pre></div></div><p>UserController</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="nd">@SessionAttributes</span><span class="o">(</span><span class="s">"user"</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">UserController</span> <span class="o">{</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/update"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">update</span><span class="o">(</span><span class="nd">@ModelAttribute</span><span class="o">(</span><span class="s">"user"</span><span class="o">)</span> <span class="nc">User</span> <span class="n">user</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">"success"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@ModelAttribute</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">testModelAttribute</span><span class="o">(</span><span class="nc">Model</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">User</span> <span class="n">user</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">User</span><span class="o">();</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">"李四"</span><span class="o">);</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">setAge</span><span class="o">(</span><span class="mi">11</span><span class="o">);</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="s">"1234"</span><span class="o">);</span>
+        <span class="n">model</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">"user"</span><span class="o">,</span> <span class="n">user</span><span class="o">);</span>
+    <span class="o">}</span>
+	
+	<span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/user"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">testUser</span><span class="o">(</span><span class="nc">Model</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">testModelAttribute</span><span class="o">(</span><span class="n">model</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">"update"</span><span class="o">;</span>
+    <span class="o">}</span>
+	
+<span class="o">}</span>
+</code></pre></div></div><p>update.jsp</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;%</span><span class="err">@</span> <span class="n">page</span> <span class="n">contentType</span><span class="o">=</span><span class="s">"text/html;charset=UTF-8"</span> <span class="n">language</span><span class="o">=</span><span class="s">"java"</span> <span class="o">%&gt;</span>
+<span class="o">&lt;</span><span class="n">html</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">head</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">title</span><span class="o">&gt;</span><span class="nc">Title</span><span class="o">&lt;/</span><span class="n">title</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">head</span><span class="o">&gt;</span>
+<span class="o">&lt;%</span>
+    <span class="n">pageContext</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">"ctp"</span><span class="o">,</span> <span class="n">request</span><span class="o">.</span><span class="na">getContextPath</span><span class="o">());</span>
+<span class="o">%&gt;</span>
+<span class="o">&lt;</span><span class="n">body</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">form</span> <span class="n">action</span><span class="o">=</span><span class="s">"${ctp}/update"</span><span class="o">&gt;</span>
+    <span class="nl">id:</span><span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">value</span><span class="o">=</span><span class="s">"${sessionScope.user.id}"</span> <span class="n">readonly</span><span class="o">=</span><span class="s">"true"</span><span class="o">&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+    <span class="nl">name:</span><span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"text"</span> <span class="n">value</span><span class="o">=</span><span class="s">"${requestScope.user.name}"</span> <span class="n">name</span><span class="o">=</span><span class="s">"name"</span><span class="o">&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">input</span> <span class="n">type</span><span class="o">=</span><span class="s">"submit"</span> <span class="n">value</span><span class="o">=</span><span class="s">"更新"</span><span class="o">&gt;&lt;</span><span class="n">br</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">form</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">body</span><span class="o">&gt;</span>
+<span class="o">&lt;/</span><span class="n">html</span><span class="o">&gt;</span>
+</code></pre></div></div><p>测试 <img src="\images\posts\java\framework\spring-mvc\02" alt="" /></p><p>点击更新，结果</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">User</span><span class="o">{</span><span class="n">id</span><span class="o">=</span><span class="mi">1</span><span class="o">,</span> <span class="n">name</span><span class="o">=</span><span class="err">'</span><span class="n">zhangsan</span><span class="err">'</span><span class="o">,</span> <span class="n">password</span><span class="o">=</span><span class="err">'</span><span class="mi">1234</span><span class="err">'</span><span class="o">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">11</span><span class="o">}</span>
+</code></pre></div></div><p>可以看到，前端页面并没有 <code class="language-plaintext highlighter-rouge">password</code> 和 <code class="language-plaintext highlighter-rouge">age</code> 属性。<br /> 如果不使用 <code class="language-plaintext highlighter-rouge">@ModelAttribute</code>，那么后端收到的将是</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">User</span><span class="o">{</span><span class="n">id</span><span class="o">=</span><span class="mi">1</span><span class="o">,</span> <span class="n">name</span><span class="o">=</span><span class="err">'</span><span class="n">zhangsan</span><span class="err">'</span><span class="o">,</span> <span class="n">password</span><span class="o">=</span><span class="kc">null</span><span class="o">,</span> <span class="n">age</span><span class="o">=</span><span class="kc">null</span><span class="o">}</span>
+</code></pre></div></div><p>因为前端提交表单时，将重新<strong>新建</strong>一个对象，所以没有提交的属性值就是 <code class="language-plaintext highlighter-rouge">null</code>。</p><p>而如果使用了 <code class="language-plaintext highlighter-rouge">@ModelAttribute</code> ，整个流程使用的是一个对象。</p><ol><li>该对象传输到前端，进行数据改写。</li><li>再将该对象传输到后端进行数据处理。</li></ol><p><strong>注意：</strong></p><ol><li>使用 <code class="language-plaintext highlighter-rouge">@ModelAttribute</code> 时，对象存在在 <strong>session</strong> 中。</li><li>使用时可以省略 <code class="language-plaintext highlighter-rouge">@SessionAttribute</code> 和方法<strong>参数中</strong>的 <code class="language-plaintext highlighter-rouge">@ModelAttribute</code>，但是不推荐。</li><li>请尽量将使用该对象的地方<strong>同名</strong>，否则 Spring MVC 将自动把类名首字母小写进行匹配，匹配不到时会报错。</li></ol><p><code class="language-plaintext highlighter-rouge">@ModelAttribute</code> 除了将对象添加到 <code class="language-plaintext highlighter-rouge">Model</code> 之外，还可以直接返回。</p><p>注意：ModelAttribute除了可以使用设置值到model中之外，还可以利用返回值。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="o">...</span>
+
+    <span class="nd">@ModelAttribute</span><span class="o">(</span><span class="s">"user"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">User</span> <span class="nf">testModelAttribute</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"testModelAttribute---------------+"</span><span class="o">);</span>
+        <span class="nc">User</span> <span class="n">user</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">User</span><span class="o">();</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="s">"zhangsan"</span><span class="o">);</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">setAge</span><span class="o">(</span><span class="mi">11</span><span class="o">);</span>
+        <span class="n">user</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="s">"1234"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">user</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="o">...</span>
+</code></pre></div></div><h1 id="转发和重定向">转发和重定向</h1><h2 id="使用-forward-实现页面转发">使用 forward 实现页面转发</h2><p>在 Spring MVC 中，我们可以使用视图处理器将<strong>逻辑</strong>视图转换成<strong>实际</strong>视图。</p><p>springmvc.xml</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.springframework.web.servlet.view.InternalResourceViewResolver"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"suffix"</span> <span class="na">value=</span><span class="s">".jsp"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"prefix"</span> <span class="na">value=</span><span class="s">"/WEB-INF/page/"</span><span class="nt">&gt;&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ForWardController</span> <span class="o">{</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/success"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">forward</span><span class="o">(){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"forward"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">"success"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div><p>此时当接收到 <code class="language-plaintext highlighter-rouge">/success</code> 请求时，将跳转到 <code class="language-plaintext highlighter-rouge">/WEB-INF/page/success.jsp</code>。</p><p>而如果使用 <code class="language-plaintext highlighter-rouge">forward</code> ，则不会触发视图处理器，直接跳转到我们指定的<strong>实际视图</strong>去。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ForWardController</span> <span class="o">{</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/forward"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">forward</span><span class="o">(){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"forward"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">"forward:/index.jsp"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div><p>此时将跳转到 <code class="language-plaintext highlighter-rouge">/index.jsp</code> 中，这个在视图处理器是无法实现的，因为 <code class="language-plaintext highlighter-rouge">/index.jsp</code> 不在 <code class="language-plaintext highlighter-rouge">/WEB-INF/page</code> 目录中。</p><p><code class="language-plaintext highlighter-rouge">forward</code> 除了跳转到指定页面，也可以跳转到其他请求中。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ForWardController</span> <span class="o">{</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/forward"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">forward</span><span class="o">(){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"forward"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">"forward:/index.jsp"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/forward2"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">forward2</span><span class="o">(){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"forward2"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">"forward:/forward"</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>此时 <code class="language-plaintext highlighter-rouge">/forward2</code> 请求将跳转到 <code class="language-plaintext highlighter-rouge">/forward</code> 请求，最终跳转到 <code class="language-plaintext highlighter-rouge">/index.jsp</code> 页面中。</p><h2 id="使用-redirect-来实现重定向">使用 redirect 来实现重定向</h2><p><code class="language-plaintext highlighter-rouge">redirect</code> 使用方法和 <code class="language-plaintext highlighter-rouge">forward</code> 很像。<br /> 同样不会经过视图处理器。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">RedirectController</span> <span class="o">{</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/redirect"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">redirect</span><span class="o">(){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"redirect"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">"redirect:/index.jsp"</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/redirect2"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">redirect2</span><span class="o">(){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"redirect2"</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">"redirect:/redirect"</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><h2 id="转发和重定向的区别">转发和重定向的区别</h2><table><thead><tr><th style="text-align: left"><strong>区别</strong></th><th style="text-align: left"><strong>转发 forward()</strong></th><th style="text-align: left"><strong>重定向 sendRedirect()</strong></th></tr></thead><tbody><tr><td style="text-align: left"> </td><td style="text-align: left"><img width="1000px" src="\images\posts\java\framework\spring-mvc\02\forward.png" /><br />                           </td><td style="text-align: left"><img width="1000px" src="\images\posts\java\framework\spring-mvc\02\redirect.png" /><br />                           </td></tr><tr><td style="text-align: left"><strong>根目录</strong></td><td style="text-align: left">包含项目访问地址<br /><code class="language-plaintext highlighter-rouge">localhost:8080/项目地址/</code></td><td style="text-align: left">不包含项目访问地址<br /><code class="language-plaintext highlighter-rouge">localhost:8080/</code></td></tr><tr><td style="text-align: left"><strong>地址栏</strong></td><td style="text-align: left">不会发生变化<br />访问前：<code class="language-plaintext highlighter-rouge">./forward</code><br />访问后：<code class="language-plaintext highlighter-rouge">./forward</code></td><td style="text-align: left">会发生变化<br />访问前：<code class="language-plaintext highlighter-rouge">./redirect</code><br />访问后：<code class="language-plaintext highlighter-rouge">./index.jsp</code></td></tr><tr><td style="text-align: left"><strong>哪里跳转</strong></td><td style="text-align: left"><strong>服务器端</strong>进行的跳转</td><td style="text-align: left"><strong>浏览器端</strong>进行的跳转</td></tr><tr><td style="text-align: left"><strong>请求次数</strong></td><td style="text-align: left">1 次</td><td style="text-align: left">2 次<br />第 1 次是人为的<br />第 2 次是自动的</td></tr><tr><td style="text-align: left"><strong>请求域中数据</strong></td><td style="text-align: left">不会丢失</td><td style="text-align: left">会丢失，因为是不同的请求</td></tr></tbody></table><h1 id="访问静态资源">访问静态资源</h1><p>如何在 jsp 页面中添加图片等<strong>静态资源</strong>？</p><p>在 Spring MVC 的配置文件（不是 web.xml）中添加以下两个配置：</p><ol><li><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nt">&lt;mvc:default-servlet-handler/&gt;</span>
+</code></pre></div></div><p>使 Spring MVC 能够处理静态资源</p></li><li>此时我们的项目会变得<strong>只能</strong>访问静态资源而不能处理动态请求。<br /> 所以配置一个使两者都能够正确访问的驱动。<div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nt">&lt;mvc:annotation-driven&gt;&lt;/mvc:annotation-driven&gt;</span>
+</code></pre></div></div></li></ol><h1 id="自定义视图解析器">自定义视图解析器</h1><p>在前文中，我们使用 <strong>InternalResourceViewResolver</strong> 作为视图解析器。<br /> 该解析器可以给逻辑视图加上<strong>前缀</strong>和<strong>后缀</strong>来转换为实际视图。</p><p>注意：<br /> 当我们在 Spring MVC 的配置文件中没有指定视图解析器时，默认使用的就是 <strong>InternalResourceViewResolver</strong> 。<br /> 只不过其前缀和后缀为 <code class="language-plaintext highlighter-rouge">null</code>，此时我们返回页面时必须使用实际视图，而不能使用逻辑视图。</p><p>在 Spring MVC 中，视图解析器主要由两部分组成</p><table><thead><tr><th style="text-align: center">ViewResolver</th><th style="text-align: center">View</th></tr></thead><tbody><tr><td style="text-align: center">将逻辑视图转换为实际视图</td><td style="text-align: center">与视图对应的类</td></tr><tr><td style="text-align: center"><img src="\images\posts\java\framework\spring-mvc\02\viewResolver.png" alt="image-20200312211420457" /></td><td style="text-align: center"><img src="\images\posts\java\framework\spring-mvc\02\view.png" alt="image-20200312211420457" /></td></tr></tbody></table><p>所以自定义视图解析器就是实现 <strong>ViewResolver</strong> 和 <strong>View</strong> 这两个<strong>接口</strong></p><p>MyViewController.java</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyViewResolver</span> <span class="kd">implements</span> <span class="nc">ViewResolver</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">View</span> <span class="nf">resolveViewName</span><span class="o">(</span><span class="nc">String</span> <span class="n">viewName</span><span class="o">,</span> <span class="nc">Locale</span> <span class="n">locale</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="nf">MyView</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>MyView.java</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyView</span> <span class="kd">implements</span> <span class="nc">View</span> <span class="o">{</span>
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">render</span><span class="o">(</span><span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="o">?&gt;</span> <span class="n">model</span><span class="o">,</span> <span class="nc">HttpServletRequest</span> <span class="n">request</span><span class="o">,</span> <span class="nc">HttpServletResponse</span> <span class="n">response</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="n">response</span><span class="o">.</span><span class="na">sendRedirect</span><span class="o">(</span><span class="s">"index.jsp"</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>将所有的请求都转发到 <code class="language-plaintext highlighter-rouge">/index.jsp</code> 去</p><p>修改 Spring MVC 配置文件<br /> 删除 <strong>InternalResourceViewResolver</strong>，并把 <strong>MyViewResolver</strong> 加进去</p><p>springmvc.xml</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>...
+<span class="c">&lt;!--&lt;bean class="org.springframework.web.servlet.view.InternalResourceViewResolver"&gt;--&gt;</span>
+	<span class="c">&lt;!--&lt;property name="suffix" value=".jsp"&gt;&lt;/property&gt;--&gt;</span>
+	<span class="c">&lt;!--&lt;property name="prefix" value="/WEB-INF/page/"&gt;&lt;/property&gt;--&gt;</span>
+<span class="c">&lt;!--&lt;/bean&gt;--&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"com.kky.viewResolver.MyViewResolver"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+...
+</code></pre></div></div><h2 id="多个视图解析器的执行顺序">多个视图解析器的执行顺序</h2><p>当 Spring MVC 的配置文件中配置了<strong>多个视图解析器</strong>时，<strong>谁在前先执行谁</strong>。<br /> 除此之外，可以实现 <code class="language-plaintext highlighter-rouge">Ordered</code> 接口来配置执行顺序。</p><p>当视图解析器实现了 <code class="language-plaintext highlighter-rouge">Ordered</code> 接口后，将根据其 <code class="language-plaintext highlighter-rouge">order</code> 的值来进行排序。<br /> <code class="language-plaintext highlighter-rouge">order</code> 越<strong>小</strong>越先执行。<br /> <strong>InternalResourceViewResolver</strong> 继承于 <strong>UrlBasedViewResolver</strong>，其 <code class="language-plaintext highlighter-rouge">order = Integer.MAX_VALUE</code>。</p><p>所以我们可以采取以下设计<br /> <code class="language-plaintext highlighter-rouge">viewName</code> 是请求字符串，我们可以判断其请求是否包含某些特定字段决定执行逻辑</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyViewResolver</span> <span class="kd">implements</span> <span class="nc">ViewResolver</span><span class="o">,</span> <span class="nc">Ordered</span> <span class="o">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">View</span> <span class="nf">resolveViewName</span><span class="o">(</span><span class="nc">String</span> <span class="n">viewName</span><span class="o">,</span> <span class="nc">Locale</span> <span class="n">locale</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">viewName</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">"kky:"</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">MyView</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">int</span> <span class="nf">getOrder</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="mi">0</span><span class="o">;</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div><p>或不实现 <code class="language-plaintext highlighter-rouge">Ordered</code> 接口，使用 <code class="language-plaintext highlighter-rouge">@Order</code> 注解</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Order</span><span class="o">(</span><span class="mi">0</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyViewResolver</span> <span class="kd">implements</span> <span class="nc">ViewResolver</span><span class="o">,</span> <span class="nc">Ordered</span> <span class="o">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">View</span> <span class="nf">resolveViewName</span><span class="o">(</span><span class="nc">String</span> <span class="n">viewName</span><span class="o">,</span> <span class="nc">Locale</span> <span class="n">locale</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">Exception</span> <span class="o">{</span>
+        <span class="k">if</span> <span class="o">(</span><span class="n">viewName</span><span class="o">.</span><span class="na">startsWith</span><span class="o">(</span><span class="s">"kky:"</span><span class="o">))</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="k">new</span> <span class="nf">MyView</span><span class="o">();</span>
+        <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div><p>Spring MVC 配置文件</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>...
+<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"org.springframework.web.servlet.view.InternalResourceViewResolver"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"suffix"</span> <span class="na">value=</span><span class="s">".jsp"</span><span class="nt">&gt;&lt;/property&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"prefix"</span> <span class="na">value=</span><span class="s">"/WEB-INF/page/"</span><span class="nt">&gt;&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">class=</span><span class="s">"com.kky.viewResolver.MyViewResolver"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+...
+</code></pre></div></div><p>此时虽然 <strong>InternalResourceViewResolver</strong> 在前，但是会先执行 <strong>MyViewResolver</strong>。<br /> <strong>MyViewResolver</strong> 会判断请求是否以 <code class="language-plaintext highlighter-rouge">kky:</code>开头，如果是，则返回 <code class="language-plaintext highlighter-rouge">MyView</code>。<br /> 否则交由 <strong>InternalResourceViewResolver</strong> 处理。</p><h1 id="自定义类型转换器">自定义类型转换器</h1><p>前端页面通过提交表单向后端发送数据，其内容全都是<strong>字符串</strong>类型。<br /> 但是我们经常使用实体类来接受这些数据，因为 Spring MVC 会自动为我们进行类型转换。<br /> <img src="\images\posts\java\framework\spring-mvc\02\converter.png" alt="" /></p><p>可以看到，所有的类型转换器都实现了 <code class="language-plaintext highlighter-rouge">Converter</code> 接口。<br /> 所以我们可以通过实现 <code class="language-plaintext highlighter-rouge">Converter</code> 接口来<strong>自定义</strong>类型转换器。</p><hr /><p>案例：<br /> 前端页面将传输一个格式为 <code class="language-plaintext highlighter-rouge">xxx-xxx-xxx-xxx</code> 的字符串，将其转换为 <code class="language-plaintext highlighter-rouge">User</code> 的 <code class="language-plaintext highlighter-rouge">id</code> <code class="language-plaintext highlighter-rouge">name</code> <code class="language-plaintext highlighter-rouge">age</code> <code class="language-plaintext highlighter-rouge">password</code></p><p>前端页面 index.jsp</p><div class="language-jsp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;%@ page </span><span class="na">contentType=</span><span class="s">"text/html;charset=UTF-8"</span><span class="na"> language=</span><span class="s">"java"</span> <span class="nt">%&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+    <span class="nt">&lt;title&gt;</span>$Title$<span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;%</span>
+    <span class="n">pageContext</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">"ctp"</span><span class="o">,</span> <span class="n">request</span><span class="o">.</span><span class="na">getContextPath</span><span class="o">());</span>
+<span class="nt">%&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+请按照id-name-age-password的方式输入数据<span class="nt">&lt;br&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"${ctp}/converter"</span> <span class="na">method=</span><span class="s">"post"</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"user"</span><span class="nt">&gt;&lt;br&gt;</span>
+    <span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"提交"</span><span class="nt">&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div><p><img src="\images\posts\java\framework\spring-mvc\02\index.png" alt="" /></p><p>MyConverter.java</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Component</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyConverter</span> <span class="kd">implements</span> <span class="nc">Converter</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span> <span class="nc">User</span><span class="o">&gt;</span> <span class="o">{</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="nc">User</span> <span class="nf">convert</span><span class="o">(</span><span class="nc">String</span> <span class="n">source</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">User</span> <span class="n">user</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="k">if</span> <span class="o">((</span><span class="n">source</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="s">""</span><span class="o">.</span><span class="na">equals</span><span class="o">(</span><span class="n">source</span><span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="o">(</span><span class="n">source</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">"-"</span><span class="o">).</span><span class="na">length</span> <span class="o">==</span> <span class="mi">4</span><span class="o">)){</span>
+            <span class="n">user</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">User</span><span class="o">();</span>
+            <span class="n">user</span><span class="o">.</span><span class="na">setId</span><span class="o">(</span><span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">source</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">"-"</span><span class="o">)[</span><span class="mi">0</span><span class="o">]));</span>
+            <span class="n">user</span><span class="o">.</span><span class="na">setName</span><span class="o">(</span><span class="n">source</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">"-"</span><span class="o">)[</span><span class="mi">1</span><span class="o">]);</span>
+            <span class="n">user</span><span class="o">.</span><span class="na">setAge</span><span class="o">(</span><span class="nc">Integer</span><span class="o">.</span><span class="na">parseInt</span><span class="o">(</span><span class="n">source</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">"-"</span><span class="o">)[</span><span class="mi">2</span><span class="o">]));</span>
+            <span class="n">user</span><span class="o">.</span><span class="na">setPassword</span><span class="o">(</span><span class="n">source</span><span class="o">.</span><span class="na">split</span><span class="o">(</span><span class="s">"-"</span><span class="o">)[</span><span class="mi">3</span><span class="o">]);</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+        <span class="k">return</span> <span class="n">user</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>把我们自定义的类型转换器添加到 Spring MVC 配置文件中</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;mvc:annotation-driven</span> <span class="na">conversion-service=</span><span class="s">"conversionService"</span><span class="nt">&gt;&lt;/mvc:annotation-driven&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"conversionService"</span> <span class="na">class=</span><span class="s">"org.springframework.context.support.ConversionServiceFactoryBean"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"converters"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;set&gt;</span>
+			<span class="nt">&lt;ref</span> <span class="na">bean=</span><span class="s">"myConverter"</span><span class="nt">&gt;&lt;/ref&gt;</span>
+		<span class="nt">&lt;/set&gt;</span>
+	<span class="nt">&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><ol><li>要添加一个 <code class="language-plaintext highlighter-rouge">conversionService</code> 的驱动。</li><li>我们的 <code class="language-plaintext highlighter-rouge">myConverter</code> 之前已经通过 <code class="language-plaintext highlighter-rouge">@Component</code> 注解自动注入了，所以直接引入 <code class="language-plaintext highlighter-rouge">converters</code> 中。</li></ol><p>此时我们的类型转换器就已经完成了，直接处理请求，无需关心类型转换问题。<br /> MyConverterController.java</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">MyConverterController</span> <span class="o">{</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/converter"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">testConverter</span><span class="o">(</span><span class="nd">@RequestParam</span><span class="o">(</span><span class="s">"user"</span><span class="o">)</span> <span class="nc">User</span> <span class="n">user</span><span class="o">,</span> <span class="nc">Model</span> <span class="n">model</span><span class="o">)</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">user</span><span class="o">);</span>
+        <span class="n">model</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">"user"</span><span class="o">,</span> <span class="n">user</span><span class="o">);</span>
+        <span class="k">return</span> <span class="s">"success"</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>在页面中输入 <code class="language-plaintext highlighter-rouge">1-zhangsan-12-123456</code>，结果</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">User</span><span class="o">{</span><span class="n">id</span><span class="o">=</span><span class="mi">1</span><span class="o">,</span> <span class="n">name</span><span class="o">=</span><span class="err">'</span><span class="n">zhangsan</span><span class="err">'</span><span class="o">,</span> <span class="n">password</span><span class="o">=</span><span class="err">'</span><span class="mi">123456</span><span class="err">'</span><span class="o">,</span> <span class="n">age</span><span class="o">=</span><span class="mi">12</span><span class="o">}</span>
+</code></pre></div></div><h1 id="自定义日期格式化转换器">自定义日期格式化转换器</h1><p>在 Spring MVC 中，同样会自动地把页面提交的字符串转为 <code class="language-plaintext highlighter-rouge">java.util.Date</code> 格式。<br /> 但是默认情况下，该字符串必须为 <code class="language-plaintext highlighter-rouge">yyyy/mm/dd</code> 的格式。</p><p>如果想要使用其他格式，请在对应实体类的属性上添加 <code class="language-plaintext highlighter-rouge">@DateTimeFormat</code> 注解。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">User</span> <span class="o">{</span>
+
+	<span class="o">...</span>
+
+    <span class="nd">@DateTimeFormat</span><span class="o">(</span><span class="n">pattern</span> <span class="o">=</span> <span class="s">"yyyy-mm-dd"</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">birth</span><span class="o">;</span>
+
+	<span class="o">...</span>
+
+<span class="o">}</span>
+
+</code></pre></div></div><p>此时如果前端页面提交的字符串是 <code class="language-plaintext highlighter-rouge">2021-08-21</code>，那么也能正确地进行格式转换。</p><hr /><p><strong>注意</strong></p><p>一般情况下，使用 <code class="language-plaintext highlighter-rouge">@DateTimeFormat</code> 注解<strong>不需要修改</strong> Spring MVC 配置文件。</p><p>但是如果 Spring MVC 配置文件中<strong>显式</strong>声明了类型转换器，如</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;mvc:annotation-driven</span> <span class="na">conversion-service=</span><span class="s">"conversionService"</span><span class="nt">&gt;&lt;/mvc:annotation-driven&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"conversionService"</span> <span class="na">class=</span><span class="s">"org.springframework.context.support.ConversionServiceFactoryBean"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"converters"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;set&gt;</span>
+			<span class="nt">&lt;ref</span> <span class="na">bean=</span><span class="s">"myConverter"</span><span class="nt">&gt;&lt;/ref&gt;</span>
+		<span class="nt">&lt;/set&gt;</span>
+	<span class="nt">&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><p>那么必须把 <code class="language-plaintext highlighter-rouge">class</code> 修改为 <code class="language-plaintext highlighter-rouge">org.springframework.format.support.FormattingConversionServiceFactoryBean</code></p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;mvc:annotation-driven</span> <span class="na">conversion-service=</span><span class="s">"conversionService"</span><span class="nt">&gt;&lt;/mvc:annotation-driven&gt;</span>
+<span class="nt">&lt;bean</span> <span class="na">id=</span><span class="s">"conversionService"</span> <span class="na">class=</span><span class="s">"org.springframework.format.support.FormattingConversionServiceFactoryBean"</span><span class="nt">&gt;</span>
+	<span class="nt">&lt;property</span> <span class="na">name=</span><span class="s">"converters"</span><span class="nt">&gt;</span>
+		<span class="nt">&lt;set&gt;</span>
+			<span class="nt">&lt;ref</span> <span class="na">bean=</span><span class="s">"myConverter"</span><span class="nt">&gt;&lt;/ref&gt;</span>
+		<span class="nt">&lt;/set&gt;</span>
+	<span class="nt">&lt;/property&gt;</span>
+<span class="nt">&lt;/bean&gt;</span>
+</code></pre></div></div><p>修改后并不会影响原先的类型转换。</p><h1 id="数据校验">数据校验</h1><p>数据校验分为前端校验和后端校验。</p><p>一般而言，我们会把一些简单的数据校验放在前端进行，这是为了减少客户端和服务器之间的通讯次数，提高用户体验。</p><ul><li>比如说，现在很多网站在注册新用户时都必须提供手机号。<br /> 对于手机号最简单的校验就是校验它是否是 <strong>11 位纯数字</strong>。<br /> 这个很明显是前端就可以完成的校验，没有必要借助后端。</li></ul><p>除此之外，一些复杂的数据校验会放在后端。</p><ul><li>注册时的用户名或 id 必须是唯一的，此时必须在后端读取数据库才能完成<strong>唯一性校验</strong>。</li></ul><p>值得一提的是，<strong>后端校验包括前端校验</strong>。</p><ul><li>手机号是否是 11 位纯数字的校验不仅会在前端进行校验，还会在后端进行一次校验。</li><li>这是为了防止有些不怀好意之人不通过正常的流程提交数据，而是绕开我们在前端设下的数据校验直接把数据发送到后端。</li></ul><p>现在使用的都是<strong>前端校验</strong> + <strong>后端校验</strong> 的方式。</p><ul><li>既能满足用户的体验。</li><li>又能保证数据安全。</li></ul><p>在这里不讲解前端校验，只讲解<strong>后端校验</strong>。</p><hr /><p>在 Spring MVC 中，后端校验使用的是 <strong>JSR303</strong>。</p><p>JSR303（Java Specification Requests—— Java 规范提案）是 Java 为 Bean 数据合法性校验提供的标准框架，包含在 JavaEE 6.0 中 。<br /> 其通过在 Bean 属性上添加注解表示约束性，并通过标准的验证接口对 Bean 进行验证。</p><p>JSR303:</p><p><img src="\images\posts\java\framework\spring-mvc\02\JSR303.png" alt="" /></p><p>Hibernate Validator 扩展注解:</p><p><img src="\images\posts\java\framework\spring-mvc\02\hibernate.png" alt="" /></p><p>Spring MVC 拥有自己的数据校验框架，同时支持JSR303标准的校验框架。<br /> Spring MVC 本身没有提供 JSR303 的实现，需要导包。</p><p>其 Maven 依赖为</p><div class="language-xml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;dependency&gt;</span>
+	<span class="nt">&lt;groupId&gt;</span>org.hibernate<span class="nt">&lt;/groupId&gt;</span>
+	<span class="nt">&lt;artifactId&gt;</span>hibernate-validator<span class="nt">&lt;/artifactId&gt;</span>
+	<span class="nt">&lt;version&gt;</span>5.1.0.Final<span class="nt">&lt;/version&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div></div><p>不要使用太高的版本，可能会存在不兼容的问题。</p><p>新建实体类 Person.java</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Person</span> <span class="o">{</span>
+
+    <span class="nd">@NotNull</span>
+    <span class="kd">private</span> <span class="nc">Integer</span> <span class="n">id</span><span class="o">;</span>
+    <span class="nd">@Length</span><span class="o">(</span><span class="n">min</span> <span class="o">=</span> <span class="mi">3</span><span class="o">,</span><span class="n">max</span> <span class="o">=</span> <span class="mi">10</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">name</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">Integer</span> <span class="n">age</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">gender</span><span class="o">;</span>
+    <span class="nd">@Past</span>
+    <span class="kd">private</span> <span class="nc">Date</span> <span class="n">birth</span><span class="o">;</span>
+    <span class="nd">@Email</span>
+    <span class="kd">private</span> <span class="nc">String</span> <span class="n">email</span><span class="o">;</span>
+
+    <span class="c1">//省略无参构造器，getter/setter 方法和 toString 方法</span>
+<span class="o">}</span>
+</code></pre></div></div><p>在 Person 类中给各个属性添加了适合的注解</p><ul><li><code class="language-plaintext highlighter-rouge">id</code> 应该非空</li><li><code class="language-plaintext highlighter-rouge">name</code> 的长度在 3~10</li><li><code class="language-plaintext highlighter-rouge">birth</code> 必须是过去的日期</li><li><code class="language-plaintext highlighter-rouge">email</code> 必须是合法的邮箱地址</li></ul><p>ValidationController.java</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@Controller</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ValidationController</span> <span class="o">{</span>
+
+    <span class="nd">@Validated</span>
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">"/validation"</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="nc">String</span> <span class="nf">validate</span><span class="o">(</span><span class="nd">@Valid</span> <span class="nc">Person</span> <span class="n">person</span><span class="o">,</span> <span class="nc">BindingResult</span> <span class="n">bindingResult</span><span class="o">,</span> <span class="nc">Model</span> <span class="n">model</span><span class="o">){</span>
+        <span class="nc">Map</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">Object</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">HashMap</span><span class="o">&lt;</span><span class="nc">String</span><span class="o">,</span><span class="nc">Object</span><span class="o">&gt;();</span>
+        <span class="k">if</span><span class="o">(</span><span class="n">bindingResult</span><span class="o">.</span><span class="na">hasErrors</span><span class="o">()){</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"登陆失败"</span><span class="o">);</span>
+            <span class="c1">//获取到当前所有的错误</span>
+            <span class="nc">List</span><span class="o">&lt;</span><span class="nc">FieldError</span><span class="o">&gt;</span> <span class="n">fieldErrors</span> <span class="o">=</span> <span class="n">bindingResult</span><span class="o">.</span><span class="na">getFieldErrors</span><span class="o">();</span>
+            <span class="k">for</span> <span class="o">(</span><span class="nc">FieldError</span> <span class="n">fieldError</span> <span class="o">:</span> <span class="n">fieldErrors</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">fieldError</span><span class="o">.</span><span class="na">getField</span><span class="o">(),</span><span class="n">fieldError</span><span class="o">.</span><span class="na">getDefaultMessage</span><span class="o">());</span>
+            <span class="o">}</span>
+            <span class="n">model</span><span class="o">.</span><span class="na">addAttribute</span><span class="o">(</span><span class="s">"errors"</span><span class="o">,</span><span class="n">map</span><span class="o">);</span>
+            <span class="k">return</span> <span class="s">"forward:/login.jsp"</span><span class="o">;</span>
+        <span class="o">}</span><span class="k">else</span><span class="o">{</span>
+            <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"登陆成功"</span><span class="o">);</span>
+            <span class="k">return</span> <span class="s">"success"</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><ul><li><strong>方法</strong>需要添加 <code class="language-plaintext highlighter-rouge">@Validated</code> 注解</li><li>需要验证的 bean <strong>对象</strong>使用 <code class="language-plaintext highlighter-rouge">@Valid</code> 注解标明，Spring MVC 会<strong>自动</strong>进行验证</li><li><code class="language-plaintext highlighter-rouge">BindingResult</code> 存储了<strong>错误信息</strong>。<ul><li>从中读取所有的错误信息，放入一个 <code class="language-plaintext highlighter-rouge">Map</code> 中，并传入 <code class="language-plaintext highlighter-rouge">Model</code>，用于前端<strong>回显</strong>。</li><li>根据是否有错误来决定返回的页面<ul><li>有错误，返回原页面，让用户重新输入。</li><li>无错误，跳转到成功页面。</li></ul></li></ul></li></ul><p>前端页面需要将错误信息显示出来。<br /> <img src="\images\posts\java\framework\spring-mvc\02\login.png" alt="" /><br /> 从 request 作用域中读取。</p><div class="language-jsp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nt">&lt;%@ page </span><span class="na">contentType=</span><span class="s">"text/html;charset=UTF-8"</span><span class="na"> language=</span><span class="s">"java"</span> <span class="nt">%&gt;</span>
+<span class="nt">&lt;html&gt;</span>
+<span class="nt">&lt;head&gt;</span>
+	<span class="nt">&lt;title&gt;</span>Title<span class="nt">&lt;/title&gt;</span>
+<span class="nt">&lt;/head&gt;</span>
+<span class="nt">&lt;%</span>
+	<span class="n">pageContext</span><span class="o">.</span><span class="na">setAttribute</span><span class="o">(</span><span class="s">"ctp"</span><span class="o">,</span> <span class="n">request</span><span class="o">.</span><span class="na">getContextPath</span><span class="o">());</span>
+<span class="nt">%&gt;</span>
+<span class="nt">&lt;body&gt;</span>
+<span class="nt">&lt;form</span> <span class="na">action=</span><span class="s">"${ctp}/validation"</span> <span class="na">method=</span><span class="s">"post"</span><span class="nt">&gt;</span>
+	id：<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"id"</span><span class="nt">&gt;</span>${errors.id}<span class="nt">&lt;br&gt;</span>
+	name：<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"name"</span><span class="nt">&gt;</span>${errors.name}<span class="nt">&lt;br&gt;</span>
+	age：<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"age"</span><span class="nt">&gt;</span>${errors.age}<span class="nt">&lt;br&gt;</span>
+	gender：<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"gender"</span><span class="nt">&gt;</span>${errors.gender}<span class="nt">&lt;br&gt;</span>
+	birth：<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"birth"</span><span class="nt">&gt;</span>${errors.birth}<span class="nt">&lt;br&gt;</span>
+	email：<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"text"</span> <span class="na">name=</span><span class="s">"email"</span><span class="nt">&gt;</span>${errors.email}<span class="nt">&lt;br&gt;</span>
+	<span class="nt">&lt;input</span> <span class="na">type=</span><span class="s">"submit"</span> <span class="na">value=</span><span class="s">"login"</span><span class="nt">&gt;&lt;br&gt;</span>
+<span class="nt">&lt;/form&gt;</span>
+<span class="nt">&lt;/body&gt;</span>
+<span class="nt">&lt;/html&gt;</span>
+</code></pre></div></div><h1 id="源码链接">源码链接</h1><p>该文章源码链接 <a href="https://github.com/kekaiyuan/java/tree/main/framework/springmvc/springmvc_response">Github</a></p><div style="margin-top:2em;padding:0 1.5em;border:1px solid #d3d3d3;background-color:#deebf7"><h3>文档信息</h3><ul><li>本文作者：<a href="https://kekaiyuan.github.io/" target="_blank">Kaiyuan Ke</a></li><li>本文链接：<a href="https://kekaiyuan.github.io//2021/08/14/02-usage/" target="_blank">https://kekaiyuan.github.io//2021/08/14/02-usage/</a></li><li>版权声明：自由转载-非商用-非衍生-保持署名（<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank">创意共享3.0许可证</a>）</li></ul></div></article><div class="share"></div><div class="comment"><div id="gitalk-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/gitalk/gitalk.css"> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <script> var gitalk = new Gitalk({ id: '/2021/08/14/02-usage/', clientID: '', clientSecret: '', repo: '', owner: '', admin: [''], labels: ['gitment'], perPage: 50, }); gitalk.render('gitalk-container'); </script></div></div><div class="column one-fourth"><h3>Search</h3><div id="site_search"> <input style="width:350px" type="text" id="search_box" placeholder="Search"></div><ul id="search_results" style="font-size:16px;list-style-type:none;padding-top:10px;padding-left:10px;"></ul><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/simple-jekyll-search.min.js"></script> <script type="text/javascript"> SimpleJekyllSearch({ searchInput: document.getElementById('search_box'), resultsContainer: document.getElementById('search_results'), json: 'https://kekaiyuan.github.io//assets/search_data.json?v=1646200239', searchResultTemplate: '<li><a href="{url}" title="{title}">{title}</a></li>', noResultsText: 'No results found', limit: 10, fuzzy: false, exclude: ['Welcome'] }) </script><h3 class="post-directory-title mobile-hidden">Table of Contents</h3><div id="post-directory-module" class="mobile-hidden"><section class="post-directory"><dl></dl></section></div><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/jquery.toc.js"></script></div></div></section><footer class="container"><div class="site-footer" role="contentinfo"><div class="copyright left mobile-block"> © 2015 <span title="Kaiyuan Ke">Kaiyuan Ke</span> <a href="javascript:window.scrollTo(0,0)" class="right mobile-visible">TOP</a></div><ul class="site-footer-links right mobile-hidden"><li> <a href="javascript:window.scrollTo(0,0)" >TOP</a></li></ul><a href="https://github.com/kekaiyuan/kekaiyuan.github.io" target="_blank" aria-label="view source code"> <span class="mega-octicon octicon-mark-github" title="GitHub"></span> </a><ul class="site-footer-links mobile-hidden"><li> <a href="https://kekaiyuan.github.io//" title="首页" target="">首页</a></li><li> <a href="https://kekaiyuan.github.io//categories/" title="分类" target="">分类</a></li><li> <a href="https://kekaiyuan.github.io//archives/" title="归档" target="">归档</a></li><li> <a href="https://kekaiyuan.github.io//wiki/" title="维基" target="">维基</a></li><li> <a href="https://kekaiyuan.github.io//links/" title="链接" target="">链接</a></li><li> <a href="https://kekaiyuan.github.io//about/" title="关于" target="">关于</a></li><li><a href="https://kekaiyuan.github.io//feed.xml"><span class="octicon octicon-rss" style="color:orange;"></span></a></li></ul></div></footer><div class="tools-wrapper"> <a class="gotop" href="#" title="回到顶部"><span class="octicon octicon-arrow-up"></span></a></div><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/geopattern.js"></script> <script> jQuery(document).ready(function($) { $('.geopattern').each(function(){ $(this).geopattern($(this).data('pattern-id')); }); /* hljs.initHighlightingOnLoad(); */ }); </script><div style="display:none"> <script> (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); ga('create', 'UA-80669434-1', 'auto'); ga('send', 'pageview'); </script></div></body></html>

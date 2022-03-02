@@ -1,0 +1,231 @@
+<!DOCTYPE html><html lang="zh-cmn-Hans" prefix="og: http://ogp.me/ns#" class="han-init"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /><title>设计模式之——工厂 Factory &mdash; 菜鸟日记</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/primer-css/css/primer.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/collection.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/repo-card.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/sections/repo-list.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/boxed-group.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/globals/common.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/globals/responsive.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/posts/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/octicons/octicons/octicons.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mzlogin/rouge-themes@master/dist/github.css"><link rel="canonical" href="https://kekaiyuan.github.io//2021/06/04/factory/"><link rel="alternate" type="application/atom+xml" title="菜鸟日记" href="https://kekaiyuan.github.io//feed.xml"><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/favicon.ico"><meta property="og:title" content="设计模式之——工厂 Factory"><meta name="keywords" content="Java，设计模式"><meta name="og:keywords" content="Java，设计模式"><meta name="description" content="设计模式之——工厂 Factory"><meta name="og:description" content="设计模式之——工厂 Factory"><meta property="og:url" content="https://kekaiyuan.github.io//2021/06/04/factory/"><meta property="og:site_name" content="菜鸟日记"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN" /><meta property="article:published_time" content="2021-06-04"> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/jquery/dist/jquery.min.js"></script> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/jquery-ui.js"></script> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/main.js"></script></head><body class="" data-mz=""><header class="site-header"><div class="container"><h1><a href="https://kekaiyuan.github.io//" title="菜鸟日记"><span class="octicon octicon-mark-github"></span> 菜鸟日记</a></h1><button class="collapsed mobile-visible" type="button" onclick="toggleMenu();"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button><nav class="site-header-nav" role="navigation"> <a href="https://kekaiyuan.github.io//" class=" site-header-nav-item" target="" title="首页">首页</a> <a href="https://kekaiyuan.github.io//categories/" class=" site-header-nav-item" target="" title="分类">分类</a> <a href="https://kekaiyuan.github.io//archives/" class=" site-header-nav-item" target="" title="归档">归档</a> <a href="https://kekaiyuan.github.io//wiki/" class=" site-header-nav-item" target="" title="维基">维基</a> <a href="https://kekaiyuan.github.io//links/" class=" site-header-nav-item" target="" title="链接">链接</a> <a href="https://kekaiyuan.github.io//about/" class=" site-header-nav-item" target="" title="关于">关于</a></nav></div></header><section class="collection-head small geopattern" data-pattern-id="设计模式之——工厂 Facto"><div class="container"><div class="columns"><div class="column three-fourths"><div class="collection-title"><h1 class="collection-header">设计模式之——工厂 Factory</h1><div class="collection-info"> <span class="meta-info"> <span class="octicon octicon-calendar"></span> 2021/06/04 </span> <span class="meta-info"> <span class="octicon octicon-file-directory"></span> <a href="https://kekaiyuan.github.io//categories/#DesignPatterns" title="DesignPatterns">DesignPatterns</a> </span> <span class="meta-info"> <span class="octicon octicon-clock"></span> 共 6667 字，约 20 分钟 </span></div></div></div><div class="column one-fourth mobile-hidden"><div class="collection-title"> <img style="height:72px;width:72px" src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/images/qrcode.jpg" alt="闷骚的程序员" /></div></div></div></div></section><section class="container content"><div class="columns"><div class="column three-fourths" ><article class="article-content markdown-body"><p>设计模式之——工厂 Factory</p><h1 id="工厂模式">工厂模式</h1><p>工厂是一个概念，任何可以产生对象的方法或类，都可以称之为工厂。<br /></p><p>而工厂模式则是对工厂进行了一定程度的抽象，定义了具有通用性的模板。</p><p>为什么有了 new 之后，还要有工厂？</p><ul><li>灵活控制生产过程</li><li>权限、修饰、日志<br /></li></ul><p>假如我现在有一个类，在 100 个地方通过 new 的方式创建了这个类的对象。<br /> 现在我想要增加一些操作，比如说有权限的用户才能创建这个类，或是添加一些修饰，或是打印日志。<br /> 那么我得修改 100 个地方。<br /></p><p>但是如果这些对象都是通过同一个工厂生产出来的。<br /> 那么此时我们只需要对工厂做出 1 次修改，所有对象都会被修改。</p><p>那么工厂模式适合什么场景呢？</p><ol><li>对象<strong>数量很多</strong>，需要统一管理生产过程</li><li>对象的<strong>生产过程复杂</strong>，需要用工厂类对生产过程进行封装，方便二次调用</li></ol><p>工厂模式有以下四种类型：</p><ul><li>简单工厂</li><li>静态工厂</li><li>工厂方法</li><li>抽象工厂</li></ul><h1 id="工厂类型">工厂类型</h1><h2 id="简单工厂">简单工厂</h2><p>简单工厂专门用于生产某一类的子类</p><p>比如交通工具里有汽车、飞机、自行车……</p><p>那么我们就可以定义一个交通工具的简单工厂，专门用它来生产各类交通工具。</p><h3 id="概念">概念</h3><blockquote><p>以下内容引用自 <a href="https://www.runoob.com/design-pattern/factory-pattern.html">菜鸟教程</a></p><h3 id="工厂模式-1">工厂模式</h3><p>工厂模式（Factory Pattern）是 Java 中最常用的设计模式之一。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。</p><p>在工厂模式中，我们在创建对象时不会对客户端暴露创建逻辑，并且是通过使用一个共同的接口来指向新创建的对象。</p><h3 id="介绍">介绍</h3><p>意图</p><ul><li>定义一个创建对象的接口，让其子类自己决定实例化哪一个工厂类，工厂模式使其创建过程延迟到子类进行。</li></ul><p>主要解决</p><ul><li>主要解决接口选择的问题。</li></ul><p>何时使用</p><ul><li>我们明确地计划不同条件下创建不同实例时。</li></ul><p>如何解决</p><ul><li>让其子类实现工厂接口，返回的也是一个抽象的产品。</li></ul><p>关键代码</p><ul><li>创建过程在其子类执行。</li></ul><p>应用实例</p><ul><li>您需要一辆汽车，可以直接从工厂里面提货，而不用去管这辆汽车是怎么做出来的，以及这个汽车里面的具体实现。</li><li>Hibernate 换数据库只需换方言和驱动就可以。</li></ul><p>优点</p><ul><li>一个调用者想创建一个对象，只要知道其名称就可以了。</li><li>扩展性高，如果想增加一个产品，只要扩展一个工厂类就可以。</li><li>屏蔽产品的具体实现，调用者只关心产品的接口。</li></ul><p>缺点</p><ul><li>每次增加一个产品时，都需要增加一个具体类和对象实现工厂，使得系统中类的个数成倍增加，在一定程度上增加了系统的复杂度，同时也增加了系统具体类的依赖。这并不是什么好事。</li></ul><p>使用场景</p><ul><li>日志记录器：记录可能记录到本地硬盘、系统事件、远程服务器等，用户可以选择记录日志到什么地方。</li><li>数据库访问，当用户不知道最后系统采用哪一类数据库，以及数据库可能有变化时。</li><li>设计一个连接服务器的框架，需要三个协议，”POP3”、”IMAP”、”HTTP”，可以把这三个作为产品类，共同实现一个接口。</li></ul><p>注意事项</p><ul><li>作为一种创建类模式，在任何需要生成复杂对象的地方，都可以使用工厂方法模式。有一点需要注意的地方就是复杂对象适合使用工厂模式，而简单对象，特别是只需要通过 new 就可以完成创建的对象，无需使用工厂模式。如果使用工厂模式，就需要引入一个工厂类，会增加系统的复杂度。</li></ul></blockquote><h3 id="实现">实现</h3><p><strong>产品抽象类</strong></p><p>所有交通工具类的父类。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Vehicle</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">abstract</span> <span class="kt">void</span> <span class="nf">go</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div><hr /><p><strong>枚举</strong></p><p>定义交通工具的类型，使用枚举的好处能够限定参数种类，避免无效参数的传入。<br /> 同时将产品类型列举在枚举中，方便第三方查看和调用。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">enum</span> <span class="nc">VehicleType</span> <span class="o">{</span>
+    <span class="nc">Car</span><span class="o">,</span> <span class="nc">Plane</span><span class="o">,</span> <span class="nc">Broom</span>
+<span class="o">}</span>
+</code></pre></div></div><hr /><p><strong>具体的产品类</strong></p><ul><li>汽车<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Car</span> <span class="kd">extends</span> <span class="nc">Vehicle</span> <span class="o">{</span>
+
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">go</span><span class="o">()</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"开汽车"</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div></li><li>飞机<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Plane</span> <span class="kd">extends</span> <span class="nc">Vehicle</span> <span class="o">{</span>
+
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">go</span><span class="o">()</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"开飞机"</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div></li><li>魔法扫帚<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Broom</span> <span class="kd">extends</span> <span class="nc">Vehicle</span> <span class="o">{</span>
+
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">go</span><span class="o">()</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"骑扫帚"</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div></li></ul><hr /><p><strong>简单工厂</strong></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleVehicleFactory</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="nc">Vehicle</span> <span class="nf">createVehicle</span><span class="o">(</span><span class="nc">VehicleType</span> <span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">switch</span> <span class="o">(</span><span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="nl">Car:</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="nf">Car</span><span class="o">();</span>
+            <span class="k">case</span> <span class="nl">Plane:</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="nf">Plane</span><span class="o">();</span>
+            <span class="k">case</span> <span class="nl">Broom:</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="nf">Broom</span><span class="o">();</span>
+            <span class="k">default</span><span class="o">:</span>
+                <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div></div><hr /><p><strong>测试</strong></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">SimpleVehicleFactory</span> <span class="n">simpleVehicleFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">SimpleVehicleFactory</span><span class="o">();</span>
+
+    <span class="nc">Vehicle</span> <span class="n">car</span> <span class="o">=</span> <span class="n">simpleVehicleFactory</span><span class="o">.</span><span class="na">createVehicle</span><span class="o">(</span><span class="nc">VehicleType</span><span class="o">.</span><span class="na">Car</span><span class="o">);</span>
+    <span class="n">car</span><span class="o">.</span><span class="na">go</span><span class="o">();</span>
+
+    <span class="nc">Vehicle</span> <span class="n">plane</span> <span class="o">=</span> <span class="n">simpleVehicleFactory</span><span class="o">.</span><span class="na">createVehicle</span><span class="o">(</span><span class="nc">VehicleType</span><span class="o">.</span><span class="na">Plane</span><span class="o">);</span>
+    <span class="n">plane</span><span class="o">.</span><span class="na">go</span><span class="o">();</span>
+
+    <span class="nc">Vehicle</span> <span class="n">broom</span> <span class="o">=</span> <span class="n">simpleVehicleFactory</span><span class="o">.</span><span class="na">createVehicle</span><span class="o">(</span><span class="nc">VehicleType</span><span class="o">.</span><span class="na">Broom</span><span class="o">);</span>
+    <span class="n">broom</span><span class="o">.</span><span class="na">go</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div><p><strong>结果</strong></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">开汽车</span>
+<span class="n">开飞机</span>
+<span class="n">骑扫帚</span>
+</code></pre></div></div><h2 id="静态工厂">静态工厂</h2><p>静态工厂是简单工厂的升级。</p><p>很明显，工厂是一个无状态的类，程序中并不需要实际的工厂对象，所以把工厂的方法设置为<strong>静态</strong>的，并且将工厂类的<strong>构造器私有化</strong>，避免创建工厂对象。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">StaticFactory</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="nf">StaticFactory</span><span class="o">()</span> <span class="o">{</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">Vehicle</span> <span class="nf">createVehicle</span><span class="o">(</span><span class="nc">VehicleType</span> <span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">switch</span> <span class="o">(</span><span class="n">type</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">case</span> <span class="nl">Car:</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="nf">Car</span><span class="o">();</span>
+            <span class="k">case</span> <span class="nl">Plane:</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="nf">Plane</span><span class="o">();</span>
+            <span class="k">case</span> <span class="nl">Broom:</span>
+                <span class="k">return</span> <span class="k">new</span> <span class="nf">Broom</span><span class="o">();</span>
+            <span class="k">default</span><span class="o">:</span>
+                <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><h2 id="工厂方法">工厂方法</h2><p>在简单工厂中，工厂可以生产所有的交通工具：汽车、飞机、扫帚……</p><p>但是在工厂方法中，每种产品都由<strong>特定</strong>的工厂生产。</p><p>有多少种产品，就有多少个工厂。</p><h3 id="实现-1">实现</h3><p><strong>工厂抽象类</strong></p><p>所有工厂类的父类</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">VehicleFactory</span> <span class="o">{</span>
+    <span class="nc">Vehicle</span> <span class="nf">createVehicle</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div><hr /><p><strong>具体工厂</strong></p><ul><li>汽车工厂<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CarFactory</span> <span class="kd">implements</span> <span class="nc">VehicleFactory</span> <span class="o">{</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="nc">Vehicle</span> <span class="nf">createVehicle</span><span class="o">()</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="k">new</span> <span class="nf">Car</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div></li><li>飞机工厂<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">PlaneFactory</span> <span class="kd">implements</span> <span class="nc">VehicleFactory</span> <span class="o">{</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="nc">Vehicle</span> <span class="nf">createVehicle</span><span class="o">()</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="k">new</span> <span class="nf">Plane</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div></li><li>魔法扫帚工厂<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">BroomFactory</span> <span class="kd">implements</span> <span class="nc">VehicleFactory</span> <span class="o">{</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="nc">Vehicle</span> <span class="nf">createVehicle</span><span class="o">()</span> <span class="o">{</span>
+      <span class="k">return</span> <span class="k">new</span> <span class="nf">Broom</span><span class="o">();</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div></li></ul><hr /><p><strong>测试</strong></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="nc">VehicleFactory</span> <span class="n">carFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">CarFactory</span><span class="o">();</span>
+    <span class="nc">Vehicle</span> <span class="n">car</span> <span class="o">=</span> <span class="n">carFactory</span><span class="o">.</span><span class="na">createVehicle</span><span class="o">();</span>
+    <span class="n">car</span><span class="o">.</span><span class="na">go</span><span class="o">();</span>
+
+    <span class="nc">VehicleFactory</span> <span class="n">planeFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">PlaneFactory</span><span class="o">();</span>
+    <span class="nc">Vehicle</span> <span class="n">plane</span> <span class="o">=</span> <span class="n">planeFactory</span><span class="o">.</span><span class="na">createVehicle</span><span class="o">();</span>
+    <span class="n">plane</span><span class="o">.</span><span class="na">go</span><span class="o">();</span>
+
+    <span class="nc">VehicleFactory</span> <span class="n">broomFactory</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">BroomFactory</span><span class="o">();</span>
+    <span class="nc">Vehicle</span> <span class="n">broom</span> <span class="o">=</span> <span class="n">broomFactory</span><span class="o">.</span><span class="na">createVehicle</span><span class="o">();</span>
+    <span class="n">broom</span><span class="o">.</span><span class="na">go</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div><p><strong>结果</strong></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">开汽车</span>
+<span class="n">开飞机</span>
+<span class="n">骑扫帚</span>
+</code></pre></div></div><h2 id="抽象工厂">抽象工厂</h2><p>抽象工厂生产的是<strong>产品族</strong>，即固定的产品搭配。</p><p>什么是产品族？</p><p>比如现在我有以下产品</p><ul><li>载具<ul><li>汽车</li><li>魔法扫帚</li></ul></li><li>武器<ul><li>AK47</li><li>魔法棒</li></ul></li><li>食物<ul><li>方便面</li><li>魔法蘑菇</li></ul></li></ul><p>很明显，除了种类之外，这六类产品可以按照世界观分为两类</p><ul><li>现实世界：汽车、AK47、方便面</li><li>魔法世界：魔法扫帚、魔法棒、魔法蘑菇</li></ul><p>这就是产品族，把多个产品定义成一个<strong>整体</strong>。</p><p>于是我们就可以为这两个产品族建立两个抽象工厂</p><ul><li>现实世界的抽象工厂专门生产 {汽车，AK47，方便面}</li><li>魔法世界的抽象工厂专门生产 {魔法扫帚，魔法棒，魔法蘑菇}</li></ul><p>抽象工厂的目的主要有两个</p><ul><li>维护产品族的内容<ul><li>我通过抽象工厂得到的产品族一定是唯一的。<br /> 就像我通过上面的两个抽象工厂一定只能得到 {汽车，AK47，方便面} 和 {魔法扫帚，魔法棒，魔法蘑菇} 之中的一个产品族。<br /> 我不可能得到 {汽车，魔法棒，魔法蘑菇} 这样的产品族。<br /> 就像你不能去食品工厂生产电子产品，去电子工厂生产食品一样。</li><li>抽象工厂保证了各个类之间的正确组合。</li></ul></li><li>方便生产<ul><li>假如现在有六个工厂，分别生产上述六种东西的一种，那么我们可以很方便地得到其中一种：调用某个工厂得到某个产品。<br /> 如果需要产品族，那么就调用三个工厂，得到三个产品。</li><li>但是抽象工厂更方便，我只需要调用一个抽象工厂，就能得到一整套的产品族。</li></ul></li></ul><p>最常使用抽象工厂就是换皮肤。</p><ul><li>无论是游戏内人物的皮肤，还是某款应用的界面，都非常适合用抽象工厂进行设计。</li><li>一套皮肤是由许多组件构成的，使用抽象工厂，就不会出现换皮肤后，一半是新皮肤，一半是旧皮肤的错误。</li><li>因为组件数量特别多，所以需要抽象工厂将组件集中到一起，实现“一键换皮”。</li></ul><h3 id="概念-1">概念</h3><blockquote><p>以下内容引用自 <a href="https://www.runoob.com/design-pattern/abstract-factory-pattern.html">菜鸟教程</a></p><p>抽象工厂模式 抽象工厂模式（Abstract Factory Pattern）是围绕一个超级工厂创建其他工厂。该超级工厂又称为其他工厂的工厂。这种类型的设计模式属于创建型模式，它提供了一种创建对象的最佳方式。</p><p>在抽象工厂模式中，接口是负责创建一个相关对象的工厂，不需要显式指定它们的类。每个生成的工厂都能按照工厂模式提供对象。</p><p>介绍 意图</p><ul><li>提供一个创建一系列相关或相互依赖对象的接口，而无需指定它们具体的类。</li></ul><p>主要解决</p><ul><li>主要解决接口选择的问题。</li></ul><p>何时使用</p><ul><li>系统的产品有多于一个的产品族，而系统只消费其中某一族的产品。</li></ul><p>如何解决</p><ul><li>在一个产品族里面，定义多个产品。</li></ul><p>关键代码</p><ul><li>在一个工厂里聚合多个同类产品。</li></ul><p>应用实例</p><ul><li>工作了，为了参加一些聚会，肯定有两套或多套衣服吧，比如说有商务装（成套，一系列具体产品）、时尚装（成套，一系列具体产品），甚至对于一个家庭来说，可能有商务女装、商务男装、时尚女装、时尚男装，这些也都是成套的，即一系列具体产品。假设一种情况（现实中是不存在的，要不然，没法进入共产主义了，但有利于说明抽象工厂模式），在您的家中，某一个衣柜（具体工厂）只能存放某一种这样的衣服（成套，一系列具体产品），每次拿这种成套的衣服时也自然要从这个衣柜中取出了。用 OOP 的思想去理解，所有的衣柜（具体工厂）都是衣柜类的（抽象工厂）某一个，而每一件成套的衣服又包括具体的上衣（某一具体产品），裤子（某一具体产品），这些具体的上衣其实也都是上衣（抽象产品），具体的裤子也都是裤子（另一个抽象产品）。</li></ul><p>优点</p><ul><li>当一个产品族中的多个对象被设计成一起工作时，它能保证客户端始终只使用同一个产品族中的对象。</li></ul><p>缺点</p><ul><li>产品族扩展非常困难，要增加一个系列的某一产品，既要在抽象的 Creator 里加代码，又要在具体的里面加代码。</li></ul><p>使用场景</p><ul><li>QQ 换皮肤，一整套一起换。</li><li>生成不同操作系统的程序。</li></ul><p>注意事项</p><ul><li>产品族难扩展，产品等级易扩展。</li></ul></blockquote><h3 id="实现-2">实现</h3><p>抽象工厂需要定义非常多的抽象类，抽象工厂本身就是一个抽象类，每种产品又需要一个抽象类。</p><hr /><p><strong>食物</strong></p><ul><li>抽象类<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Food</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">abstract</span> <span class="kt">void</span> <span class="nf">getName</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div></li><li>抽象类<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">InstantNoodles</span> <span class="kd">extends</span> <span class="nc">Food</span><span class="o">{</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"方便面"</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div></li><li>方便面<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">InstantNoodles</span> <span class="kd">extends</span> <span class="nc">Food</span><span class="o">{</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"方便面"</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div></li><li>魔法蘑菇<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MushRoom</span> <span class="kd">extends</span> <span class="nc">Food</span><span class="o">{</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"魔法蘑菇"</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div></li></ul><hr /><p><strong>载具</strong></p><ul><li>抽象类<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Vehicle</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">abstract</span> <span class="kt">void</span> <span class="nf">go</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div></li><li>汽车<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Car</span> <span class="kd">extends</span> <span class="nc">Vehicle</span> <span class="o">{</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">go</span><span class="o">()</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"开汽车"</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div></li><li>魔法扫帚<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Broom</span> <span class="kd">extends</span> <span class="nc">Vehicle</span> <span class="o">{</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">go</span><span class="o">()</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"骑扫帚"</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div></li></ul><hr /><p><strong>武器</strong></p><ul><li>抽象类<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">Weapon</span> <span class="o">{</span>
+  <span class="kd">public</span> <span class="kd">abstract</span> <span class="kt">void</span> <span class="nf">shoot</span><span class="o">();</span>
+<span class="o">}</span>
+</code></pre></div></div></li><li>AK47<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">AK47</span> <span class="kd">extends</span> <span class="nc">Weapon</span><span class="o">{</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shoot</span><span class="o">()</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"AK47"</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div></li><li>魔法棒<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">MagicStick</span> <span class="kd">extends</span> <span class="nc">Weapon</span><span class="o">{</span>
+  <span class="nd">@Override</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">shoot</span><span class="o">()</span> <span class="o">{</span>
+      <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"魔法棒"</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div></li></ul><hr /><p>有了产品以后，就需要定义包装产品族的抽象工厂了。</p><p><strong>抽象工厂</strong></p><ul><li>抽象类<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">public</span> <span class="kd">abstract</span> <span class="kd">class</span> <span class="nc">AbstractFactory</span> <span class="o">{</span>
+      <span class="kd">public</span> <span class="kd">abstract</span> <span class="nc">Food</span> <span class="nf">getFood</span><span class="o">();</span>
+      <span class="kd">public</span> <span class="kd">abstract</span> <span class="nc">Vehicle</span> <span class="nf">getVehicle</span><span class="o">();</span>
+      <span class="kd">public</span> <span class="kd">abstract</span> <span class="nc">Weapon</span> <span class="nf">getWeapon</span><span class="o">();</span>
+  <span class="o">}</span>
+</code></pre></div></div></li><li>现代工厂<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">ModernFactory</span> <span class="kd">extends</span> <span class="nc">AbstractFactory</span><span class="o">{</span>
+
+      <span class="nd">@Override</span>
+      <span class="kd">public</span> <span class="nc">Food</span> <span class="nf">getFood</span><span class="o">()</span> <span class="o">{</span>
+          <span class="k">return</span> <span class="k">new</span> <span class="nf">InstantNoodles</span><span class="o">();</span>
+      <span class="o">}</span>
+
+      <span class="nd">@Override</span>
+      <span class="kd">public</span> <span class="nc">Vehicle</span> <span class="nf">getVehicle</span><span class="o">()</span> <span class="o">{</span>
+          <span class="k">return</span> <span class="k">new</span> <span class="nf">Car</span><span class="o">();</span>
+      <span class="o">}</span>
+
+      <span class="nd">@Override</span>
+      <span class="kd">public</span> <span class="nc">Weapon</span> <span class="nf">getWeapon</span><span class="o">()</span> <span class="o">{</span>
+          <span class="k">return</span> <span class="k">new</span> <span class="nf">AK47</span><span class="o">();</span>
+      <span class="o">}</span>
+
+  <span class="o">}</span>
+</code></pre></div></div></li><li>魔法工厂<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="kd">public</span> <span class="kd">class</span> <span class="nc">MagicFactory</span> <span class="kd">extends</span> <span class="nc">AbstractFactory</span><span class="o">{</span>
+
+      <span class="nd">@Override</span>
+      <span class="kd">public</span> <span class="nc">Food</span> <span class="nf">getFood</span><span class="o">()</span> <span class="o">{</span>
+          <span class="k">return</span> <span class="k">new</span> <span class="nf">MushRoom</span><span class="o">();</span>
+      <span class="o">}</span>
+
+      <span class="nd">@Override</span>
+      <span class="kd">public</span> <span class="nc">Vehicle</span> <span class="nf">getVehicle</span><span class="o">()</span> <span class="o">{</span>
+          <span class="k">return</span> <span class="k">new</span> <span class="nf">Broom</span><span class="o">();</span>
+      <span class="o">}</span>
+
+      <span class="nd">@Override</span>
+      <span class="kd">public</span> <span class="nc">Weapon</span> <span class="nf">getWeapon</span><span class="o">()</span> <span class="o">{</span>
+          <span class="k">return</span> <span class="k">new</span> <span class="nf">MagicStick</span><span class="o">();</span>
+      <span class="o">}</span>
+
+  <span class="o">}</span>
+</code></pre></div></div></li></ul><hr /><p><strong>测试</strong></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Main</span> <span class="o">{</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+		<span class="nc">AbstractFactory</span> <span class="n">abstractFactory1</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">MagicFactory</span><span class="o">();</span>
+		<span class="n">show</span><span class="o">(</span><span class="n">abstractFactory1</span><span class="o">);</span>
+
+		<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"-------"</span><span class="o">);</span>
+
+		<span class="nc">AbstractFactory</span> <span class="n">abstractFactory2</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">ModernFactory</span><span class="o">();</span>
+		<span class="n">show</span><span class="o">(</span><span class="n">abstractFactory2</span><span class="o">);</span>
+
+	<span class="o">}</span>
+
+	<span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">show</span><span class="o">(</span><span class="nc">AbstractFactory</span> <span class="n">abstractFactory</span><span class="o">){</span>
+		<span class="n">abstractFactory</span><span class="o">.</span><span class="na">getFood</span><span class="o">().</span><span class="na">getName</span><span class="o">();</span>
+		<span class="n">abstractFactory</span><span class="o">.</span><span class="na">getVehicle</span><span class="o">().</span><span class="na">go</span><span class="o">();</span>
+		<span class="n">abstractFactory</span><span class="o">.</span><span class="na">getWeapon</span><span class="o">().</span><span class="na">shoot</span><span class="o">();</span>
+	<span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p><strong>结果</strong></p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">魔法蘑菇</span>
+<span class="n">骑扫帚</span>
+<span class="n">魔法棒</span>
+<span class="o">-------</span>
+<span class="n">方便面</span>
+<span class="n">开汽车</span>
+<span class="no">AK47</span>
+</code></pre></div></div><p>可以看到，使用了抽象工厂以后，产品族的搭配变得十分<strong>稳定</strong>，而且调用很<strong>简单</strong>。</p><h1 id="源码链接">源码链接</h1><p>该文章源码链接 <a href="https://github.com/kekaiyuan/designpatterns/tree/main/src/main/java/com/kky/dp/factory">Github</a></p><div style="margin-top:2em;padding:0 1.5em;border:1px solid #d3d3d3;background-color:#deebf7"><h3>文档信息</h3><ul><li>本文作者：<a href="https://kekaiyuan.github.io/" target="_blank">Kaiyuan Ke</a></li><li>本文链接：<a href="https://kekaiyuan.github.io//2021/06/04/factory/" target="_blank">https://kekaiyuan.github.io//2021/06/04/factory/</a></li><li>版权声明：自由转载-非商用-非衍生-保持署名（<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank">创意共享3.0许可证</a>）</li></ul></div></article><div class="share"></div><div class="comment"><div id="gitalk-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/gitalk/gitalk.css"> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <script> var gitalk = new Gitalk({ id: '/2021/06/04/factory/', clientID: '', clientSecret: '', repo: '', owner: '', admin: [''], labels: ['gitment'], perPage: 50, }); gitalk.render('gitalk-container'); </script></div></div><div class="column one-fourth"><h3>Search</h3><div id="site_search"> <input style="width:350px" type="text" id="search_box" placeholder="Search"></div><ul id="search_results" style="font-size:16px;list-style-type:none;padding-top:10px;padding-left:10px;"></ul><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/simple-jekyll-search.min.js"></script> <script type="text/javascript"> SimpleJekyllSearch({ searchInput: document.getElementById('search_box'), resultsContainer: document.getElementById('search_results'), json: 'https://kekaiyuan.github.io//assets/search_data.json?v=1646200237', searchResultTemplate: '<li><a href="{url}" title="{title}">{title}</a></li>', noResultsText: 'No results found', limit: 10, fuzzy: false, exclude: ['Welcome'] }) </script><h3 class="post-directory-title mobile-hidden">Table of Contents</h3><div id="post-directory-module" class="mobile-hidden"><section class="post-directory"><dl></dl></section></div><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/jquery.toc.js"></script></div></div></section><footer class="container"><div class="site-footer" role="contentinfo"><div class="copyright left mobile-block"> © 2015 <span title="Kaiyuan Ke">Kaiyuan Ke</span> <a href="javascript:window.scrollTo(0,0)" class="right mobile-visible">TOP</a></div><ul class="site-footer-links right mobile-hidden"><li> <a href="javascript:window.scrollTo(0,0)" >TOP</a></li></ul><a href="https://github.com/kekaiyuan/kekaiyuan.github.io" target="_blank" aria-label="view source code"> <span class="mega-octicon octicon-mark-github" title="GitHub"></span> </a><ul class="site-footer-links mobile-hidden"><li> <a href="https://kekaiyuan.github.io//" title="首页" target="">首页</a></li><li> <a href="https://kekaiyuan.github.io//categories/" title="分类" target="">分类</a></li><li> <a href="https://kekaiyuan.github.io//archives/" title="归档" target="">归档</a></li><li> <a href="https://kekaiyuan.github.io//wiki/" title="维基" target="">维基</a></li><li> <a href="https://kekaiyuan.github.io//links/" title="链接" target="">链接</a></li><li> <a href="https://kekaiyuan.github.io//about/" title="关于" target="">关于</a></li><li><a href="https://kekaiyuan.github.io//feed.xml"><span class="octicon octicon-rss" style="color:orange;"></span></a></li></ul></div></footer><div class="tools-wrapper"> <a class="gotop" href="#" title="回到顶部"><span class="octicon octicon-arrow-up"></span></a></div><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/geopattern.js"></script> <script> jQuery(document).ready(function($) { $('.geopattern').each(function(){ $(this).geopattern($(this).data('pattern-id')); }); /* hljs.initHighlightingOnLoad(); */ }); </script><div style="display:none"> <script> (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); ga('create', 'UA-80669434-1', 'auto'); ga('send', 'pageview'); </script></div></body></html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html><html lang="zh-cmn-Hans" prefix="og: http://ogp.me/ns#" class="han-init"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" /><title>Java 多线程与高并发之—— volatile 关键字 &mdash; 菜鸟日记</title><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/primer-css/css/primer.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/collection.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/repo-card.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/sections/repo-list.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/components/boxed-group.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/globals/common.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/globals/responsive.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/css/posts/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/octicons/octicons/octicons.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/mzlogin/rouge-themes@master/dist/github.css"><link rel="canonical" href="https://kekaiyuan.github.io//2021/07/16/volatile/"><link rel="alternate" type="application/atom+xml" title="菜鸟日记" href="https://kekaiyuan.github.io//feed.xml"><link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/favicon.ico"><meta property="og:title" content="Java 多线程与高并发之—— volatile 关键字"><meta name="keywords" content="Java, volatile"><meta name="og:keywords" content="Java, volatile"><meta name="description" content="Java 多线程与高并发之—— volatile 关键字"><meta name="og:description" content="Java 多线程与高并发之—— volatile 关键字"><meta property="og:url" content="https://kekaiyuan.github.io//2021/07/16/volatile/"><meta property="og:site_name" content="菜鸟日记"><meta property="og:type" content="article"><meta property="og:locale" content="zh_CN" /><meta property="article:published_time" content="2021-07-16"> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/jquery/dist/jquery.min.js"></script> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/jquery-ui.js"></script> <script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/main.js"></script></head><body class="" data-mz=""><header class="site-header"><div class="container"><h1><a href="https://kekaiyuan.github.io//" title="菜鸟日记"><span class="octicon octicon-mark-github"></span> 菜鸟日记</a></h1><button class="collapsed mobile-visible" type="button" onclick="toggleMenu();"> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span> </button><nav class="site-header-nav" role="navigation"> <a href="https://kekaiyuan.github.io//" class=" site-header-nav-item" target="" title="首页">首页</a> <a href="https://kekaiyuan.github.io//categories/" class=" site-header-nav-item" target="" title="分类">分类</a> <a href="https://kekaiyuan.github.io//archives/" class=" site-header-nav-item" target="" title="归档">归档</a> <a href="https://kekaiyuan.github.io//wiki/" class=" site-header-nav-item" target="" title="维基">维基</a> <a href="https://kekaiyuan.github.io//links/" class=" site-header-nav-item" target="" title="链接">链接</a> <a href="https://kekaiyuan.github.io//about/" class=" site-header-nav-item" target="" title="关于">关于</a></nav></div></header><section class="collection-head small geopattern" data-pattern-id="Java 多线程与高并发之——"><div class="container"><div class="columns"><div class="column three-fourths"><div class="collection-title"><h1 class="collection-header">Java 多线程与高并发之—— volatile 关键字</h1><div class="collection-info"> <span class="meta-info"> <span class="octicon octicon-calendar"></span> 2021/07/16 </span> <span class="meta-info"> <span class="octicon octicon-file-directory"></span> <a href="https://kekaiyuan.github.io//categories/#Java" title="Java">Java</a> </span> <span class="meta-info"> <span class="octicon octicon-clock"></span> 共 9455 字，约 28 分钟 </span></div></div></div><div class="column one-fourth mobile-hidden"><div class="collection-title"> <img style="height:72px;width:72px" src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/images/qrcode.jpg" alt="闷骚的程序员" /></div></div></div></div></section><section class="container content"><div class="columns"><div class="column three-fourths" ><article class="article-content markdown-body"><p>Java 多线程与高并发之—— volatile 关键字</p><h1 id="序言">序言</h1><p>在定义某个类的成员变量时，我们可以使用 <strong>volatile</strong> 关键字来修饰该变量。</p><p>这个关键字在平时用不到，只有在<strong>多线程</strong>时才会用到。</p><p>它的作用有两个：</p><ol><li>保证线程可见性</li><li>禁止指令重排</li></ol><h1 id="保证线程可见性">保证线程可见性</h1><h2 id="现代计算机的内存模型">现代计算机的内存模型</h2><p>首先要了解的是现代计算机的内存模型</p><pre><code class="language-mermaid">graph BT;
+A[主内存] --- B[缓存一致性协议]
+B --- C1[高速缓存]
+B --- C2[高速缓存]
+B --- C3[高速缓存]
+C1 --- D1[处理器]
+C2 --- D2[处理器]
+C3 --- D3[处理器]
+</code></pre><p>在计算机的早期时代，因为 CPU 的运行速度和内存的读写速度<strong>相差无几</strong>。<br /> 所以当时是没有高速缓存的。<br /> CPU 直接从内存读取数据，进行计算，返回结果给内存。</p><p>但随着技术的发展，CPU 的速度越来越快，但是内存读写速度的发展却陷入了瓶颈。<br /> 两者之间出现了<strong>几个数量级</strong>的差距。</p><p>于是不得不加入了读写速度能够与 CPU 匹配的<strong>高速缓存</strong>：<br /> 将运算需要使用到的数据复制到缓存中，让运算能快速进行。<br /> 当运算结束后再将数据从缓存同步回内存之中，这样处理器就无须等待缓慢的内存读写了。</p><p>但此时又有了新的问题：<br /> 假如多个处理器从内存中取走了同一份数据，再经过各自的计算后，哪份数据才是真正需要写回内存的哪份？</p><p>于是提出了<strong>缓存一致性协议</strong>，用于<strong>同步</strong>多个缓存之间的数据。</p><h2 id="jmm">JMM</h2><p>根据现代计算机的内存模型，Java 也提出了相似的内存模型（简称 JMM—— Java Memory Model）。</p><pre><code class="language-mermaid">graph BT;
+A[主内存] --- B[Save 和 Load 操作]
+B --- C1[工作内存]
+B --- C2[工作内存]
+B --- C3[工作内存]
+C1 --- D1[Java 线程]
+C2 --- D2[Java 线程]
+C3 --- D3[Java 线程]
+</code></pre><p>Java 内存模型规定了以下几点：</p><ol><li>所有的变量都存储在<strong>主内存</strong>中。</li><li>每条线程都有自己的<strong>工作内存</strong>，保存了主内存中的数据<strong>拷贝</strong>。</li><li>线程对变量的所有操作（读取、赋值）都必须在<strong>工作内存</strong>中进行，而不能直接读写主内存中的变量。</li><li>线程间传递变量值需要在<strong>主内存</strong>中完成。</li></ol><h2 id="线程可见性">线程可见性</h2><p>当线程修改了其工作内存的数据后，需要使得其他线程能够看到该数据，这就是<strong>线程可见性</strong>。</p><p>在一般情况下，线程间是不可见的。</p><p>需要通过某些方法，强制触发该读写流程：</p><ul><li>写：<ul><li>改变工作内存中拷贝副本的值。</li><li>将改变后的副本同步回主内存。</li></ul></li><li>读：<ul><li>从主内存中拷贝最新的变量到副本中。</li><li>读取工作内存中副本的值。</li></ul></li></ul><p>请注意：<br /> volatile 不是实现线程可见性的唯一方法。<br /> 只要能够触发该流程，就能实现线程间可见。</p><h3 id="案例">案例</h3><p>现有一个小程序</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">T01_VolatileTest</span> <span class="o">{</span>
+    <span class="kt">boolean</span> <span class="n">running</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span> <span class="c1">//对比一下有无volatile的情况下，整个程序运行结果的区别</span>
+    <span class="kt">void</span> <span class="nf">m</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m start"</span><span class="o">);</span>
+        <span class="k">while</span><span class="o">(</span><span class="n">running</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m end!"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+        <span class="n">T01_VolatileTest</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="n">T01_VolatileTest</span><span class="o">();</span>
+        <span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="nl">t:</span><span class="o">:</span><span class="n">m</span><span class="o">,</span> <span class="s">"t1"</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+
+        <span class="c1">//睡眠一段时间是为了让线程 t 将 running = true 复制到工作内存中</span>
+        <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1000</span><span class="o">);</span>
+
+        <span class="n">t</span><span class="o">.</span><span class="na">running</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>该程序很简单。<br /> 启动一个线程，当 <code class="language-plaintext highlighter-rouge">running = false</code> 时死循环，当 <code class="language-plaintext highlighter-rouge">running = ture</code> 时结束线程。</p><p>结果</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">m</span> <span class="n">start</span>
+</code></pre></div></div><p>并且该程序不会结束，一直处于运行状态。<br /> 说明程序陷入了死循环。</p><p>这就是<strong>线程间不可见</strong>：<br /> 线程 t 一开始从主内存中复制的变量是 <code class="language-plaintext highlighter-rouge">running = true</code>。<br /> 主线程先等待 1s，确保线程 t 复制的是 <code class="language-plaintext highlighter-rouge">running = true</code> 。<br /> 然后将 <code class="language-plaintext highlighter-rouge">running</code> 改为 <code class="language-plaintext highlighter-rouge">false</code>。<br /> 但是线程 t 中的 <code class="language-plaintext highlighter-rouge">running</code> 并没有修改，所以线程 t 陷入了死循环。</p><h3 id="解决办法">解决办法</h3><h4 id="volatile-关键字">volatile 关键字</h4><p>使用 volatile 关键字修饰共享变量</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">T01_VolatileTest</span> <span class="o">{</span>
+    <span class="kd">volatile</span> <span class="kt">boolean</span> <span class="n">running</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span> <span class="c1">//对比一下有无volatile的情况下，整个程序运行结果的区别</span>
+    <span class="kt">void</span> <span class="nf">m</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m start"</span><span class="o">);</span>
+        <span class="k">while</span><span class="o">(</span><span class="n">running</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m end!"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+        <span class="n">T01_VolatileTest</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="n">T01_VolatileTest</span><span class="o">();</span>
+        <span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="nl">t:</span><span class="o">:</span><span class="n">m</span><span class="o">,</span> <span class="s">"t1"</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+
+        <span class="c1">//睡眠一段时间是为了让线程 t 将 running = true 复制到工作内存中</span>
+        <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1000</span><span class="o">);</span>
+
+		<span class="c1">//修改 running 的值，尝试让线程 t 停下来</span>
+        <span class="n">t</span><span class="o">.</span><span class="na">running</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>结果</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">m</span> <span class="n">start</span>
+<span class="n">m</span> <span class="n">end</span><span class="o">!</span>
+</code></pre></div></div><h4 id="synchronized-关键字">synchronized 关键字</h4><p>synchronized 关键字也是能够保证线程可见性的。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">T01_VolatileTest</span> <span class="o">{</span>
+    <span class="kt">boolean</span> <span class="n">running</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span> <span class="c1">//对比一下有无volatile的情况下，整个程序运行结果的区别</span>
+    <span class="kt">void</span> <span class="nf">m</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m start"</span><span class="o">);</span>
+        <span class="k">while</span><span class="o">(</span><span class="n">running</span><span class="o">){</span>
+			<span class="kd">synchronized</span><span class="o">(</span><span class="k">this</span><span class="o">){</span>
+			<span class="o">}</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m end!"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+        <span class="n">T01_VolatileTest</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="n">T01_VolatileTest</span><span class="o">();</span>
+        <span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="nl">t:</span><span class="o">:</span><span class="n">m</span><span class="o">,</span> <span class="s">"t1"</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+
+        <span class="c1">//睡眠一段时间是为了让线程 t 将 running = true 复制到工作内存中</span>
+        <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1000</span><span class="o">);</span>
+
+		<span class="c1">//修改 running 的值，尝试让线程 t 停下来</span>
+        <span class="n">t</span><span class="o">.</span><span class="na">running</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>结果</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">m</span> <span class="n">start</span>
+<span class="n">m</span> <span class="n">end</span><span class="o">!</span>
+</code></pre></div></div><h4 id="threadsleep">Thread.sleep()</h4><p>如果调用了 Thread.sleep() 方法，那么 JVM 会利用线程睡眠的这段时间进行数据的同步。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">T01_VolatileTest</span> <span class="o">{</span>
+    <span class="kt">boolean</span> <span class="n">running</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span> <span class="c1">//对比一下有无volatile的情况下，整个程序运行结果的区别</span>
+    <span class="kt">void</span> <span class="nf">m</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m start"</span><span class="o">);</span>
+        <span class="k">while</span><span class="o">(</span><span class="n">running</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">try</span> <span class="o">{</span>
+                <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1</span><span class="o">);</span>
+            <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="nc">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m end!"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+        <span class="n">T01_VolatileTest</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="n">T01_VolatileTest</span><span class="o">();</span>
+        <span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="nl">t:</span><span class="o">:</span><span class="n">m</span><span class="o">,</span> <span class="s">"t1"</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+
+        <span class="c1">//睡眠一段时间是为了让线程 t 将 running = true 复制到工作内存中</span>
+        <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1000</span><span class="o">);</span>
+
+		<span class="c1">//修改 running 的值，尝试让线程 t 停下来</span>
+        <span class="n">t</span><span class="o">.</span><span class="na">running</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>结果</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">m</span> <span class="n">start</span>
+<span class="n">m</span> <span class="n">end</span><span class="o">!</span>
+</code></pre></div></div><h4 id="systemoutprintln">System.out.println()</h4><p>如果线程调用了 System.out.println() 方法，<strong>无论输出的是什么</strong>，JVM 都会进行数据同步。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">T01_VolatileTest</span> <span class="o">{</span>
+    <span class="kt">boolean</span> <span class="n">running</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span> <span class="c1">//对比一下有无volatile的情况下，整个程序运行结果的区别</span>
+    <span class="kt">void</span> <span class="nf">m</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m start"</span><span class="o">);</span>
+        <span class="k">while</span><span class="o">(</span><span class="n">running</span><span class="o">)</span> <span class="o">{</span>
+			<span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"666"</span><span class="o">);</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m end!"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+        <span class="n">T01_VolatileTest</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="n">T01_VolatileTest</span><span class="o">();</span>
+        <span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="nl">t:</span><span class="o">:</span><span class="n">m</span><span class="o">,</span> <span class="s">"t1"</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+
+        <span class="c1">//睡眠一段时间是为了让线程 t 将 running = true 复制到工作内存中</span>
+        <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1000</span><span class="o">);</span>
+
+		<span class="c1">//修改 running 的值，尝试让线程 t 停下来</span>
+        <span class="n">t</span><span class="o">.</span><span class="na">running</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>结果</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">m</span> <span class="n">start</span>
+<span class="mi">666</span>
+<span class="err">……（</span><span class="n">省略</span> <span class="mi">10000</span> <span class="n">个</span> <span class="mi">666</span><span class="err">）</span>
+<span class="mi">666</span>
+<span class="n">m</span> <span class="n">end</span><span class="o">!</span>
+</code></pre></div></div><h4 id="总结">总结</h4><p>要实现线程间可见很简单，只要强制性地让 JVM 实现数据的同步就可以了。<br /> 方法有很多，笔者找到了这四种，但应该还有很多方法能触发线程间可见。</p><h1 id="禁用指令重排">禁用指令重排</h1><p>在单例模式中，<strong>双检锁</strong>（DCL—— Double Check Lock）式的单例模式必须使用 <strong>volatile</strong> 关键字。</p><p>双检锁式单例模式</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Mgr06</span> <span class="o">{</span>
+	<span class="c1">//使用volatile关键字，防止JVM内部语句重排后，没有初始化就返回INSTANCE</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">volatile</span> <span class="nc">Mgr06</span> <span class="no">INSTANCE</span><span class="o">;</span>
+
+    <span class="kd">private</span> <span class="nf">Mgr06</span><span class="o">(){}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="nc">Mgr06</span> <span class="nf">getInstance</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">if</span><span class="o">(</span><span class="no">INSTANCE</span> <span class="o">==</span> <span class="kc">null</span><span class="o">){</span>
+            <span class="c1">//双重检查</span>
+            <span class="kd">synchronized</span> <span class="o">(</span><span class="nc">Mgr06</span><span class="o">.</span><span class="na">class</span><span class="o">){</span>
+                <span class="k">if</span><span class="o">(</span><span class="no">INSTANCE</span> <span class="o">==</span> <span class="kc">null</span><span class="o">){</span>
+                   <span class="no">INSTANCE</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Mgr06</span><span class="o">();</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+        <span class="o">}</span>
+        <span class="k">return</span> <span class="no">INSTANCE</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>指令重排：<br /> <code class="language-plaintext highlighter-rouge">INSTANCE = new Mgr06();</code> 在 Java 中是一句话，但是翻译成汇编语言会变成三条语句：</p><ol><li>申请内存</li><li>初始化成员变量</li><li>让 INSTANCE 指向这块内存</li></ol><p>为了提高性能，系统会对指令进行重排序。</p><p>所以有时会把指令重排为以下顺序：</p><ol><li>申请内存</li><li>让 INSTANCE 指向这块内存</li><li>初始化成员变量</li></ol><p>即第二条指令和第三条指令<strong>互换</strong>。</p><p>然后考虑一个非常非常神奇的巧合：</p><ol><li>线程 1 访问该单例，发现没有创建单例，于是在该线程中，执行<strong>创建单例</strong>的操作。</li><li>系统将 <code class="language-plaintext highlighter-rouge">INSTANCE = new Mgr06();</code> 的<strong>指令重排</strong>了。<br /> 于是线程 1 先申请了内存，将 INSTANCE 指向了该内存。</li><li>在线程 1 初始化成员变量<strong>前</strong>，线程切换了，切换的线程 2 也要使用该单例模式。</li><li>线程 2 发现 <code class="language-plaintext highlighter-rouge">INSTANCE</code> 不是 <code class="language-plaintext highlighter-rouge">null</code> ，因为它已经指向了某块内存。<br /> 于是线程 2 开始直接使用 <code class="language-plaintext highlighter-rouge">INSTANCE</code> 。</li><li>但 <code class="language-plaintext highlighter-rouge">INSTANCE</code> 的成员变量没有初始化，此时它们都是默认值（例如 int 类型的变量默认值是 0 ）。<br /> 所以线程 2 使用 <code class="language-plaintext highlighter-rouge">INSTANCE</code> 执行了一系列奇奇怪怪的操作，程序出错。</li></ol><p>这是一个极难复现的 BUG，要在<strong>百万级别</strong>的并发下才会偶尔出现。<br /></p><h1 id="volatile-与引用类型的二三事">volatile 与引用类型的二三事</h1><p>笔者在写这篇博文的时候，看到了网上有很多人写了这样一句话：</p><blockquote><p>volatile 修饰引用类型时，只能保证引用类型本身是线程间可见的，但是其内部字段是线程间不可见。</p></blockquote><p>换句话说，如果我有一个被 <strong>volatile</strong> 修饰的<strong>引用类型</strong>的变量（数组或对象）。<br /> 如果我把这个变量本身（即地址）改变了，这个改变是线程间<strong>可见</strong>的。<br /> 如果我把这个变量内部的值改变了（数组的内容，对象的成员变量），这个改变是线程间<strong>不可见</strong>的。</p><p>但是笔者仔细研究后发现，这句话并不对。</p><h2 id="线程的工作内存到底存了什么东西">线程的工作内存到底存了什么东西</h2><p>首先，提个问题：线程的工作内存中，到底存了什么？</p><ol><li>假设一：存的是引用类型<strong>本身</strong>（即地址）。<br /> 但是如果存的是地址，说明我要访问该引用类型的内部字段都必须去主内存中找，为什么会出现内部字段线程间不可见呢？</li><li>假设二：存的是引用类型的<strong>所有内容</strong>（包含内部字段）。<br /> 如果是这样的话，我现在有一个很大的对象（假设为 20 MB）。<br /> 有 1000 个线程在同时访问这个对象，那么每个线程都需要花 20MB 来存储这个对象。<br /> 总和就是 20GB ，这可能吗？</li></ol><p>无论哪种假设，都不合理。</p><p>最终笔者在《深入理解Java虚拟机（第二版）》中找到了答案：</p><blockquote><p>线程的工作内存中拷贝了对象的引用，和对象中正在访问的字段，对象中其他没有访问到的字段不会拷贝。</p></blockquote><p>既然是<strong>正在访问</strong>的字段，这也就说明当一段时间不访问该字段后，其拷贝会从线程的工作内存中删除。<br /> 这很好理解：<br /> 线程的数量太多了，而引用类型的变量又往往比较大。<br /> 如果不清空那些不常用的内部字段，会严重占用内存。</p><hr /><p>测试 1 ：数组</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">T02_VolatileReference1</span> <span class="o">{</span>
+    <span class="kt">boolean</span><span class="o">[]</span> <span class="n">running</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">boolean</span><span class="o">[]{</span><span class="kc">true</span><span class="o">};</span>
+
+    <span class="kt">void</span> <span class="nf">m</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m start"</span><span class="o">);</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">running</span><span class="o">[</span><span class="mi">0</span><span class="o">])</span> <span class="o">{</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m end!"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+        <span class="n">T02_VolatileReference1</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="n">T02_VolatileReference1</span><span class="o">();</span>
+        <span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="nl">t:</span><span class="o">:</span><span class="n">m</span><span class="o">,</span> <span class="s">"t1"</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+        <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1000</span><span class="o">);</span>
+        <span class="n">t</span><span class="o">.</span><span class="na">running</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>该程序很简单，<code class="language-plaintext highlighter-rouge">running</code> 是一个<strong>引用类型</strong>，是一个 boolean 型的数组。<br /> <code class="language-plaintext highlighter-rouge">running[0]</code> 的初始值是 <code class="language-plaintext highlighter-rouge">false</code>，所以线程 t 在启动后会<strong>死循环</strong>。<br /> 隔 1000ms 后，在主线程中修改线程 t 的 <code class="language-plaintext highlighter-rouge">running[0]</code> 为 <code class="language-plaintext highlighter-rouge">false</code>。<br /> 查看线程 t 是否会<strong>结束</strong>死循环。</p><p>结果：死循环</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">m</span> <span class="n">start</span>
+</code></pre></div></div><p>测试 2：对象</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">T03_VolatileReference2</span> <span class="o">{</span>
+    <span class="nc">Test</span> <span class="n">test</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Test</span><span class="o">();</span>
+
+    <span class="kd">static</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+        <span class="kt">boolean</span> <span class="n">running</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kt">void</span> <span class="nf">m</span><span class="o">(){</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m start"</span><span class="o">);</span>
+        <span class="k">while</span><span class="o">(</span><span class="n">test</span><span class="o">.</span><span class="na">running</span><span class="o">){</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m end"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+        <span class="n">T03_VolatileReference2</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="n">T03_VolatileReference2</span><span class="o">();</span>
+        <span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="nl">t:</span><span class="o">:</span><span class="n">m</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+        <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1000</span><span class="o">);</span>
+        <span class="n">t</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">running</span><span class="o">=</span><span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>与测试 1 <strong>同理</strong>，只是将数组改为对象。</p><p>结果：死循环</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">m</span> <span class="n">start</span>
+</code></pre></div></div><p>结论：<br /> 线程的工作内存会<strong>拷贝</strong>应用类型的<strong>正在访问</strong>的字段。</p><h2 id="volatile-修饰的引用类型">volatile 修饰的引用类型</h2><p><code class="language-plaintext highlighter-rouge">volatile</code> 的工作原理是什么？</p><p>通俗来讲：<br /> <code class="language-plaintext highlighter-rouge">volatile</code> 变量在每次被线程访问时，都强迫从主内存中<strong>重读</strong>该变量的值。<br /> 而当该变量发生变化时，又会强迫线程将最新的值<strong>刷新</strong>到主内存。<br /> 这样任何时刻，不同的线程总能看到该变量的最新值。</p><p>线程<strong>写</strong> <code class="language-plaintext highlighter-rouge">volatile</code> 变量的过程：</p><ol><li>改变线程工作内存中 <code class="language-plaintext highlighter-rouge">volatile</code> 变量副本的值。</li><li>将改变后的副本从工作内存刷新到主内存。</li></ol><p>线程<strong>读</strong> <code class="language-plaintext highlighter-rouge">volatile</code> 变量过程：</p><ol><li>从主内存读取 <code class="language-plaintext highlighter-rouge">volatile</code> 变量的最新值到线程工作内存中。</li><li>从工作内存读取 <code class="language-plaintext highlighter-rouge">volatile</code> 变量的副本。</li></ol><p>那么 <code class="language-plaintext highlighter-rouge">volatile</code> 修饰的引用类型变量的内部字段的读写过程是什么样的呢？</p><hr /><p><code class="language-plaintext highlighter-rouge">volatile</code> 修饰数组</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">T02_VolatileReference1</span> <span class="o">{</span>
+    <span class="kd">volatile</span> <span class="kt">boolean</span><span class="o">[]</span> <span class="n">running</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">boolean</span><span class="o">[]{</span><span class="kc">true</span><span class="o">};</span>
+
+    <span class="kt">void</span> <span class="nf">m</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m start"</span><span class="o">);</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">running</span><span class="o">[</span><span class="mi">0</span><span class="o">])</span> <span class="o">{</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m end!"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+        <span class="n">T02_VolatileReference1</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="n">T02_VolatileReference1</span><span class="o">();</span>
+        <span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="nl">t:</span><span class="o">:</span><span class="n">m</span><span class="o">,</span> <span class="s">"t1"</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+        <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1000</span><span class="o">);</span>
+        <span class="n">t</span><span class="o">.</span><span class="na">running</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>结果</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">m</span> <span class="n">start</span>
+<span class="n">m</span> <span class="n">end</span><span class="o">!</span>
+</code></pre></div></div><p><code class="language-plaintext highlighter-rouge">volatile</code> 修饰对象</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">T02_VolatileReference2</span> <span class="o">{</span>
+    <span class="kd">volatile</span> <span class="nc">Test</span> <span class="n">test</span> <span class="o">=</span> <span class="k">new</span> <span class="nc">Test</span><span class="o">();</span>
+
+    <span class="kt">void</span> <span class="nf">m</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m start"</span><span class="o">);</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">test</span><span class="o">.</span><span class="na">running</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m end"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+        <span class="n">T02_VolatileReference2</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="n">T02_VolatileReference2</span><span class="o">();</span>
+        <span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="nl">t:</span><span class="o">:</span><span class="n">m</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+        <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1000</span><span class="o">);</span>
+        <span class="n">t</span><span class="o">.</span><span class="na">test</span><span class="o">.</span><span class="na">running</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+<span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+    <span class="kt">boolean</span> <span class="n">running</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div></div><p>结果</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">m</span> <span class="n">start</span>
+<span class="n">m</span> <span class="n">end</span><span class="o">!</span>
+</code></pre></div></div><p>这说明 <code class="language-plaintext highlighter-rouge">volatile</code> 修饰的引用类型其内部字段是线程间<strong>可见</strong>的！</p><hr /><p>那么网上流传的 <code class="language-plaintext highlighter-rouge">volatile</code> 修饰的引用类型内部字段线程间<strong>不可见</strong>的说法是哪来的呢？</p><p>请看以下代码：</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">T03_VolatileReference1</span> <span class="o">{</span>
+    <span class="kd">volatile</span> <span class="kt">boolean</span><span class="o">[]</span> <span class="n">running</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">boolean</span><span class="o">[]{</span><span class="kc">true</span><span class="o">};</span>
+
+    <span class="kt">void</span> <span class="nf">m</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m start"</span><span class="o">);</span>
+        <span class="kt">boolean</span><span class="o">[]</span> <span class="n">running2</span> <span class="o">=</span> <span class="n">running</span><span class="o">;</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">running2</span><span class="o">[</span><span class="mi">0</span><span class="o">])</span> <span class="o">{</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m end!"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+        <span class="n">T03_VolatileReference1</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="n">T03_VolatileReference1</span><span class="o">();</span>
+        <span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="nl">t:</span><span class="o">:</span><span class="n">m</span><span class="o">,</span> <span class="s">"t1"</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+        <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1000</span><span class="o">);</span>
+
+        <span class="n">t</span><span class="o">.</span><span class="na">running</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>我们创建一个 <code class="language-plaintext highlighter-rouge">running2</code> ，它与 <code class="language-plaintext highlighter-rouge">running</code> 是<strong>相同</strong>的，但是没有被 <strong>volatile</strong> 修饰。</p><p>结果：死循环</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">m</span> <span class="n">start</span>
+</code></pre></div></div><hr /><p><strong>结论：</strong></p><p>结合以上 <code class="language-plaintext highlighter-rouge">volatile</code> 的工作原理和测试，我们可以得到以下结论：<br /> <code class="language-plaintext highlighter-rouge">volatile</code> 像一个标志，告诉我们的程序，看到这个标志，必须去<strong>主内存</strong>中读写。<br /> 所以当使用 <code class="language-plaintext highlighter-rouge">volatile</code> 修饰引用类型时，程序依然会去主内存中读写，所以内部字段是线程间<strong>可见</strong>的。<br /></p><p>重点是在读的时候，也必须通过被 <strong>volatile</strong> 修饰的变量去读，而不能使用非 <code class="language-plaintext highlighter-rouge">volatile</code> 变量去读。<br /> 就像我们的测试：</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">volatile</span> <span class="kt">boolean</span><span class="o">[]</span> <span class="n">running</span> <span class="o">=</span> <span class="k">new</span> <span class="kt">boolean</span><span class="o">[]{</span><span class="kc">true</span><span class="o">};</span>
+</code></pre></div></div><p>被 volatile 修饰的是 <code class="language-plaintext highlighter-rouge">running</code> ，所以读写时都应该用 <code class="language-plaintext highlighter-rouge">running</code>。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">boolean</span><span class="o">[]</span> <span class="n">running2</span> <span class="o">=</span> <span class="n">running</span><span class="o">;</span>
+</code></pre></div></div><p>而 <code class="language-plaintext highlighter-rouge">running2</code> 不是被 <code class="language-plaintext highlighter-rouge">volatile</code> 修饰的，尽管 <code class="language-plaintext highlighter-rouge">running2</code> 和 <code class="language-plaintext highlighter-rouge">running</code> 本身的值是一样的。<br /> 但是使用 <code class="language-plaintext highlighter-rouge">running2</code> 读写内部字段就是线程间<strong>不可见</strong>的。</p><hr /><p>通过基本类型验证该结论：</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">T03_VolatileReference2</span> <span class="o">{</span>
+    <span class="kd">volatile</span> <span class="kt">boolean</span> <span class="n">running</span> <span class="o">=</span> <span class="kc">true</span><span class="o">;</span>
+
+    <span class="kt">void</span> <span class="nf">m</span><span class="o">()</span> <span class="o">{</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m start"</span><span class="o">);</span>
+        <span class="kt">boolean</span> <span class="n">running2</span> <span class="o">=</span> <span class="n">running</span><span class="o">;</span>
+        <span class="k">while</span> <span class="o">(</span><span class="n">running2</span><span class="o">)</span> <span class="o">{</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">"m end!"</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+        <span class="n">T03_VolatileReference2</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="n">T03_VolatileReference2</span><span class="o">();</span>
+        <span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="nl">t:</span><span class="o">:</span><span class="n">m</span><span class="o">,</span> <span class="s">"t1"</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+        <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">1000</span><span class="o">);</span>
+        <span class="n">t</span><span class="o">.</span><span class="na">running</span> <span class="o">=</span> <span class="kc">false</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>结果：死循环</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">m</span> <span class="n">start</span>
+</code></pre></div></div><p><strong>完美验证该结论！</strong></p><h1 id="volatile-不能保证原子性">volatile 不能保证原子性</h1><p><code class="language-plaintext highlighter-rouge">volatile</code> 实现了线程可见性，使得多线程的数据能够同步，但是它并不能保证<strong>原子性</strong>。</p><p>什么是原子性？<br /> 简单来说：保证指令序列是一体的，要么全部执行，要么全部不执行，不会发生执行到一半被打断的情况。</p><p>在 Java 中， <code class="language-plaintext highlighter-rouge">synchronized</code> 关键字不仅能保证<strong>线程间可见</strong>，还能保证<strong>原子性</strong>。</p><p>测试：</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">T04_VolatileNotSync</span> <span class="o">{</span>
+    <span class="kd">volatile</span> <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+
+    <span class="kt">void</span> <span class="nf">m</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+			<span class="n">count</span><span class="o">++;</span>
+		<span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+        <span class="n">T04_VolatileNotSync</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="n">T04_VolatileNotSync</span><span class="o">();</span>
+
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="nl">t:</span><span class="o">:</span><span class="n">m</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="c1">//等待线程结束</span>
+        <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">3000</span><span class="o">);</span>
+
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="na">count</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>该程序的目的是创建 10 个线程，每个线程在 count 上执行 10000 次 ++ 操作<br /> 预期输出是 count = 100000<br /> 在使用 <code class="language-plaintext highlighter-rouge">volatile</code> 的情况下，实际输出是多少？</p><p>结果</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">26930</span>
+</code></pre></div></div><p>该结果不是个例，笔者测试过很多次，结果基本不会超过 30000 。</p><p>这是为什么？</p><p>因为 <code class="language-plaintext highlighter-rouge">volatile</code> 关键字不能保证原子性。</p><p>假设某一时刻 count = 10 ，共有两个线程</p><table><thead><tr><th style="text-align: left">时刻</th><th style="text-align: left">Thread 1</th><th style="text-align: left">Thread 2</th></tr></thead><tbody><tr><td style="text-align: left">T1</td><td style="text-align: left">读取到 count = 10</td><td style="text-align: left">等待 CPU</td></tr><tr><td style="text-align: left">T2</td><td style="text-align: left">让出 CPU</td><td style="text-align: left">获得 CPU ，开始执行操作。<br />读取到 count = 10</td></tr><tr><td style="text-align: left">T3</td><td style="text-align: left">等待CPU</td><td style="text-align: left">将 count = 11 写回 内存</td></tr><tr><td style="text-align: left">T4</td><td style="text-align: left">获得 CPU ，继续执行操作。<br />将 count = 11 写回内存</td><td style="text-align: left">等待操作</td></tr></tbody></table><p>可以看到，一共执行了<strong>两次</strong>自增操作，但写回内存的结果却只有<strong>一次</strong>。</p><p>在程序执行过程中发生的数据冲突不只这一种，但是导致的结果是一样的：<strong>数据不安全</strong>。</p><p>如果要保证数据安全，需要使用 <code class="language-plaintext highlighter-rouge">synchronized</code> 关键字。</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">T05_VolatileVsSync</span> <span class="o">{</span>
+    <span class="kt">int</span> <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+
+    <span class="kd">synchronized</span> <span class="kt">void</span> <span class="nf">m</span><span class="o">()</span> <span class="o">{</span>
+		<span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10000</span><span class="o">;</span> <span class="n">i</span><span class="o">++){</span>
+			<span class="n">count</span><span class="o">++;</span>
+		<span class="o">}</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="nc">InterruptedException</span> <span class="o">{</span>
+        <span class="n">T05_VolatileVsSync</span> <span class="n">t</span> <span class="o">=</span> <span class="k">new</span> <span class="n">T05_VolatileVsSync</span><span class="o">();</span>
+
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="k">new</span> <span class="nf">Thread</span><span class="o">(</span><span class="nl">t:</span><span class="o">:</span><span class="n">m</span><span class="o">).</span><span class="na">start</span><span class="o">();</span>
+        <span class="o">}</span>
+
+        <span class="c1">//等待线程结束</span>
+        <span class="nc">Thread</span><span class="o">.</span><span class="na">sleep</span><span class="o">(</span><span class="mi">3000</span><span class="o">);</span>
+
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">t</span><span class="o">.</span><span class="na">count</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div><p>结果</p><div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">100000</span>
+</code></pre></div></div><h1 id="源码链接">源码链接</h1><p>该文章源码链接 <a href="https://github.com/kekaiyuan/javaquestion/tree/main/juc/src/com/kky/volatiletest">Github</a></p><div style="margin-top:2em;padding:0 1.5em;border:1px solid #d3d3d3;background-color:#deebf7"><h3>文档信息</h3><ul><li>本文作者：<a href="https://kekaiyuan.github.io/" target="_blank">Kaiyuan Ke</a></li><li>本文链接：<a href="https://kekaiyuan.github.io//2021/07/16/volatile/" target="_blank">https://kekaiyuan.github.io//2021/07/16/volatile/</a></li><li>版权声明：自由转载-非商用-非衍生-保持署名（<a href="http://creativecommons.org/licenses/by-nc-nd/3.0/deed.zh" target="_blank">创意共享3.0许可证</a>）</li></ul></div></article><div class="share"></div><div class="comment"><div id="gitalk-container"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/vendor/gitalk/gitalk.css"> <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script> <script> var gitalk = new Gitalk({ id: '/2021/07/16/volatile/', clientID: '', clientSecret: '', repo: '', owner: '', admin: [''], labels: ['gitment'], perPage: 50, }); gitalk.render('gitalk-container'); </script></div></div><div class="column one-fourth"><h3>Search</h3><div id="site_search"> <input style="width:350px" type="text" id="search_box" placeholder="Search"></div><ul id="search_results" style="font-size:16px;list-style-type:none;padding-top:10px;padding-left:10px;"></ul><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/simple-jekyll-search.min.js"></script> <script type="text/javascript"> SimpleJekyllSearch({ searchInput: document.getElementById('search_box'), resultsContainer: document.getElementById('search_results'), json: 'https://kekaiyuan.github.io//assets/search_data.json?v=1646200239', searchResultTemplate: '<li><a href="{url}" title="{title}">{title}</a></li>', noResultsText: 'No results found', limit: 10, fuzzy: false, exclude: ['Welcome'] }) </script><h3 class="post-directory-title mobile-hidden">Table of Contents</h3><div id="post-directory-module" class="mobile-hidden"><section class="post-directory"><dl></dl></section></div><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/jquery.toc.js"></script></div></div></section><footer class="container"><div class="site-footer" role="contentinfo"><div class="copyright left mobile-block"> © 2015 <span title="Kaiyuan Ke">Kaiyuan Ke</span> <a href="javascript:window.scrollTo(0,0)" class="right mobile-visible">TOP</a></div><ul class="site-footer-links right mobile-hidden"><li> <a href="javascript:window.scrollTo(0,0)" >TOP</a></li></ul><a href="https://github.com/kekaiyuan/kekaiyuan.github.io" target="_blank" aria-label="view source code"> <span class="mega-octicon octicon-mark-github" title="GitHub"></span> </a><ul class="site-footer-links mobile-hidden"><li> <a href="https://kekaiyuan.github.io//" title="首页" target="">首页</a></li><li> <a href="https://kekaiyuan.github.io//categories/" title="分类" target="">分类</a></li><li> <a href="https://kekaiyuan.github.io//archives/" title="归档" target="">归档</a></li><li> <a href="https://kekaiyuan.github.io//wiki/" title="维基" target="">维基</a></li><li> <a href="https://kekaiyuan.github.io//links/" title="链接" target="">链接</a></li><li> <a href="https://kekaiyuan.github.io//about/" title="关于" target="">关于</a></li><li><a href="https://kekaiyuan.github.io//feed.xml"><span class="octicon octicon-rss" style="color:orange;"></span></a></li></ul></div></footer><div class="tools-wrapper"> <a class="gotop" href="#" title="回到顶部"><span class="octicon octicon-arrow-up"></span></a></div><script src="https://cdn.jsdelivr.net/gh/kekaiyuan/kekaiyuan.github.io@master/assets/js/geopattern.js"></script> <script> jQuery(document).ready(function($) { $('.geopattern').each(function(){ $(this).geopattern($(this).data('pattern-id')); }); /* hljs.initHighlightingOnLoad(); */ }); </script> {\% if page.mermaid \%} <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/7.1.0/mermaid.min.js"></script> <script> var config = { startOnLoad:true, flowchart:{ useMaxWidth:false, htmlLabels:true } }; mermaid.initialize(config); $(function(){ var elements = document.getElementsByClassName("language-mermaid"); for (var i = elements.length; i--;) { element = elements[i]; var graphDefinition = element.innerText; if (graphDefinition) { var svg = mermaid.render('ha_mermaid_' + i, graphDefinition, function(svg){}); if (svg) { var svgElement = document.createElement('div'); preNode = element.parentNode; svgElement.innerHTML = svg; svgElement.setAttribute('class', 'mermaid'); svgElement.setAttribute('data-processed', 'true'); preNode.parentNode.replaceChild(svgElement, preNode); } } } }); </script> {\% endif \%}<div style="display:none"> <script> (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) })(window,document,'script','https://www.google-analytics.com/analytics.js','ga'); ga('create', 'UA-80669434-1', 'auto'); ga('send', 'pageview'); </script></div></body></html>
