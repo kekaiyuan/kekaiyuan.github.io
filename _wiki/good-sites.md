@@ -17,8 +17,6 @@ keywords: 网站，推荐
 - [sorting](http://sorting.at/)
 - [十大经典排序算法（动图演示）](https://www.cnblogs.com/onepixel/articles/7674659.html)
 
-
-
 # Java
 - [windows系统下安装JDK8](https://www.cnblogs.com/heqiyoujing/p/9502726.html)
 
@@ -59,6 +57,7 @@ keywords: 网站，推荐
 - [在鼠标右键中添加 cmd 选项（管理员模式）](https://blog.csdn.net/ujsDui/article/details/79191921)
 - [Win10远程连接和远程桌面用户怎么设置](https://zhidao.baidu.com/question/1642764557058672300.html)
 - [Win10怎样配置远程桌面账户不用密码登录](https://jingyan.baidu.com/article/425e69e6e05eaeff15fc1689.html)
+- [通过 VirtualBox 安装 Win10 虚拟机](https://blog.csdn.net/weixin_53345287/article/details/124651143)
 
 # 加密
 - [BCrypt 密码加密和解密](https://www.jianshu.com/p/fc910a1f7c8d/)
