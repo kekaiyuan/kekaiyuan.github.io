@@ -49,7 +49,10 @@ keywords: 雪花算法，时钟回拨
 - 序列号拓展到 13 位，但是**并发度降低了**，因为时间戳从毫秒级降到了秒级。</br>
   **每秒**可以生成 2^13 = 8192 个 Id
 - 允许自定义时间戳、机器码、序列号的位数
-- 在性能有要求的场合，可以使用 CachedUidGenerator：提前生产 Id，这样使用 Id 时直接取用即可，不需要当场生成 Id。
+- 在性能有要求的场合，可以使用 CachedUidGenerator：提前生产 Id，这样使用 Id 时直接取用即可，不需要当场生成 Id。</br>
+  CachedUidGennerator 的设计还挺好的，在这里引一下：[github：百度 CachedUidGenerator](https://github.com/baidu/uid-generator/blob/master/README.zh_cn.md#cacheduidgenerator)
+
+
 
 #### 美团 ecp-uid
 基本上参考了百度 uid-generator，然后引入了 Zookeeper，Redis 等中间件来丰富机器码的获取方式。</br>
