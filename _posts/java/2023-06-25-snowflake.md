@@ -1,8 +1,8 @@
 ---
 layout: post
-title: 2023-06-25 雪花算法时钟回拨——一个超级偷懒的解决办法
+title: 2023-06-25 雪花算法（附解决时钟回拨的一个超级偷懒办法）
 categories: Java
-description: 雪花算法时钟回拨——一个超级偷懒的解决办法
+description: 雪花算法（附解决时钟回拨的一个超级偷懒办法）
 keywords: 雪花算法，时钟回拨
 ---
 
