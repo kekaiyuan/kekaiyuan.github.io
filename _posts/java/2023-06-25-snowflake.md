@@ -66,7 +66,7 @@ keywords: 雪花算法，时钟回拨
 
 比如服务器时间从 2023-06-25 17:05:24 回拨到 2023-06-25 16:55:24，那么在新的时钟从 2023-06-25 16:55:24 推进到 2023-06-25 17:05:24 之前，任何依赖于 Snowflake 的新增数据操作都会失败。
 
-之后看了一下百度 uid-generator，发现也是一样的。
+之后看了一下百度 uid-generator，发现也是抛出异常，拒绝生成 Id。
 
 最终想了个很偷懒的办法来解决这个事。
 
@@ -129,3 +129,4 @@ keywords: 雪花算法，时钟回拨
 - 如果时钟回拨了，就使用 lastTimestamp 来生成 Id
 - 如果 sequence 满了，则将 lastTimestamp 往后推 1ms，即借用未来时间
 - 当前 timestamp 超过 lastTimestamp 时，说明回拨结束，时间点已推进，再覆盖 lastTimestamp 和 sequence
+- 然后将原来引用 hutool-Snowflake 的地方改为引用新编写的这个类
