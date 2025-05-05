@@ -1,4 +1,5 @@
 ---
+typora-root-url: D:\git\kekaiyuan.github.io
 layout: post
 title: 雪花算法（附解决时钟回拨的一个超级偷懒办法）
 categories: Java

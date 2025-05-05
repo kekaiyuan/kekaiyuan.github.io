@@ -1,4 +1,5 @@
 ---
+typora-root-url: D:\git\kekaiyuan.github.io
 layout: post
 title: Java 学习笔记之 02 ——数据类型和运算符
 categories: Java
